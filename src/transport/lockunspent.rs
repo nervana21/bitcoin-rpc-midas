@@ -1,0 +1,41 @@
+//! This file is auto-generated. Do not edit manually.
+//! Generated for Bitcoin Core version: latest
+
+/// Updates list of temporarily unspendable outputs.
+/// Temporarily lock (unlock=false) or unlock (unlock=true) specified transaction outputs.
+/// If no transaction outputs are specified when unlocking then all current locked transaction outputs are unlocked.
+/// A locked transaction output will not be chosen by automatic coin selection, when spending bitcoins.
+/// Manually selected coins are automatically unlocked.
+/// Locks are stored in memory only, unless persistent=true, in which case they will be written to the
+/// wallet database and loaded on node start. Unwritten (persistent=false) locks are always cleared
+/// (by virtue of process exit) when a node stops or fails. Unlocking will clear both persistent and not.
+/// Also see the listunspent call
+
+/// # Example
+/// ```rust
+/// use bitcoin_rpc_codegen::client::latest::lockunspent;
+///
+/// let client = Client::new("http://127.0.0.1:8332", auth);
+/// let result = client.lockunspent(/* params */).await?;
+/// ```
+
+use serde::{Deserialize, Serialize};
+use serde_json::{Value, json};
+use transport::{Transport, TransportError};
+/// Response for the `lockunspent` RPC call.
+#[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
+pub struct LockunspentResponse {
+    /// Whether the command was successful or not
+    pub field_0: bool,
+}
+
+
+
+/// Calls the `lockunspent` RPC method.
+///
+/// Generated transport wrapper for JSON-RPC.
+pub async fn lockunspent(transport: &dyn Transport, unlock: serde_json::Value, transactions: serde_json::Value, persistent: serde_json::Value) -> Result<LockunspentResponse, TransportError> {
+    let params = vec![json!(unlock), json!(transactions), json!(persistent)];
+    let raw = transport.send_request("lockunspent", &params).await?;
+    Ok(serde_json::from_value::<LockunspentResponse>(raw)?)
+}

@@ -1,0 +1,26 @@
+//! This file is auto-generated. Do not edit manually.
+//! Generated for Bitcoin Core version: latest
+
+/// Permanently marks a block as invalid, as if it violated a consensus rule.
+
+/// # Example
+/// ```rust
+/// use bitcoin_rpc_codegen::client::latest::invalidateblock;
+///
+/// let client = Client::new("http://127.0.0.1:8332", auth);
+/// let result = client.invalidateblock(/* params */).await?;
+/// ```
+
+use serde::{Deserialize, Serialize};
+use serde_json::{Value, json};
+use transport::{Transport, TransportError};
+
+
+/// Calls the `invalidateblock` RPC method.
+///
+/// Generated transport wrapper for JSON-RPC.
+pub async fn invalidateblock(transport: &dyn Transport, blockhash: serde_json::Value) -> Result<Value, TransportError> {
+    let params = vec![json!(blockhash)];
+    let raw = transport.send_request("invalidateblock", &params).await?;
+    Ok(raw)
+}

@@ -1,0 +1,32 @@
+//! This file is auto-generated. Do not edit manually.
+//! Generated for Bitcoin Core version: latest
+
+/// Returns a list of wallets in the wallet directory.
+
+/// # Example
+/// ```rust
+/// use bitcoin_rpc_codegen::client::latest::listwalletdir;
+///
+/// let client = Client::new("http://127.0.0.1:8332", auth);
+/// let result = client.listwalletdir().await?;
+/// ```
+
+use serde::{Deserialize, Serialize};
+use serde_json::{Value, json};
+use transport::{Transport, TransportError};
+/// Response for the `listwalletdir` RPC call.
+#[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
+pub struct ListwalletdirResponse {
+    pub wallets: Vec<serde_json::Value>,
+}
+
+
+
+/// Calls the `listwalletdir` RPC method.
+///
+/// Generated transport wrapper for JSON-RPC.
+pub async fn listwalletdir(transport: &dyn Transport) -> Result<ListwalletdirResponse, TransportError> {
+    let params = Vec::<Value>::new();
+    let raw = transport.send_request("listwalletdir", &params).await?;
+    Ok(serde_json::from_value::<ListwalletdirResponse>(raw)?)
+}
