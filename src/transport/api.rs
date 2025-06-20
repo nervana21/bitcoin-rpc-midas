@@ -13,14 +13,19 @@
 
 use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
-use transport::{Transport, TransportError};
+use transport::{TransportTrait, TransportError};
+/// Return JSON description of RPC API.
+#[derive(Debug, Deserialize, Serialize)]
+#[serde(transparent)]
+pub struct ApiResponse(pub serde_json::Value);
+
 
 
 /// Calls the `api` RPC method.
 ///
 /// Generated transport wrapper for JSON-RPC.
-pub async fn api(transport: &dyn Transport) -> Result<Value, TransportError> {
+pub async fn api(transport: &dyn TransportTrait) -> Result<ApiResponse, TransportError> {
     let params = Vec::<Value>::new();
     let raw = transport.send_request("api", &params).await?;
-    Ok(raw)
+    Ok(serde_json::from_value::<ApiResponse>(raw)?)
 }

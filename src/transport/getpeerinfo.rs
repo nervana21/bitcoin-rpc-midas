@@ -13,19 +13,18 @@
 
 use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
-use transport::{Transport, TransportError};
-/// Response for the `getpeerinfo` RPC call.
-#[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
-pub struct GetpeerinfoResponse {
-    pub field_0: Vec<serde_json::Value>,
-}
+use transport::{TransportTrait, TransportError};
+/// Returns data about each connected network peer as a json array of objects.
+#[derive(Debug, Deserialize, Serialize)]
+#[serde(transparent)]
+pub struct GetpeerinfoResponse(pub Vec<serde_json::Value>);
 
 
 
 /// Calls the `getpeerinfo` RPC method.
 ///
 /// Generated transport wrapper for JSON-RPC.
-pub async fn getpeerinfo(transport: &dyn Transport) -> Result<GetpeerinfoResponse, TransportError> {
+pub async fn getpeerinfo(transport: &dyn TransportTrait) -> Result<GetpeerinfoResponse, TransportError> {
     let params = Vec::<Value>::new();
     let raw = transport.send_request("getpeerinfo", &params).await?;
     Ok(serde_json::from_value::<GetpeerinfoResponse>(raw)?)

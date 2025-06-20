@@ -13,9 +13,9 @@
 
 use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
-use transport::{Transport, TransportError};
-/// Response for the `listwalletdir` RPC call.
-#[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
+use transport::{TransportTrait, TransportError};
+/// Returns a list of wallets in the wallet directory.
+#[derive(Debug, Deserialize, Serialize)]
 pub struct ListwalletdirResponse {
     pub wallets: Vec<serde_json::Value>,
 }
@@ -25,7 +25,7 @@ pub struct ListwalletdirResponse {
 /// Calls the `listwalletdir` RPC method.
 ///
 /// Generated transport wrapper for JSON-RPC.
-pub async fn listwalletdir(transport: &dyn Transport) -> Result<ListwalletdirResponse, TransportError> {
+pub async fn listwalletdir(transport: &dyn TransportTrait) -> Result<ListwalletdirResponse, TransportError> {
     let params = Vec::<Value>::new();
     let raw = transport.send_request("listwalletdir", &params).await?;
     Ok(serde_json::from_value::<ListwalletdirResponse>(raw)?)

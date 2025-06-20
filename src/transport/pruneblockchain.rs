@@ -12,20 +12,18 @@
 
 use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
-use transport::{Transport, TransportError};
-/// Response for the `pruneblockchain` RPC call.
-#[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
-pub struct PruneblockchainResponse {
-    /// Height of the last block pruned
-    pub field_0: u64,
-}
+use transport::{TransportTrait, TransportError};
+/// 
+#[derive(Debug, Deserialize, Serialize)]
+#[serde(transparent)]
+pub struct PruneblockchainResponse(pub f64);
 
 
 
 /// Calls the `pruneblockchain` RPC method.
 ///
 /// Generated transport wrapper for JSON-RPC.
-pub async fn pruneblockchain(transport: &dyn Transport, height: serde_json::Value) -> Result<PruneblockchainResponse, TransportError> {
+pub async fn pruneblockchain(transport: &dyn TransportTrait, height: serde_json::Value) -> Result<PruneblockchainResponse, TransportError> {
     let params = vec![json!(height)];
     let raw = transport.send_request("pruneblockchain", &params).await?;
     Ok(serde_json::from_value::<PruneblockchainResponse>(raw)?)

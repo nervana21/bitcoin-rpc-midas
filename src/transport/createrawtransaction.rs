@@ -17,20 +17,22 @@
 
 use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
-use transport::{Transport, TransportError};
-/// Response for the `createrawtransaction` RPC call.
-#[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
-pub struct CreaterawtransactionResponse {
-    /// hex string of the transaction
-    pub transaction: String,
-}
+use transport::{TransportTrait, TransportError};
+/// Create a transaction spending the given inputs and creating new outputs.
+    /// Outputs can be addresses or data.
+    /// Returns hex-encoded raw transaction.
+    /// Note that the transaction's inputs are not signed, and
+    /// it is not stored in the wallet or transmitted to the network.
+#[derive(Debug, Deserialize, Serialize)]
+#[serde(transparent)]
+pub struct CreaterawtransactionResponse(pub String);
 
 
 
 /// Calls the `createrawtransaction` RPC method.
 ///
 /// Generated transport wrapper for JSON-RPC.
-pub async fn createrawtransaction(transport: &dyn Transport, inputs: serde_json::Value, outputs: serde_json::Value, locktime: serde_json::Value, replaceable: serde_json::Value) -> Result<CreaterawtransactionResponse, TransportError> {
+pub async fn createrawtransaction(transport: &dyn TransportTrait, inputs: serde_json::Value, outputs: serde_json::Value, locktime: serde_json::Value, replaceable: serde_json::Value) -> Result<CreaterawtransactionResponse, TransportError> {
     let params = vec![json!(inputs), json!(outputs), json!(locktime), json!(replaceable)];
     let raw = transport.send_request("createrawtransaction", &params).await?;
     Ok(serde_json::from_value::<CreaterawtransactionResponse>(raw)?)

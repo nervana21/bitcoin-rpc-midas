@@ -14,20 +14,19 @@
 
 use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
-use transport::{Transport, TransportError};
-/// Response for the `getblockcount` RPC call.
-#[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
-pub struct GetblockcountResponse {
-    /// The current block count
-    pub field_0: u64,
-}
+use transport::{TransportTrait, TransportError};
+/// Returns the height of the most-work fully-validated chain.
+    /// The genesis block has height 0.
+#[derive(Debug, Deserialize, Serialize)]
+#[serde(transparent)]
+pub struct GetblockcountResponse(pub f64);
 
 
 
 /// Calls the `getblockcount` RPC method.
 ///
 /// Generated transport wrapper for JSON-RPC.
-pub async fn getblockcount(transport: &dyn Transport) -> Result<GetblockcountResponse, TransportError> {
+pub async fn getblockcount(transport: &dyn TransportTrait) -> Result<GetblockcountResponse, TransportError> {
     let params = Vec::<Value>::new();
     let raw = transport.send_request("getblockcount", &params).await?;
     Ok(serde_json::from_value::<GetblockcountResponse>(raw)?)

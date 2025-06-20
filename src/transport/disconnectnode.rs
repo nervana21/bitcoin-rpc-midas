@@ -15,13 +15,13 @@
 
 use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
-use transport::{Transport, TransportError};
+use transport::{TransportTrait, TransportError};
 
 
 /// Calls the `disconnectnode` RPC method.
 ///
 /// Generated transport wrapper for JSON-RPC.
-pub async fn disconnectnode(transport: &dyn Transport, address: serde_json::Value, nodeid: serde_json::Value) -> Result<Value, TransportError> {
+pub async fn disconnectnode(transport: &dyn TransportTrait, address: serde_json::Value, nodeid: serde_json::Value) -> Result<Value, TransportError> {
     let params = vec![json!(address), json!(nodeid)];
     let raw = transport.send_request("disconnectnode", &params).await?;
     Ok(raw)

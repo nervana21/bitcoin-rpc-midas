@@ -13,13 +13,13 @@
 
 use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
-use transport::{Transport, TransportError};
+use transport::{TransportTrait, TransportError};
 
 
 /// Calls the `importprunedfunds` RPC method.
 ///
 /// Generated transport wrapper for JSON-RPC.
-pub async fn importprunedfunds(transport: &dyn Transport, rawtransaction: serde_json::Value, txoutproof: serde_json::Value) -> Result<Value, TransportError> {
+pub async fn importprunedfunds(transport: &dyn TransportTrait, rawtransaction: serde_json::Value, txoutproof: serde_json::Value) -> Result<Value, TransportError> {
     let params = vec![json!(rawtransaction), json!(txoutproof)];
     let raw = transport.send_request("importprunedfunds", &params).await?;
     Ok(raw)

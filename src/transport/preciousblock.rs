@@ -15,13 +15,13 @@
 
 use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
-use transport::{Transport, TransportError};
+use transport::{TransportTrait, TransportError};
 
 
 /// Calls the `preciousblock` RPC method.
 ///
 /// Generated transport wrapper for JSON-RPC.
-pub async fn preciousblock(transport: &dyn Transport, blockhash: serde_json::Value) -> Result<Value, TransportError> {
+pub async fn preciousblock(transport: &dyn TransportTrait, blockhash: serde_json::Value) -> Result<Value, TransportError> {
     let params = vec![json!(blockhash)];
     let raw = transport.send_request("preciousblock", &params).await?;
     Ok(raw)

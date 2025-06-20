@@ -23,13 +23,13 @@
 
 use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
-use transport::{Transport, TransportError};
+use transport::{TransportTrait, TransportError};
 
 
 /// Calls the `importaddress` RPC method.
 ///
 /// Generated transport wrapper for JSON-RPC.
-pub async fn importaddress(transport: &dyn Transport, address: serde_json::Value, label: serde_json::Value, rescan: serde_json::Value, p2sh: serde_json::Value) -> Result<Value, TransportError> {
+pub async fn importaddress(transport: &dyn TransportTrait, address: serde_json::Value, label: serde_json::Value, rescan: serde_json::Value, p2sh: serde_json::Value) -> Result<Value, TransportError> {
     let params = vec![json!(address), json!(label), json!(rescan), json!(p2sh)];
     let raw = transport.send_request("importaddress", &params).await?;
     Ok(raw)

@@ -13,19 +13,18 @@
 
 use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
-use transport::{Transport, TransportError};
-/// Response for the `getindexinfo` RPC call.
-#[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
-pub struct GetindexinfoResponse {
-    pub field_0: serde_json::Value,
-}
+use transport::{TransportTrait, TransportError};
+/// Returns the status of one or all available indices currently running in the node.
+#[derive(Debug, Deserialize, Serialize)]
+#[serde(transparent)]
+pub struct GetindexinfoResponse(pub serde_json::Value);
 
 
 
 /// Calls the `getindexinfo` RPC method.
 ///
 /// Generated transport wrapper for JSON-RPC.
-pub async fn getindexinfo(transport: &dyn Transport, index_name: serde_json::Value) -> Result<GetindexinfoResponse, TransportError> {
+pub async fn getindexinfo(transport: &dyn TransportTrait, index_name: serde_json::Value) -> Result<GetindexinfoResponse, TransportError> {
     let params = vec![json!(index_name)];
     let raw = transport.send_request("getindexinfo", &params).await?;
     Ok(serde_json::from_value::<GetindexinfoResponse>(raw)?)

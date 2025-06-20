@@ -13,20 +13,18 @@
 
 use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
-use transport::{Transport, TransportError};
-/// Response for the `getprioritisedtransactions` RPC call.
-#[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
-pub struct GetprioritisedtransactionsResponse {
-    /// prioritisation keyed by txid
-    pub field_0: serde_json::Value,
-}
+use transport::{TransportTrait, TransportError};
+/// Returns a map of all user-created (see prioritisetransaction) fee deltas by txid, and whether the tx is present in mempool.
+#[derive(Debug, Deserialize, Serialize)]
+#[serde(transparent)]
+pub struct GetprioritisedtransactionsResponse(pub serde_json::Value);
 
 
 
 /// Calls the `getprioritisedtransactions` RPC method.
 ///
 /// Generated transport wrapper for JSON-RPC.
-pub async fn getprioritisedtransactions(transport: &dyn Transport) -> Result<GetprioritisedtransactionsResponse, TransportError> {
+pub async fn getprioritisedtransactions(transport: &dyn TransportTrait) -> Result<GetprioritisedtransactionsResponse, TransportError> {
     let params = Vec::<Value>::new();
     let raw = transport.send_request("getprioritisedtransactions", &params).await?;
     Ok(serde_json::from_value::<GetprioritisedtransactionsResponse>(raw)?)

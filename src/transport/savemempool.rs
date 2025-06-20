@@ -13,11 +13,10 @@
 
 use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
-use transport::{Transport, TransportError};
-/// Response for the `savemempool` RPC call.
-#[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
+use transport::{TransportTrait, TransportError};
+/// Dumps the mempool to disk. It will fail until the previous dump is fully loaded.
+#[derive(Debug, Deserialize, Serialize)]
 pub struct SavemempoolResponse {
-    /// the directory and file where the mempool was saved
     pub filename: String,
 }
 
@@ -26,7 +25,7 @@ pub struct SavemempoolResponse {
 /// Calls the `savemempool` RPC method.
 ///
 /// Generated transport wrapper for JSON-RPC.
-pub async fn savemempool(transport: &dyn Transport) -> Result<SavemempoolResponse, TransportError> {
+pub async fn savemempool(transport: &dyn TransportTrait) -> Result<SavemempoolResponse, TransportError> {
     let params = Vec::<Value>::new();
     let raw = transport.send_request("savemempool", &params).await?;
     Ok(serde_json::from_value::<SavemempoolResponse>(raw)?)

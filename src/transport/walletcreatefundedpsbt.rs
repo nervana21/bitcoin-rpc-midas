@@ -16,16 +16,16 @@
 
 use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
-use transport::{Transport, TransportError};
-/// Response for the `walletcreatefundedpsbt` RPC call.
-#[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
+use transport::{TransportTrait, TransportError};
+/// Creates and funds a transaction in the Partially Signed Transaction format.
+    /// Implements the Creator and Updater roles.
+    /// All existing inputs must either have their previous output transaction be in the wallet
+    /// or be in the UTXO set. Solving data must be provided for non-wallet inputs.
+#[derive(Debug, Deserialize, Serialize)]
 pub struct WalletcreatefundedpsbtResponse {
-    /// The resulting raw transaction (base64-encoded string)
     pub psbt: String,
-    /// Fee in BTC the resulting transaction pays
-    pub fee: bitcoin::Amount,
-    /// The position of the added change output, or -1
-    pub changepos: u64,
+    pub fee: serde_json::Value,
+    pub changepos: f64,
 }
 
 
@@ -33,7 +33,7 @@ pub struct WalletcreatefundedpsbtResponse {
 /// Calls the `walletcreatefundedpsbt` RPC method.
 ///
 /// Generated transport wrapper for JSON-RPC.
-pub async fn walletcreatefundedpsbt(transport: &dyn Transport, inputs: serde_json::Value, outputs: serde_json::Value, locktime: serde_json::Value, options: serde_json::Value, bip32derivs: serde_json::Value) -> Result<WalletcreatefundedpsbtResponse, TransportError> {
+pub async fn walletcreatefundedpsbt(transport: &dyn TransportTrait, inputs: serde_json::Value, outputs: serde_json::Value, locktime: serde_json::Value, options: serde_json::Value, bip32derivs: serde_json::Value) -> Result<WalletcreatefundedpsbtResponse, TransportError> {
     let params = vec![json!(inputs), json!(outputs), json!(locktime), json!(options), json!(bip32derivs)];
     let raw = transport.send_request("walletcreatefundedpsbt", &params).await?;
     Ok(serde_json::from_value::<WalletcreatefundedpsbtResponse>(raw)?)

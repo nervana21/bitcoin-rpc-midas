@@ -13,13 +13,11 @@
 
 use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
-use transport::{Transport, TransportError};
-/// Response for the `getblockfilter` RPC call.
-#[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
+use transport::{TransportTrait, TransportError};
+/// Retrieve a BIP 157 content filter for a particular block.
+#[derive(Debug, Deserialize, Serialize)]
 pub struct GetblockfilterResponse {
-    /// the hex-encoded filter data
     pub filter: String,
-    /// the hex-encoded filter header
     pub header: String,
 }
 
@@ -28,7 +26,7 @@ pub struct GetblockfilterResponse {
 /// Calls the `getblockfilter` RPC method.
 ///
 /// Generated transport wrapper for JSON-RPC.
-pub async fn getblockfilter(transport: &dyn Transport, blockhash: serde_json::Value, filtertype: serde_json::Value) -> Result<GetblockfilterResponse, TransportError> {
+pub async fn getblockfilter(transport: &dyn TransportTrait, blockhash: serde_json::Value, filtertype: serde_json::Value) -> Result<GetblockfilterResponse, TransportError> {
     let params = vec![json!(blockhash), json!(filtertype)];
     let raw = transport.send_request("getblockfilter", &params).await?;
     Ok(serde_json::from_value::<GetblockfilterResponse>(raw)?)

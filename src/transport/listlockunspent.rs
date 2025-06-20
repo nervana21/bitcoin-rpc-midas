@@ -14,19 +14,19 @@
 
 use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
-use transport::{Transport, TransportError};
-/// Response for the `listlockunspent` RPC call.
-#[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
-pub struct ListlockunspentResponse {
-    pub field_0: Vec<serde_json::Value>,
-}
+use transport::{TransportTrait, TransportError};
+/// Returns list of temporarily unspendable outputs.
+    /// See the lockunspent call to lock and unlock transactions for spending.
+#[derive(Debug, Deserialize, Serialize)]
+#[serde(transparent)]
+pub struct ListlockunspentResponse(pub Vec<serde_json::Value>);
 
 
 
 /// Calls the `listlockunspent` RPC method.
 ///
 /// Generated transport wrapper for JSON-RPC.
-pub async fn listlockunspent(transport: &dyn Transport) -> Result<ListlockunspentResponse, TransportError> {
+pub async fn listlockunspent(transport: &dyn TransportTrait) -> Result<ListlockunspentResponse, TransportError> {
     let params = Vec::<Value>::new();
     let raw = transport.send_request("listlockunspent", &params).await?;
     Ok(serde_json::from_value::<ListlockunspentResponse>(raw)?)

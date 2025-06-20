@@ -20,13 +20,13 @@
 
 use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
-use transport::{Transport, TransportError};
+use transport::{TransportTrait, TransportError};
 
 
 /// Calls the `importpubkey` RPC method.
 ///
 /// Generated transport wrapper for JSON-RPC.
-pub async fn importpubkey(transport: &dyn Transport, pubkey: serde_json::Value, label: serde_json::Value, rescan: serde_json::Value) -> Result<Value, TransportError> {
+pub async fn importpubkey(transport: &dyn TransportTrait, pubkey: serde_json::Value, label: serde_json::Value, rescan: serde_json::Value) -> Result<Value, TransportError> {
     let params = vec![json!(pubkey), json!(label), json!(rescan)];
     let raw = transport.send_request("importpubkey", &params).await?;
     Ok(raw)

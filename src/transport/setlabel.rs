@@ -13,13 +13,13 @@
 
 use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
-use transport::{Transport, TransportError};
+use transport::{TransportTrait, TransportError};
 
 
 /// Calls the `setlabel` RPC method.
 ///
 /// Generated transport wrapper for JSON-RPC.
-pub async fn setlabel(transport: &dyn Transport, address: serde_json::Value, label: serde_json::Value) -> Result<Value, TransportError> {
+pub async fn setlabel(transport: &dyn TransportTrait, address: serde_json::Value, label: serde_json::Value) -> Result<Value, TransportError> {
     let params = vec![json!(address), json!(label)];
     let raw = transport.send_request("setlabel", &params).await?;
     Ok(raw)

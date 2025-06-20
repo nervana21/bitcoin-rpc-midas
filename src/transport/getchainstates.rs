@@ -13,13 +13,11 @@
 
 use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
-use transport::{Transport, TransportError};
-/// Response for the `getchainstates` RPC call.
-#[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
+use transport::{TransportTrait, TransportError};
+/// Return information about chainstates.
+#[derive(Debug, Deserialize, Serialize)]
 pub struct GetchainstatesResponse {
-    /// the number of headers seen so far
-    pub headers: u64,
-    /// list of the chainstates ordered by work, with the most-work (active) chainstate last
+    pub headers: f64,
     pub chainstates: Vec<serde_json::Value>,
 }
 
@@ -28,7 +26,7 @@ pub struct GetchainstatesResponse {
 /// Calls the `getchainstates` RPC method.
 ///
 /// Generated transport wrapper for JSON-RPC.
-pub async fn getchainstates(transport: &dyn Transport) -> Result<GetchainstatesResponse, TransportError> {
+pub async fn getchainstates(transport: &dyn TransportTrait) -> Result<GetchainstatesResponse, TransportError> {
     let params = Vec::<Value>::new();
     let raw = transport.send_request("getchainstates", &params).await?;
     Ok(serde_json::from_value::<GetchainstatesResponse>(raw)?)

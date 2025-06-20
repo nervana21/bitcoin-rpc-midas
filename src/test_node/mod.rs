@@ -1,5 +1,10 @@
 pub mod wallet;
+pub use wallet::*;
 pub mod node;
-pub mod test_node;
+pub use node::*;
+pub mod client;
+pub use client::*;
 pub mod params;
-pub mod result;
+pub use params::*;
+pub mod response;
+pub use response::*;

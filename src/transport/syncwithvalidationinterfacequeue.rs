@@ -13,13 +13,13 @@
 
 use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
-use transport::{Transport, TransportError};
+use transport::{TransportTrait, TransportError};
 
 
 /// Calls the `syncwithvalidationinterfacequeue` RPC method.
 ///
 /// Generated transport wrapper for JSON-RPC.
-pub async fn syncwithvalidationinterfacequeue(transport: &dyn Transport) -> Result<Value, TransportError> {
+pub async fn syncwithvalidationinterfacequeue(transport: &dyn TransportTrait) -> Result<Value, TransportError> {
     let params = Vec::<Value>::new();
     let raw = transport.send_request("syncwithvalidationinterfacequeue", &params).await?;
     Ok(raw)

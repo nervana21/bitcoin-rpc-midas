@@ -13,19 +13,18 @@
 
 use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
-use transport::{Transport, TransportError};
-/// Response for the `listbanned` RPC call.
-#[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
-pub struct ListbannedResponse {
-    pub field_0: Vec<serde_json::Value>,
-}
+use transport::{TransportTrait, TransportError};
+/// List all manually banned IPs/Subnets.
+#[derive(Debug, Deserialize, Serialize)]
+#[serde(transparent)]
+pub struct ListbannedResponse(pub Vec<serde_json::Value>);
 
 
 
 /// Calls the `listbanned` RPC method.
 ///
 /// Generated transport wrapper for JSON-RPC.
-pub async fn listbanned(transport: &dyn Transport) -> Result<ListbannedResponse, TransportError> {
+pub async fn listbanned(transport: &dyn TransportTrait) -> Result<ListbannedResponse, TransportError> {
     let params = Vec::<Value>::new();
     let raw = transport.send_request("listbanned", &params).await?;
     Ok(serde_json::from_value::<ListbannedResponse>(raw)?)

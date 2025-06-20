@@ -13,20 +13,18 @@
 
 use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
-use transport::{Transport, TransportError};
-/// Response for the `setnetworkactive` RPC call.
-#[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
-pub struct SetnetworkactiveResponse {
-    /// The value that was passed in
-    pub field_0: bool,
-}
+use transport::{TransportTrait, TransportError};
+/// Disable/enable all p2p network activity.
+#[derive(Debug, Deserialize, Serialize)]
+#[serde(transparent)]
+pub struct SetnetworkactiveResponse(pub bool);
 
 
 
 /// Calls the `setnetworkactive` RPC method.
 ///
 /// Generated transport wrapper for JSON-RPC.
-pub async fn setnetworkactive(transport: &dyn Transport, state: serde_json::Value) -> Result<SetnetworkactiveResponse, TransportError> {
+pub async fn setnetworkactive(transport: &dyn TransportTrait, state: serde_json::Value) -> Result<SetnetworkactiveResponse, TransportError> {
     let params = vec![json!(state)];
     let raw = transport.send_request("setnetworkactive", &params).await?;
     Ok(serde_json::from_value::<SetnetworkactiveResponse>(raw)?)

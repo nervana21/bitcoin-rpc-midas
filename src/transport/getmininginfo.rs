@@ -13,28 +13,20 @@
 
 use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
-use transport::{Transport, TransportError};
-/// Response for the `getmininginfo` RPC call.
-#[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
+use transport::{TransportTrait, TransportError};
+/// Returns a json object containing mining-related information.
+#[derive(Debug, Deserialize, Serialize)]
 pub struct GetmininginfoResponse {
-    /// The current block
     pub blocks: u64,
-    /// The block weight of the last assembled block (only present if a block was ever assembled)
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub currentblockweight: Option<u64>,
-    /// The number of block transactions of the last assembled block (only present if a block was ever assembled)
+    pub currentblockweight: Option<f64>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub currentblocktx: Option<u64>,
-    /// The current difficulty
-    pub difficulty: u64,
-    /// The network hashes per second
-    pub networkhashps: u64,
-    /// The size of the mempool
-    pub pooledtx: u64,
-    /// current network name (main, test, testnet4, signet, regtest)
+    pub currentblocktx: Option<f64>,
+    pub difficulty: f64,
+    pub networkhashps: f64,
+    pub pooledtx: f64,
     pub chain: String,
-    /// any network and blockchain warnings (run with `-deprecatedrpc=warnings` to return the latest warning as a single string)
-    pub warnings: Vec<String>,
+    pub warnings: Vec<serde_json::Value>,
 }
 
 
@@ -42,7 +34,7 @@ pub struct GetmininginfoResponse {
 /// Calls the `getmininginfo` RPC method.
 ///
 /// Generated transport wrapper for JSON-RPC.
-pub async fn getmininginfo(transport: &dyn Transport) -> Result<GetmininginfoResponse, TransportError> {
+pub async fn getmininginfo(transport: &dyn TransportTrait) -> Result<GetmininginfoResponse, TransportError> {
     let params = Vec::<Value>::new();
     let raw = transport.send_request("getmininginfo", &params).await?;
     Ok(serde_json::from_value::<GetmininginfoResponse>(raw)?)

@@ -13,15 +13,12 @@
 
 use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
-use transport::{Transport, TransportError};
-/// Response for the `setwalletflag` RPC call.
-#[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
+use transport::{TransportTrait, TransportError};
+/// Change the state of the given wallet flag for a wallet.
+#[derive(Debug, Deserialize, Serialize)]
 pub struct SetwalletflagResponse {
-    /// The name of the flag that was modified
     pub flag_name: String,
-    /// The new state of the flag
     pub flag_state: bool,
-    /// Any warnings associated with the change
     #[serde(skip_serializing_if = "Option::is_none")]
     pub warnings: Option<String>,
 }
@@ -31,7 +28,7 @@ pub struct SetwalletflagResponse {
 /// Calls the `setwalletflag` RPC method.
 ///
 /// Generated transport wrapper for JSON-RPC.
-pub async fn setwalletflag(transport: &dyn Transport, flag: serde_json::Value, value: serde_json::Value) -> Result<SetwalletflagResponse, TransportError> {
+pub async fn setwalletflag(transport: &dyn TransportTrait, flag: serde_json::Value, value: serde_json::Value) -> Result<SetwalletflagResponse, TransportError> {
     let params = vec![json!(flag), json!(value)];
     let raw = transport.send_request("setwalletflag", &params).await?;
     Ok(serde_json::from_value::<SetwalletflagResponse>(raw)?)

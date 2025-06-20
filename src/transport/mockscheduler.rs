@@ -13,13 +13,13 @@
 
 use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
-use transport::{Transport, TransportError};
+use transport::{TransportTrait, TransportError};
 
 
 /// Calls the `mockscheduler` RPC method.
 ///
 /// Generated transport wrapper for JSON-RPC.
-pub async fn mockscheduler(transport: &dyn Transport, delta_time: serde_json::Value) -> Result<Value, TransportError> {
+pub async fn mockscheduler(transport: &dyn TransportTrait, delta_time: serde_json::Value) -> Result<Value, TransportError> {
     let params = vec![json!(delta_time)];
     let raw = transport.send_request("mockscheduler", &params).await?;
     Ok(raw)

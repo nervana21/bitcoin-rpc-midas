@@ -15,19 +15,20 @@
 
 use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
-use transport::{Transport, TransportError};
-/// Response for the `getnodeaddresses` RPC call.
-#[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
-pub struct GetnodeaddressesResponse {
-    pub field_0: Vec<serde_json::Value>,
-}
+use transport::{TransportTrait, TransportError};
+/// Return known addresses, after filtering for quality and recency.
+    /// These can potentially be used to find new peers in the network.
+    /// The total number of addresses known to the node may be higher.
+#[derive(Debug, Deserialize, Serialize)]
+#[serde(transparent)]
+pub struct GetnodeaddressesResponse(pub Vec<serde_json::Value>);
 
 
 
 /// Calls the `getnodeaddresses` RPC method.
 ///
 /// Generated transport wrapper for JSON-RPC.
-pub async fn getnodeaddresses(transport: &dyn Transport, count: serde_json::Value, network: serde_json::Value) -> Result<GetnodeaddressesResponse, TransportError> {
+pub async fn getnodeaddresses(transport: &dyn TransportTrait, count: serde_json::Value, network: serde_json::Value) -> Result<GetnodeaddressesResponse, TransportError> {
     let params = vec![json!(count), json!(network)];
     let raw = transport.send_request("getnodeaddresses", &params).await?;
     Ok(serde_json::from_value::<GetnodeaddressesResponse>(raw)?)

@@ -3,13 +3,24 @@
 //! This library provides a strongly-typed interface to the Bitcoin RPC API.
 //! It is generated from the Bitcoin Core RPC API documentation.
 
+// Core modules
 pub mod config;
+pub mod client_trait;
 pub mod node;
+pub mod test_node;
 pub mod transport;
 pub mod types;
-pub mod test_node;
 
+// Re-exports for ergonomic access
 pub use config::Config;
+pub use client_trait::client_trait::BitcoinClientV012;
 pub use node::BitcoinNodeManager;
-pub use transport::{DefaultTransport, TransportError};
-pub use crate::test_node::test_node::BitcoinTestClient;
+pub use test_node::client::BitcoinTestClient;
+pub use types::*;
+pub use transport::{
+    DefaultTransport,
+    TransportError,
+    RpcClient,
+    BatchBuilder,
+};
+

@@ -13,20 +13,18 @@
 
 use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
-use transport::{Transport, TransportError};
-/// Response for the `getconnectioncount` RPC call.
-#[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
-pub struct GetconnectioncountResponse {
-    /// The connection count
-    pub field_0: u64,
-}
+use transport::{TransportTrait, TransportError};
+/// Returns the number of connections to other nodes.
+#[derive(Debug, Deserialize, Serialize)]
+#[serde(transparent)]
+pub struct GetconnectioncountResponse(pub f64);
 
 
 
 /// Calls the `getconnectioncount` RPC method.
 ///
 /// Generated transport wrapper for JSON-RPC.
-pub async fn getconnectioncount(transport: &dyn Transport) -> Result<GetconnectioncountResponse, TransportError> {
+pub async fn getconnectioncount(transport: &dyn TransportTrait) -> Result<GetconnectioncountResponse, TransportError> {
     let params = Vec::<Value>::new();
     let raw = transport.send_request("getconnectioncount", &params).await?;
     Ok(serde_json::from_value::<GetconnectioncountResponse>(raw)?)

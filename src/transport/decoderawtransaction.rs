@@ -13,23 +13,16 @@
 
 use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
-use transport::{Transport, TransportError};
-/// Response for the `decoderawtransaction` RPC call.
-#[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
+use transport::{TransportTrait, TransportError};
+/// Return a JSON object representing the serialized, hex-encoded transaction.
+#[derive(Debug, Deserialize, Serialize)]
 pub struct DecoderawtransactionResponse {
-    /// The transaction id
     pub txid: bitcoin::Txid,
-    /// The transaction hash (differs from txid for witness transactions)
     pub hash: String,
-    /// The serialized transaction size
     pub size: u64,
-    /// The virtual transaction size (differs from size for witness transactions)
     pub vsize: u64,
-    /// The transaction's weight (between vsize*4-3 and vsize*4)
-    pub weight: u64,
-    /// The version
-    pub version: u64,
-    /// The lock time
+    pub weight: f64,
+    pub version: u32,
     pub locktime: serde_json::Value,
     pub vin: Vec<serde_json::Value>,
     pub vout: Vec<serde_json::Value>,
@@ -40,7 +33,7 @@ pub struct DecoderawtransactionResponse {
 /// Calls the `decoderawtransaction` RPC method.
 ///
 /// Generated transport wrapper for JSON-RPC.
-pub async fn decoderawtransaction(transport: &dyn Transport, hexstring: serde_json::Value, iswitness: serde_json::Value) -> Result<DecoderawtransactionResponse, TransportError> {
+pub async fn decoderawtransaction(transport: &dyn TransportTrait, hexstring: serde_json::Value, iswitness: serde_json::Value) -> Result<DecoderawtransactionResponse, TransportError> {
     let params = vec![json!(hexstring), json!(iswitness)];
     let raw = transport.send_request("decoderawtransaction", &params).await?;
     Ok(serde_json::from_value::<DecoderawtransactionResponse>(raw)?)

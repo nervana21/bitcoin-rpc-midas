@@ -13,13 +13,13 @@
 
 use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
-use transport::{Transport, TransportError};
+use transport::{TransportTrait, TransportError};
 
 
 /// Calls the `backupwallet` RPC method.
 ///
 /// Generated transport wrapper for JSON-RPC.
-pub async fn backupwallet(transport: &dyn Transport, destination: serde_json::Value) -> Result<Value, TransportError> {
+pub async fn backupwallet(transport: &dyn TransportTrait, destination: serde_json::Value) -> Result<Value, TransportError> {
     let params = vec![json!(destination)];
     let raw = transport.send_request("backupwallet", &params).await?;
     Ok(raw)

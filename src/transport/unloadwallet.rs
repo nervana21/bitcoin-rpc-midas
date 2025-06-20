@@ -14,13 +14,13 @@
 
 use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
-use transport::{Transport, TransportError};
-/// Response for the `unloadwallet` RPC call.
-#[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
+use transport::{TransportTrait, TransportError};
+/// Unloads the wallet referenced by the request endpoint, otherwise unloads the wallet specified in the argument.
+    /// Specifying the wallet name on a wallet endpoint is invalid.
+#[derive(Debug, Deserialize, Serialize)]
 pub struct UnloadwalletResponse {
-    /// Warning messages, if any, related to unloading the wallet.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub warnings: Option<Vec<String>>,
+    pub warnings: Option<Vec<serde_json::Value>>,
 }
 
 
@@ -28,7 +28,7 @@ pub struct UnloadwalletResponse {
 /// Calls the `unloadwallet` RPC method.
 ///
 /// Generated transport wrapper for JSON-RPC.
-pub async fn unloadwallet(transport: &dyn Transport, wallet_name: serde_json::Value, load_on_startup: serde_json::Value) -> Result<UnloadwalletResponse, TransportError> {
+pub async fn unloadwallet(transport: &dyn TransportTrait, wallet_name: serde_json::Value, load_on_startup: serde_json::Value) -> Result<UnloadwalletResponse, TransportError> {
     let params = vec![json!(wallet_name), json!(load_on_startup)];
     let raw = transport.send_request("unloadwallet", &params).await?;
     Ok(serde_json::from_value::<UnloadwalletResponse>(raw)?)

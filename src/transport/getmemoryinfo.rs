@@ -13,13 +13,12 @@
 
 use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
-use transport::{Transport, TransportError};
-/// Response for the `getmemoryinfo` RPC call.
-#[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
+use transport::{TransportTrait, TransportError};
+/// Returns an object containing information about memory usage.
+#[derive(Debug, Deserialize, Serialize)]
 pub struct GetmemoryinfoResponse {
-    pub field_0: serde_json::Value,
-    /// \"<malloc version=\"1\">...\"
-    pub field_1: String,
+        #[serde(skip_serializing_if = "Option::is_none")]
+    pub locked: Option<serde_json::Value>,
 }
 
 
@@ -27,7 +26,7 @@ pub struct GetmemoryinfoResponse {
 /// Calls the `getmemoryinfo` RPC method.
 ///
 /// Generated transport wrapper for JSON-RPC.
-pub async fn getmemoryinfo(transport: &dyn Transport, mode: serde_json::Value) -> Result<GetmemoryinfoResponse, TransportError> {
+pub async fn getmemoryinfo(transport: &dyn TransportTrait, mode: serde_json::Value) -> Result<GetmemoryinfoResponse, TransportError> {
     let params = vec![json!(mode)];
     let raw = transport.send_request("getmemoryinfo", &params).await?;
     Ok(serde_json::from_value::<GetmemoryinfoResponse>(raw)?)

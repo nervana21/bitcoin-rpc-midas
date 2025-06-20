@@ -14,15 +14,13 @@
 
 use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
-use transport::{Transport, TransportError};
-/// Response for the `getnettotals` RPC call.
-#[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
+use transport::{TransportTrait, TransportError};
+/// Returns information about network traffic, including bytes in, bytes out,
+    /// and current system time.
+#[derive(Debug, Deserialize, Serialize)]
 pub struct GetnettotalsResponse {
-    /// Total bytes received
-    pub totalbytesrecv: u64,
-    /// Total bytes sent
-    pub totalbytessent: u64,
-    /// Current system UNIX epoch time in milliseconds
+    pub totalbytesrecv: f64,
+    pub totalbytessent: f64,
     pub timemillis: serde_json::Value,
     pub uploadtarget: serde_json::Value,
 }
@@ -32,7 +30,7 @@ pub struct GetnettotalsResponse {
 /// Calls the `getnettotals` RPC method.
 ///
 /// Generated transport wrapper for JSON-RPC.
-pub async fn getnettotals(transport: &dyn Transport) -> Result<GetnettotalsResponse, TransportError> {
+pub async fn getnettotals(transport: &dyn TransportTrait) -> Result<GetnettotalsResponse, TransportError> {
     let params = Vec::<Value>::new();
     let raw = transport.send_request("getnettotals", &params).await?;
     Ok(serde_json::from_value::<GetnettotalsResponse>(raw)?)

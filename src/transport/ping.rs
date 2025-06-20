@@ -15,13 +15,13 @@
 
 use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
-use transport::{Transport, TransportError};
+use transport::{TransportTrait, TransportError};
 
 
 /// Calls the `ping` RPC method.
 ///
 /// Generated transport wrapper for JSON-RPC.
-pub async fn ping(transport: &dyn Transport) -> Result<Value, TransportError> {
+pub async fn ping(transport: &dyn TransportTrait) -> Result<Value, TransportError> {
     let params = Vec::<Value>::new();
     let raw = transport.send_request("ping", &params).await?;
     Ok(raw)

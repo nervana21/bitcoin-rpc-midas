@@ -15,13 +15,15 @@
 
 use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
-use transport::{Transport, TransportError};
-/// Response for the `waitfornewblock` RPC call.
-#[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
+use transport::{TransportTrait, TransportError};
+/// Waits for any new block and returns useful info about it.
+    /// 
+    /// Returns the current block on timeout or exit.
+    /// 
+    /// Make sure to use no RPC timeout (bitcoin-cli -rpcclienttimeout=0)
+#[derive(Debug, Deserialize, Serialize)]
 pub struct WaitfornewblockResponse {
-    /// The blockhash
     pub hash: String,
-    /// Block height
     pub height: u64,
 }
 
@@ -30,7 +32,7 @@ pub struct WaitfornewblockResponse {
 /// Calls the `waitfornewblock` RPC method.
 ///
 /// Generated transport wrapper for JSON-RPC.
-pub async fn waitfornewblock(transport: &dyn Transport, timeout: serde_json::Value) -> Result<WaitfornewblockResponse, TransportError> {
+pub async fn waitfornewblock(transport: &dyn TransportTrait, timeout: serde_json::Value) -> Result<WaitfornewblockResponse, TransportError> {
     let params = vec![json!(timeout)];
     let raw = transport.send_request("waitfornewblock", &params).await?;
     Ok(serde_json::from_value::<WaitfornewblockResponse>(raw)?)

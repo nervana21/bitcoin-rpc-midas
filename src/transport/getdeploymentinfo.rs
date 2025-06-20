@@ -13,13 +13,11 @@
 
 use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
-use transport::{Transport, TransportError};
-/// Response for the `getdeploymentinfo` RPC call.
-#[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
+use transport::{TransportTrait, TransportError};
+/// Returns an object containing various state info regarding deployments of consensus changes.
+#[derive(Debug, Deserialize, Serialize)]
 pub struct GetdeploymentinfoResponse {
-    /// requested block hash (or tip)
     pub hash: String,
-    /// requested block height (or tip)
     pub height: u64,
     pub deployments: serde_json::Value,
 }
@@ -29,7 +27,7 @@ pub struct GetdeploymentinfoResponse {
 /// Calls the `getdeploymentinfo` RPC method.
 ///
 /// Generated transport wrapper for JSON-RPC.
-pub async fn getdeploymentinfo(transport: &dyn Transport, blockhash: serde_json::Value) -> Result<GetdeploymentinfoResponse, TransportError> {
+pub async fn getdeploymentinfo(transport: &dyn TransportTrait, blockhash: serde_json::Value) -> Result<GetdeploymentinfoResponse, TransportError> {
     let params = vec![json!(blockhash)];
     let raw = transport.send_request("getdeploymentinfo", &params).await?;
     Ok(serde_json::from_value::<GetdeploymentinfoResponse>(raw)?)

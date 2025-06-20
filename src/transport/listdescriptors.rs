@@ -13,14 +13,12 @@
 
 use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
-use transport::{Transport, TransportError};
-/// Response for the `listdescriptors` RPC call.
-#[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
+use transport::{TransportTrait, TransportError};
+/// List descriptors imported into a descriptor-enabled wallet.
+#[derive(Debug, Deserialize, Serialize)]
 pub struct ListdescriptorsResponse {
-    /// Name of wallet this operation was performed on
     pub wallet_name: String,
-    /// Array of descriptor objects (sorted by descriptor string representation)
-    pub descriptors: Vec<bitcoin::ScriptBuf>,
+    pub descriptors: Vec<serde_json::Value>,
 }
 
 
@@ -28,7 +26,7 @@ pub struct ListdescriptorsResponse {
 /// Calls the `listdescriptors` RPC method.
 ///
 /// Generated transport wrapper for JSON-RPC.
-pub async fn listdescriptors(transport: &dyn Transport, private: serde_json::Value) -> Result<ListdescriptorsResponse, TransportError> {
+pub async fn listdescriptors(transport: &dyn TransportTrait, private: serde_json::Value) -> Result<ListdescriptorsResponse, TransportError> {
     let params = vec![json!(private)];
     let raw = transport.send_request("listdescriptors", &params).await?;
     Ok(serde_json::from_value::<ListdescriptorsResponse>(raw)?)

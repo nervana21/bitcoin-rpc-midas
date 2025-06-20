@@ -17,13 +17,13 @@
 
 use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
-use transport::{Transport, TransportError};
+use transport::{TransportTrait, TransportError};
 
 
 /// Calls the `sethdseed` RPC method.
 ///
 /// Generated transport wrapper for JSON-RPC.
-pub async fn sethdseed(transport: &dyn Transport, newkeypool: serde_json::Value, seed: serde_json::Value) -> Result<Value, TransportError> {
+pub async fn sethdseed(transport: &dyn TransportTrait, newkeypool: serde_json::Value, seed: serde_json::Value) -> Result<Value, TransportError> {
     let params = vec![json!(newkeypool), json!(seed)];
     let raw = transport.send_request("sethdseed", &params).await?;
     Ok(raw)

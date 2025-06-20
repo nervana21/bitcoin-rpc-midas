@@ -14,20 +14,19 @@
 
 use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
-use transport::{Transport, TransportError};
-/// Response for the `settxfee` RPC call.
-#[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
-pub struct SettxfeeResponse {
-    /// Returns true if successful
-    pub field_0: bool,
-}
+use transport::{TransportTrait, TransportError};
+/// Set the transaction fee rate in BTC/kvB for this wallet. Overrides the global -paytxfee command line parameter.
+    /// Can be deactivated by passing 0 as the fee. In that case automatic fee selection will be used by default.
+#[derive(Debug, Deserialize, Serialize)]
+#[serde(transparent)]
+pub struct SettxfeeResponse(pub bool);
 
 
 
 /// Calls the `settxfee` RPC method.
 ///
 /// Generated transport wrapper for JSON-RPC.
-pub async fn settxfee(transport: &dyn Transport, amount: serde_json::Value) -> Result<SettxfeeResponse, TransportError> {
+pub async fn settxfee(transport: &dyn TransportTrait, amount: serde_json::Value) -> Result<SettxfeeResponse, TransportError> {
     let params = vec![json!(amount)];
     let raw = transport.send_request("settxfee", &params).await?;
     Ok(serde_json::from_value::<SettxfeeResponse>(raw)?)

@@ -13,22 +13,16 @@
 
 use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
-use transport::{Transport, TransportError};
-/// Response for the `getdescriptorinfo` RPC call.
-#[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
+use transport::{TransportTrait, TransportError};
+/// Analyses a descriptor.
+#[derive(Debug, Deserialize, Serialize)]
 pub struct GetdescriptorinfoResponse {
-    /// The descriptor in canonical form, without private keys. For a multipath descriptor, only the first will be returned.
     pub descriptor: String,
-    /// All descriptors produced by expanding multipath derivation elements. Only if the provided descriptor specifies multipath derivation elements.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub multipath_expansion: Option<Vec<serde_json::Value>>,
-    /// The checksum for the input descriptor
     pub checksum: String,
-    /// Whether the descriptor is ranged
     pub isrange: bool,
-    /// Whether the descriptor is solvable
     pub issolvable: bool,
-    /// Whether the input descriptor contained at least one private key
     pub hasprivatekeys: bool,
 }
 
@@ -37,7 +31,7 @@ pub struct GetdescriptorinfoResponse {
 /// Calls the `getdescriptorinfo` RPC method.
 ///
 /// Generated transport wrapper for JSON-RPC.
-pub async fn getdescriptorinfo(transport: &dyn Transport, descriptor: serde_json::Value) -> Result<GetdescriptorinfoResponse, TransportError> {
+pub async fn getdescriptorinfo(transport: &dyn TransportTrait, descriptor: serde_json::Value) -> Result<GetdescriptorinfoResponse, TransportError> {
     let params = vec![json!(descriptor)];
     let raw = transport.send_request("getdescriptorinfo", &params).await?;
     Ok(serde_json::from_value::<GetdescriptorinfoResponse>(raw)?)

@@ -14,13 +14,13 @@
 
 use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
-use transport::{Transport, TransportError};
+use transport::{TransportTrait, TransportError};
 
 
 /// Calls the `submitheader` RPC method.
 ///
 /// Generated transport wrapper for JSON-RPC.
-pub async fn submitheader(transport: &dyn Transport, hexdata: serde_json::Value) -> Result<Value, TransportError> {
+pub async fn submitheader(transport: &dyn TransportTrait, hexdata: serde_json::Value) -> Result<Value, TransportError> {
     let params = vec![json!(hexdata)];
     let raw = transport.send_request("submitheader", &params).await?;
     Ok(raw)

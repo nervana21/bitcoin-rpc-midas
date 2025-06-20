@@ -13,20 +13,18 @@
 
 use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
-use transport::{Transport, TransportError};
-/// Response for the `getdifficulty` RPC call.
-#[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
-pub struct GetdifficultyResponse {
-    /// the proof-of-work difficulty as a multiple of the minimum difficulty.
-    pub field_0: u64,
-}
+use transport::{TransportTrait, TransportError};
+/// Returns the proof-of-work difficulty as a multiple of the minimum difficulty.
+#[derive(Debug, Deserialize, Serialize)]
+#[serde(transparent)]
+pub struct GetdifficultyResponse(pub f64);
 
 
 
 /// Calls the `getdifficulty` RPC method.
 ///
 /// Generated transport wrapper for JSON-RPC.
-pub async fn getdifficulty(transport: &dyn Transport) -> Result<GetdifficultyResponse, TransportError> {
+pub async fn getdifficulty(transport: &dyn TransportTrait) -> Result<GetdifficultyResponse, TransportError> {
     let params = Vec::<Value>::new();
     let raw = transport.send_request("getdifficulty", &params).await?;
     Ok(serde_json::from_value::<GetdifficultyResponse>(raw)?)

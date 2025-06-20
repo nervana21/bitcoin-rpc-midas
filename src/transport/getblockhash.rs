@@ -13,20 +13,18 @@
 
 use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
-use transport::{Transport, TransportError};
-/// Response for the `getblockhash` RPC call.
-#[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
-pub struct GetblockhashResponse {
-    /// The block hash
-    pub field_0: String,
-}
+use transport::{TransportTrait, TransportError};
+/// Returns hash of block in best-block-chain at height provided.
+#[derive(Debug, Deserialize, Serialize)]
+#[serde(transparent)]
+pub struct GetblockhashResponse(pub String);
 
 
 
 /// Calls the `getblockhash` RPC method.
 ///
 /// Generated transport wrapper for JSON-RPC.
-pub async fn getblockhash(transport: &dyn Transport, height: serde_json::Value) -> Result<GetblockhashResponse, TransportError> {
+pub async fn getblockhash(transport: &dyn TransportTrait, height: serde_json::Value) -> Result<GetblockhashResponse, TransportError> {
     let params = vec![json!(height)];
     let raw = transport.send_request("getblockhash", &params).await?;
     Ok(serde_json::from_value::<GetblockhashResponse>(raw)?)

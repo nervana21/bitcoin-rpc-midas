@@ -13,13 +13,11 @@
 
 use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
-use transport::{Transport, TransportError};
-/// Response for the `addconnection` RPC call.
-#[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
+use transport::{TransportTrait, TransportError};
+/// Open an outbound connection to a specified node. This RPC is for testing only.
+#[derive(Debug, Deserialize, Serialize)]
 pub struct AddconnectionResponse {
-    /// Address of newly added connection.
     pub address: String,
-    /// Type of connection opened.
     pub connection_type: String,
 }
 
@@ -28,7 +26,7 @@ pub struct AddconnectionResponse {
 /// Calls the `addconnection` RPC method.
 ///
 /// Generated transport wrapper for JSON-RPC.
-pub async fn addconnection(transport: &dyn Transport, address: serde_json::Value, connection_type: serde_json::Value, v2transport: serde_json::Value) -> Result<AddconnectionResponse, TransportError> {
+pub async fn addconnection(transport: &dyn TransportTrait, address: serde_json::Value, connection_type: serde_json::Value, v2transport: serde_json::Value) -> Result<AddconnectionResponse, TransportError> {
     let params = vec![json!(address), json!(connection_type), json!(v2transport)];
     let raw = transport.send_request("addconnection", &params).await?;
     Ok(serde_json::from_value::<AddconnectionResponse>(raw)?)

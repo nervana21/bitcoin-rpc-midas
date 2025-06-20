@@ -13,19 +13,18 @@
 
 use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
-use transport::{Transport, TransportError};
-/// Response for the `listlabels` RPC call.
-#[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
-pub struct ListlabelsResponse {
-    pub field_0: Vec<serde_json::Value>,
-}
+use transport::{TransportTrait, TransportError};
+/// Returns the list of all labels, or labels that are assigned to addresses with a specific purpose.
+#[derive(Debug, Deserialize, Serialize)]
+#[serde(transparent)]
+pub struct ListlabelsResponse(pub Vec<serde_json::Value>);
 
 
 
 /// Calls the `listlabels` RPC method.
 ///
 /// Generated transport wrapper for JSON-RPC.
-pub async fn listlabels(transport: &dyn Transport, purpose: serde_json::Value) -> Result<ListlabelsResponse, TransportError> {
+pub async fn listlabels(transport: &dyn TransportTrait, purpose: serde_json::Value) -> Result<ListlabelsResponse, TransportError> {
     let params = vec![json!(purpose)];
     let raw = transport.send_request("listlabels", &params).await?;
     Ok(serde_json::from_value::<ListlabelsResponse>(raw)?)

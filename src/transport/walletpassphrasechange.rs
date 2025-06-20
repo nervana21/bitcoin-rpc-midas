@@ -13,13 +13,13 @@
 
 use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
-use transport::{Transport, TransportError};
+use transport::{TransportTrait, TransportError};
 
 
 /// Calls the `walletpassphrasechange` RPC method.
 ///
 /// Generated transport wrapper for JSON-RPC.
-pub async fn walletpassphrasechange(transport: &dyn Transport, oldpassphrase: serde_json::Value, newpassphrase: serde_json::Value) -> Result<Value, TransportError> {
+pub async fn walletpassphrasechange(transport: &dyn TransportTrait, oldpassphrase: serde_json::Value, newpassphrase: serde_json::Value) -> Result<Value, TransportError> {
     let params = vec![json!(oldpassphrase), json!(newpassphrase)];
     let raw = transport.send_request("walletpassphrasechange", &params).await?;
     Ok(raw)

@@ -13,11 +13,10 @@
 
 use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
-use transport::{Transport, TransportError};
-/// Response for the `walletdisplayaddress` RPC call.
-#[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
+use transport::{TransportTrait, TransportError};
+/// Display address on an external signer for verification.
+#[derive(Debug, Deserialize, Serialize)]
 pub struct WalletdisplayaddressResponse {
-    /// The address as confirmed by the signer
     pub address: String,
 }
 
@@ -26,7 +25,7 @@ pub struct WalletdisplayaddressResponse {
 /// Calls the `walletdisplayaddress` RPC method.
 ///
 /// Generated transport wrapper for JSON-RPC.
-pub async fn walletdisplayaddress(transport: &dyn Transport, address: serde_json::Value) -> Result<WalletdisplayaddressResponse, TransportError> {
+pub async fn walletdisplayaddress(transport: &dyn TransportTrait, address: serde_json::Value) -> Result<WalletdisplayaddressResponse, TransportError> {
     let params = vec![json!(address)];
     let raw = transport.send_request("walletdisplayaddress", &params).await?;
     Ok(serde_json::from_value::<WalletdisplayaddressResponse>(raw)?)

@@ -13,13 +13,13 @@
 
 use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
-use transport::{Transport, TransportError};
+use transport::{TransportTrait, TransportError};
 
 
 /// Calls the `setban` RPC method.
 ///
 /// Generated transport wrapper for JSON-RPC.
-pub async fn setban(transport: &dyn Transport, subnet: serde_json::Value, command: serde_json::Value, bantime: serde_json::Value, absolute: serde_json::Value) -> Result<Value, TransportError> {
+pub async fn setban(transport: &dyn TransportTrait, subnet: serde_json::Value, command: serde_json::Value, bantime: serde_json::Value, absolute: serde_json::Value) -> Result<Value, TransportError> {
     let params = vec![json!(subnet), json!(command), json!(bantime), json!(absolute)];
     let raw = transport.send_request("setban", &params).await?;
     Ok(raw)

@@ -13,19 +13,18 @@
 
 use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
-use transport::{Transport, TransportError};
-/// Response for the `gettxout` RPC call.
-#[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
-pub struct GettxoutResponse {
-    pub field_1: serde_json::Value,
-}
+use transport::{TransportTrait, TransportError};
+/// Returns details about an unspent transaction output.
+#[derive(Debug, Deserialize, Serialize)]
+#[serde(transparent)]
+pub struct GettxoutResponse(pub serde_json::Value);
 
 
 
 /// Calls the `gettxout` RPC method.
 ///
 /// Generated transport wrapper for JSON-RPC.
-pub async fn gettxout(transport: &dyn Transport, txid: serde_json::Value, n: serde_json::Value, include_mempool: serde_json::Value) -> Result<GettxoutResponse, TransportError> {
+pub async fn gettxout(transport: &dyn TransportTrait, txid: serde_json::Value, n: serde_json::Value, include_mempool: serde_json::Value) -> Result<GettxoutResponse, TransportError> {
     let params = vec![json!(txid), json!(n), json!(include_mempool)];
     let raw = transport.send_request("gettxout", &params).await?;
     Ok(serde_json::from_value::<GettxoutResponse>(raw)?)

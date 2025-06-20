@@ -14,14 +14,20 @@
 
 use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
-use transport::{Transport, TransportError};
+use transport::{TransportTrait, TransportError};
+/// Import a mempool.dat file and attempt to add its contents to the mempool.
+    /// Warning: Importing untrusted files is dangerous, especially if metadata from the file is taken over.
+#[derive(Debug, Deserialize, Serialize)]
+#[serde(transparent)]
+pub struct ImportmempoolResponse(pub serde_json::Value);
+
 
 
 /// Calls the `importmempool` RPC method.
 ///
 /// Generated transport wrapper for JSON-RPC.
-pub async fn importmempool(transport: &dyn Transport, filepath: serde_json::Value, options: serde_json::Value) -> Result<Value, TransportError> {
+pub async fn importmempool(transport: &dyn TransportTrait, filepath: serde_json::Value, options: serde_json::Value) -> Result<ImportmempoolResponse, TransportError> {
     let params = vec![json!(filepath), json!(options)];
     let raw = transport.send_request("importmempool", &params).await?;
-    Ok(raw)
+    Ok(serde_json::from_value::<ImportmempoolResponse>(raw)?)
 }

@@ -14,19 +14,20 @@
 
 use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
-use transport::{Transport, TransportError};
-/// Response for the `getrawaddrman` RPC call.
-#[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
-pub struct GetrawaddrmanResponse {
-    pub field_0: serde_json::Value,
-}
+use transport::{TransportTrait, TransportError};
+/// EXPERIMENTAL warning: this call may be changed in future releases.
+    /// 
+    /// Returns information on all address manager entries for the new and tried tables.
+#[derive(Debug, Deserialize, Serialize)]
+#[serde(transparent)]
+pub struct GetrawaddrmanResponse(pub serde_json::Value);
 
 
 
 /// Calls the `getrawaddrman` RPC method.
 ///
 /// Generated transport wrapper for JSON-RPC.
-pub async fn getrawaddrman(transport: &dyn Transport) -> Result<GetrawaddrmanResponse, TransportError> {
+pub async fn getrawaddrman(transport: &dyn TransportTrait) -> Result<GetrawaddrmanResponse, TransportError> {
     let params = Vec::<Value>::new();
     let raw = transport.send_request("getrawaddrman", &params).await?;
     Ok(serde_json::from_value::<GetrawaddrmanResponse>(raw)?)

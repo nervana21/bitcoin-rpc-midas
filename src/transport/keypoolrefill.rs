@@ -14,13 +14,13 @@
 
 use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
-use transport::{Transport, TransportError};
+use transport::{TransportTrait, TransportError};
 
 
 /// Calls the `keypoolrefill` RPC method.
 ///
 /// Generated transport wrapper for JSON-RPC.
-pub async fn keypoolrefill(transport: &dyn Transport, newsize: serde_json::Value) -> Result<Value, TransportError> {
+pub async fn keypoolrefill(transport: &dyn TransportTrait, newsize: serde_json::Value) -> Result<Value, TransportError> {
     let params = vec![json!(newsize)];
     let raw = transport.send_request("keypoolrefill", &params).await?;
     Ok(raw)

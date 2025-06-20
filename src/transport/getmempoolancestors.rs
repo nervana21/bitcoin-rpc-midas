@@ -13,12 +13,10 @@
 
 use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
-use transport::{Transport, TransportError};
-/// Response for the `getmempoolancestors` RPC call.
-#[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
+use transport::{TransportTrait, TransportError};
+/// If txid is in the mempool, returns all in-mempool ancestors.
+#[derive(Debug, Deserialize, Serialize)]
 pub struct GetmempoolancestorsResponse {
-    pub field_0: Vec<serde_json::Value>,
-    pub field_1: serde_json::Value,
 }
 
 
@@ -26,7 +24,7 @@ pub struct GetmempoolancestorsResponse {
 /// Calls the `getmempoolancestors` RPC method.
 ///
 /// Generated transport wrapper for JSON-RPC.
-pub async fn getmempoolancestors(transport: &dyn Transport, txid: serde_json::Value, verbose: serde_json::Value) -> Result<GetmempoolancestorsResponse, TransportError> {
+pub async fn getmempoolancestors(transport: &dyn TransportTrait, txid: serde_json::Value, verbose: serde_json::Value) -> Result<GetmempoolancestorsResponse, TransportError> {
     let params = vec![json!(txid), json!(verbose)];
     let raw = transport.send_request("getmempoolancestors", &params).await?;
     Ok(serde_json::from_value::<GetmempoolancestorsResponse>(raw)?)

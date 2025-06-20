@@ -15,19 +15,20 @@
 
 use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
-use transport::{Transport, TransportError};
-/// Response for the `listaddressgroupings` RPC call.
-#[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
-pub struct ListaddressgroupingsResponse {
-    pub field_0: Vec<serde_json::Value>,
-}
+use transport::{TransportTrait, TransportError};
+/// Lists groups of addresses which have had their common ownership
+    /// made public by common use as inputs or as the resulting change
+    /// in past transactions
+#[derive(Debug, Deserialize, Serialize)]
+#[serde(transparent)]
+pub struct ListaddressgroupingsResponse(pub Vec<serde_json::Value>);
 
 
 
 /// Calls the `listaddressgroupings` RPC method.
 ///
 /// Generated transport wrapper for JSON-RPC.
-pub async fn listaddressgroupings(transport: &dyn Transport) -> Result<ListaddressgroupingsResponse, TransportError> {
+pub async fn listaddressgroupings(transport: &dyn TransportTrait) -> Result<ListaddressgroupingsResponse, TransportError> {
     let params = Vec::<Value>::new();
     let raw = transport.send_request("listaddressgroupings", &params).await?;
     Ok(serde_json::from_value::<ListaddressgroupingsResponse>(raw)?)

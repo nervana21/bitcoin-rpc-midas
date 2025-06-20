@@ -13,20 +13,18 @@
 
 use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
-use transport::{Transport, TransportError};
-/// Response for the `verifymessage` RPC call.
-#[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
-pub struct VerifymessageResponse {
-    /// If the signature is verified or not.
-    pub field_0: bool,
-}
+use transport::{TransportTrait, TransportError};
+/// Verify a signed message.
+#[derive(Debug, Deserialize, Serialize)]
+#[serde(transparent)]
+pub struct VerifymessageResponse(pub bool);
 
 
 
 /// Calls the `verifymessage` RPC method.
 ///
 /// Generated transport wrapper for JSON-RPC.
-pub async fn verifymessage(transport: &dyn Transport, address: serde_json::Value, signature: serde_json::Value, message: serde_json::Value) -> Result<VerifymessageResponse, TransportError> {
+pub async fn verifymessage(transport: &dyn TransportTrait, address: serde_json::Value, signature: serde_json::Value, message: serde_json::Value) -> Result<VerifymessageResponse, TransportError> {
     let params = vec![json!(address), json!(signature), json!(message)];
     let raw = transport.send_request("verifymessage", &params).await?;
     Ok(serde_json::from_value::<VerifymessageResponse>(raw)?)

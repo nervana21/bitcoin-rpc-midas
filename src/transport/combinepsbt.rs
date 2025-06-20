@@ -14,20 +14,19 @@
 
 use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
-use transport::{Transport, TransportError};
-/// Response for the `combinepsbt` RPC call.
-#[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
-pub struct CombinepsbtResponse {
-    /// The base64-encoded partially signed transaction
-    pub field_0: String,
-}
+use transport::{TransportTrait, TransportError};
+/// Combine multiple partially signed Bitcoin transactions into one transaction.
+    /// Implements the Combiner role.
+#[derive(Debug, Deserialize, Serialize)]
+#[serde(transparent)]
+pub struct CombinepsbtResponse(pub String);
 
 
 
 /// Calls the `combinepsbt` RPC method.
 ///
 /// Generated transport wrapper for JSON-RPC.
-pub async fn combinepsbt(transport: &dyn Transport, txs: serde_json::Value) -> Result<CombinepsbtResponse, TransportError> {
+pub async fn combinepsbt(transport: &dyn TransportTrait, txs: serde_json::Value) -> Result<CombinepsbtResponse, TransportError> {
     let params = vec![json!(txs)];
     let raw = transport.send_request("combinepsbt", &params).await?;
     Ok(serde_json::from_value::<CombinepsbtResponse>(raw)?)

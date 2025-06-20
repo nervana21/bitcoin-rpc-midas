@@ -15,13 +15,13 @@
 
 use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
-use transport::{Transport, TransportError};
+use transport::{TransportTrait, TransportError};
 
 
 /// Calls the `importwallet` RPC method.
 ///
 /// Generated transport wrapper for JSON-RPC.
-pub async fn importwallet(transport: &dyn Transport, filename: serde_json::Value) -> Result<Value, TransportError> {
+pub async fn importwallet(transport: &dyn TransportTrait, filename: serde_json::Value) -> Result<Value, TransportError> {
     let params = vec![json!(filename)];
     let raw = transport.send_request("importwallet", &params).await?;
     Ok(raw)

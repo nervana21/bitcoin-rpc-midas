@@ -16,17 +16,17 @@
 
 use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
-use transport::{Transport, TransportError};
-/// Response for the `signrawtransactionwithwallet` RPC call.
-#[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
+use transport::{TransportTrait, TransportError};
+/// Sign inputs for raw transaction (serialized, hex-encoded).
+    /// The second optional argument (may be null) is an array of previous transaction outputs that
+    /// this transaction depends on but may not yet be in the block chain.
+    /// Requires wallet passphrase to be set with walletpassphrase call if wallet is encrypted.
+#[derive(Debug, Deserialize, Serialize)]
 pub struct SignrawtransactionwithwalletResponse {
-    /// The hex-encoded raw transaction with signature(s)
     pub hex: String,
-    /// If the transaction has a complete set of signatures
     pub complete: bool,
-    /// Script verification errors (if there are any)
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub errors: Option<Vec<String>>,
+    pub errors: Option<Vec<serde_json::Value>>,
 }
 
 
@@ -34,7 +34,7 @@ pub struct SignrawtransactionwithwalletResponse {
 /// Calls the `signrawtransactionwithwallet` RPC method.
 ///
 /// Generated transport wrapper for JSON-RPC.
-pub async fn signrawtransactionwithwallet(transport: &dyn Transport, hexstring: serde_json::Value, prevtxs: serde_json::Value, sighashtype: serde_json::Value) -> Result<SignrawtransactionwithwalletResponse, TransportError> {
+pub async fn signrawtransactionwithwallet(transport: &dyn TransportTrait, hexstring: serde_json::Value, prevtxs: serde_json::Value, sighashtype: serde_json::Value) -> Result<SignrawtransactionwithwalletResponse, TransportError> {
     let params = vec![json!(hexstring), json!(prevtxs), json!(sighashtype)];
     let raw = transport.send_request("signrawtransactionwithwallet", &params).await?;
     Ok(serde_json::from_value::<SignrawtransactionwithwalletResponse>(raw)?)
