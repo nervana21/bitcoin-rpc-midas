@@ -60,7 +60,7 @@ Add to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-bitcoin-rpc-midas = "{CRATE_VERSION}"
+bitcoin-rpc-midas = "0.1.2"
 ```
 
 ## About
