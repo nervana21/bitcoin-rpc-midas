@@ -7,7 +7,7 @@
 /// ```rust
 /// use bitcoin_rpc_codegen::client::latest::analyzepsbt;
 ///
-/// let client = Client::new("http://127.0.0.1:8332", auth);
+/// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.analyzepsbt(/* params */).await?;
 /// ```
 
@@ -22,9 +22,9 @@ pub struct AnalyzepsbtResponse {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub estimated_vsize: Option<u64>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub estimated_feerate: Option<serde_json::Value>,
+    pub estimated_feerate: Option<f64>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub fee: Option<serde_json::Value>,
+    pub fee: Option<f64>,
     pub next: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub error: Option<String>,

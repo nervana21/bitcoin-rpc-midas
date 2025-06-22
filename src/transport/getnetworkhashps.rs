@@ -9,7 +9,7 @@
 /// ```rust
 /// use bitcoin_rpc_codegen::client::latest::getnetworkhashps;
 ///
-/// let client = Client::new("http://127.0.0.1:8332", auth);
+/// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.getnetworkhashps(/* params */).await?;
 /// ```
 
@@ -21,7 +21,7 @@ use transport::{TransportTrait, TransportError};
     /// Pass in [height] to estimate the network speed at the time when a certain block was found.
 #[derive(Debug, Deserialize, Serialize)]
 #[serde(transparent)]
-pub struct GetnetworkhashpsResponse(pub f64);
+pub struct GetnetworkhashpsResponse(pub u64);
 
 
 

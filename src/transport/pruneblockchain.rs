@@ -6,7 +6,7 @@
 /// ```rust
 /// use bitcoin_rpc_codegen::client::latest::pruneblockchain;
 ///
-/// let client = Client::new("http://127.0.0.1:8332", auth);
+/// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.pruneblockchain(/* params */).await?;
 /// ```
 
@@ -16,7 +16,7 @@ use transport::{TransportTrait, TransportError};
 /// 
 #[derive(Debug, Deserialize, Serialize)]
 #[serde(transparent)]
-pub struct PruneblockchainResponse(pub f64);
+pub struct PruneblockchainResponse(pub u64);
 
 
 

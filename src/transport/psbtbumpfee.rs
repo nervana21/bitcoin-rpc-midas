@@ -19,7 +19,7 @@
 /// ```rust
 /// use bitcoin_rpc_codegen::client::latest::psbtbumpfee;
 ///
-/// let client = Client::new("http://127.0.0.1:8332", auth);
+/// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.psbtbumpfee(/* params */).await?;
 /// ```
 
@@ -42,8 +42,8 @@ use transport::{TransportTrait, TransportError};
 #[derive(Debug, Deserialize, Serialize)]
 pub struct PsbtbumpfeeResponse {
     pub psbt: String,
-    pub origfee: serde_json::Value,
-    pub fee: serde_json::Value,
+    pub origfee: f64,
+    pub fee: f64,
     pub errors: Vec<serde_json::Value>,
 }
 

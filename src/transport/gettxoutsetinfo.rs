@@ -8,7 +8,7 @@
 /// ```rust
 /// use bitcoin_rpc_codegen::client::latest::gettxoutsetinfo;
 ///
-/// let client = Client::new("http://127.0.0.1:8332", auth);
+/// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.gettxoutsetinfo(/* params */).await?;
 /// ```
 
@@ -21,19 +21,19 @@ use transport::{TransportTrait, TransportError};
 pub struct GettxoutsetinfoResponse {
     pub height: u64,
     pub bestblock: String,
-    pub txouts: f64,
+    pub txouts: u64,
     pub bogosize: u64,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub hash_serialized_3: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub muhash: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub transactions: Option<f64>,
+    pub transactions: Option<u64>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub disk_size: Option<u64>,
-    pub total_amount: serde_json::Value,
+    pub total_amount: f64,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub total_unspendable_amount: Option<serde_json::Value>,
+    pub total_unspendable_amount: Option<f64>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub block_info: Option<serde_json::Value>,
 }

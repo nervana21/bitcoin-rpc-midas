@@ -7,7 +7,7 @@
 /// ```rust
 /// use bitcoin_rpc_codegen::client::latest::decoderawtransaction;
 ///
-/// let client = Client::new("http://127.0.0.1:8332", auth);
+/// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.decoderawtransaction(/* params */).await?;
 /// ```
 
@@ -21,7 +21,7 @@ pub struct DecoderawtransactionResponse {
     pub hash: String,
     pub size: u64,
     pub vsize: u64,
-    pub weight: f64,
+    pub weight: u64,
     pub version: u32,
     pub locktime: serde_json::Value,
     pub vin: Vec<serde_json::Value>,

@@ -7,7 +7,7 @@
 /// ```rust
 /// use bitcoin_rpc_codegen::client::latest::getchainstates;
 ///
-/// let client = Client::new("http://127.0.0.1:8332", auth);
+/// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.getchainstates().await?;
 /// ```
 
@@ -17,7 +17,7 @@ use transport::{TransportTrait, TransportError};
 /// Return information about chainstates.
 #[derive(Debug, Deserialize, Serialize)]
 pub struct GetchainstatesResponse {
-    pub headers: f64,
+    pub headers: u64,
     pub chainstates: Vec<serde_json::Value>,
 }
 

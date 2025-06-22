@@ -9,7 +9,7 @@
 /// ```rust
 /// use bitcoin_rpc_codegen::client::latest::dumptxoutset;
 ///
-/// let client = Client::new("http://127.0.0.1:8332", auth);
+/// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.dumptxoutset(/* params */).await?;
 /// ```
 
@@ -23,12 +23,12 @@ use transport::{TransportTrait, TransportError};
     /// This call may take several minutes. Make sure to use no RPC timeout (bitcoin-cli -rpcclienttimeout=0)
 #[derive(Debug, Deserialize, Serialize)]
 pub struct DumptxoutsetResponse {
-    pub coins_written: f64,
+    pub coins_written: u64,
     pub base_hash: String,
     pub base_height: u64,
     pub path: String,
     pub txoutset_hash: String,
-    pub nchaintx: f64,
+    pub nchaintx: u64,
 }
 
 

@@ -7,7 +7,7 @@
 /// ```rust
 /// use bitcoin_rpc_codegen::client::latest::getblockhash;
 ///
-/// let client = Client::new("http://127.0.0.1:8332", auth);
+/// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.getblockhash(/* params */).await?;
 /// ```
 
@@ -17,7 +17,7 @@ use transport::{TransportTrait, TransportError};
 /// Returns hash of block in best-block-chain at height provided.
 #[derive(Debug, Deserialize, Serialize)]
 #[serde(transparent)]
-pub struct GetblockhashResponse(pub String);
+pub struct GetblockhashResponse(pub bitcoin::BlockHash);
 
 
 

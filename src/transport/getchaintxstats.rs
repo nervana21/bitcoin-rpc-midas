@@ -7,7 +7,7 @@
 /// ```rust
 /// use bitcoin_rpc_codegen::client::latest::getchaintxstats;
 ///
-/// let client = Client::new("http://127.0.0.1:8332", auth);
+/// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.getchaintxstats(/* params */).await?;
 /// ```
 
@@ -24,7 +24,7 @@ pub struct GetchaintxstatsResponse {
     pub window_final_block_height: u64,
     pub window_block_count: u64,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub window_interval: Option<f64>,
+    pub window_interval: Option<u64>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub window_tx_count: Option<u64>,
     #[serde(skip_serializing_if = "Option::is_none")]

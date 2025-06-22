@@ -7,7 +7,7 @@
 /// ```rust
 /// use bitcoin_rpc_codegen::client::latest::simulaterawtransaction;
 ///
-/// let client = Client::new("http://127.0.0.1:8332", auth);
+/// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.simulaterawtransaction(/* params */).await?;
 /// ```
 
@@ -17,7 +17,7 @@ use transport::{TransportTrait, TransportError};
 /// Calculate the balance change resulting in the signing and broadcasting of the given transaction(s).
 #[derive(Debug, Deserialize, Serialize)]
 pub struct SimulaterawtransactionResponse {
-    pub balance_change: serde_json::Value,
+    pub balance_change: f64,
 }
 
 

@@ -27,8 +27,8 @@ pub struct AddconnectionParams {
 /// Note: This command is only compatible with legacy wallets.
 #[derive(Debug, Serialize)]
 pub struct AddmultisigaddressParams {
-    pub nrequired: f64,
-    pub keys: Vec<serde_json::Value>,
+    pub nrequired: u32,
+    pub keys: Vec<String>,
     pub label: String,
     pub address_type: String,
 }
@@ -49,7 +49,7 @@ pub struct AddnodeParams {
 #[derive(Debug, Serialize)]
 pub struct AddpeeraddressParams {
     pub address: String,
-    pub port: f64,
+    pub port: u16,
     pub tried: bool,
 }
 
@@ -111,8 +111,8 @@ pub struct ConverttopsbtParams {
 /// It returns a json object with the address and redeemScript.
 #[derive(Debug, Serialize)]
 pub struct CreatemultisigParams {
-    pub nrequired: f64,
-    pub keys: Vec<serde_json::Value>,
+    pub nrequired: u32,
+    pub keys: Vec<String>,
     pub address_type: String,
 }
 
@@ -122,7 +122,7 @@ pub struct CreatemultisigParams {
 pub struct CreatepsbtParams {
     pub inputs: Vec<serde_json::Value>,
     pub outputs: Vec<serde_json::Value>,
-    pub locktime: u64,
+    pub locktime: u32,
     pub replaceable: bool,
 }
 
@@ -135,7 +135,7 @@ pub struct CreatepsbtParams {
 pub struct CreaterawtransactionParams {
     pub inputs: Vec<serde_json::Value>,
     pub outputs: Vec<serde_json::Value>,
-    pub locktime: u64,
+    pub locktime: u32,
     pub replaceable: bool,
 }
 
@@ -215,7 +215,7 @@ pub struct DescriptorprocesspsbtParams {
 #[derive(Debug, Serialize)]
 pub struct DisconnectnodeParams {
     pub address: String,
-    pub nodeid: f64,
+    pub nodeid: u64,
 }
 
 /// Reveals the private key corresponding to "address".
@@ -319,7 +319,7 @@ pub struct EncryptwalletParams {
 #[derive(Debug, Serialize)]
 pub struct EstimaterawfeeParams {
     pub conf_target: u64,
-    pub threshold: f64,
+    pub threshold: u64,
 }
 
 /// Estimates the approximate fee per kilobyte needed for a transaction to begin
@@ -410,7 +410,7 @@ pub struct GetaddressinfoParams {
 /// thus affected by options which limit spendability such as -spendzeroconfchange.
 #[derive(Debug, Serialize)]
 pub struct GetbalanceParams {
-    pub dummy: String,
+    pub dummy: Option<String>,
     pub minconf: u32,
     pub include_watchonly: bool,
     pub avoid_reuse: bool,
@@ -423,7 +423,7 @@ pub struct GetbalanceParams {
 #[derive(Debug, Serialize)]
 pub struct GetblockParams {
     pub blockhash: bitcoin::BlockHash,
-    pub verbosity: f64,
+    pub verbosity: u32,
 }
 
 /// Retrieve a BIP 157 content filter for a particular block.
@@ -446,7 +446,7 @@ pub struct GetblockfilterParams {
 #[derive(Debug, Serialize)]
 pub struct GetblockfrompeerParams {
     pub blockhash: bitcoin::BlockHash,
-    pub peer_id: f64,
+    pub peer_id: u64,
 }
 
 /// Returns hash of block in best-block-chain at height provided.
@@ -572,7 +572,7 @@ pub struct GetnodeaddressesParams {
 /// EXPERIMENTAL warning: this call may be changed in future releases.
 #[derive(Debug, Serialize)]
 pub struct GetorphantxsParams {
-    pub verbosity: f64,
+    pub verbosity: u32,
 }
 
 /// Returns a new Bitcoin address, for receiving change.
@@ -604,7 +604,7 @@ pub struct GetrawmempoolParams {
 #[derive(Debug, Serialize)]
 pub struct GetrawtransactionParams {
     pub txid: bitcoin::Txid,
-    pub verbosity: f64,
+    pub verbosity: u32,
     pub blockhash: bitcoin::BlockHash,
 }
 
@@ -627,7 +627,7 @@ pub struct GetreceivedbylabelParams {
 /// Get detailed information about in-wallet transaction <txid>
 #[derive(Debug, Serialize)]
 pub struct GettransactionParams {
-    pub txid: String,
+    pub txid: bitcoin::Txid,
     pub include_watchonly: bool,
     pub verbose: bool,
 }
@@ -635,8 +635,8 @@ pub struct GettransactionParams {
 /// Returns details about an unspent transaction output.
 #[derive(Debug, Serialize)]
 pub struct GettxoutParams {
-    pub txid: String,
-    pub n: f64,
+    pub txid: bitcoin::Txid,
+    pub n: u32,
     pub include_mempool: bool,
 }
 
@@ -648,7 +648,7 @@ pub struct GettxoutParams {
 /// specify the block in which the transaction is included manually (by blockhash).
 #[derive(Debug, Serialize)]
 pub struct GettxoutproofParams {
-    pub txids: Vec<serde_json::Value>,
+    pub txids: Vec<bitcoin::Txid>,
     pub blockhash: bitcoin::BlockHash,
 }
 
@@ -832,8 +832,8 @@ pub struct ListreceivedbylabelParams {
 /// Additionally, if include_removed is set, transactions affecting the wallet which were removed are returned in the "removed" array.
 #[derive(Debug, Serialize)]
 pub struct ListsinceblockParams {
-    pub blockhash: String,
-    pub target_confirmations: f64,
+    pub blockhash: bitcoin::BlockHash,
+    pub target_confirmations: u64,
     pub include_watchonly: bool,
     pub include_removed: bool,
     pub include_change: bool,
@@ -847,7 +847,7 @@ pub struct ListsinceblockParams {
 pub struct ListtransactionsParams {
     pub label: String,
     pub count: u64,
-    pub skip: f64,
+    pub skip: u64,
     pub include_watchonly: bool,
 }
 
@@ -857,8 +857,8 @@ pub struct ListtransactionsParams {
 #[derive(Debug, Serialize)]
 pub struct ListunspentParams {
     pub minconf: u32,
-    pub maxconf: f64,
-    pub addresses: Vec<bitcoin::Address<bitcoin::address::NetworkUnchecked>>,
+    pub maxconf: u32,
+    pub addresses: Vec<String>,
     pub include_unsafe: bool,
     pub query_options: serde_json::Value,
 }
@@ -948,7 +948,7 @@ pub struct PreciousblockParams {
 #[derive(Debug, Serialize)]
 pub struct PrioritisetransactionParams {
     pub txid: bitcoin::Txid,
-    pub dummy: f64,
+    pub dummy: Option<String>,
     pub fee_delta: f64,
 }
 
@@ -1054,7 +1054,7 @@ pub struct SendParams {
     pub outputs: Vec<serde_json::Value>,
     pub conf_target: u64,
     pub estimate_mode: String,
-    pub fee_rate: serde_json::Value,
+    pub fee_rate: f64,
     pub options: serde_json::Value,
 }
 
@@ -1068,7 +1068,7 @@ pub struct SendallParams {
     pub recipients: Vec<serde_json::Value>,
     pub conf_target: u64,
     pub estimate_mode: String,
-    pub fee_rate: serde_json::Value,
+    pub fee_rate: f64,
     pub options: serde_json::Value,
 }
 
@@ -1076,7 +1076,7 @@ pub struct SendallParams {
 /// Requires wallet passphrase to be set with walletpassphrase call if wallet is encrypted.
 #[derive(Debug, Serialize)]
 pub struct SendmanyParams {
-    pub dummy: String,
+    pub dummy: Option<String>,
     pub amounts: serde_json::Value,
     pub minconf: u32,
     pub comment: String,
@@ -1084,7 +1084,7 @@ pub struct SendmanyParams {
     pub replaceable: bool,
     pub conf_target: u64,
     pub estimate_mode: String,
-    pub fee_rate: serde_json::Value,
+    pub fee_rate: f64,
     pub verbose: bool,
 }
 
@@ -1093,7 +1093,7 @@ pub struct SendmanyParams {
 /// This RPC is for testing only.
 #[derive(Debug, Serialize)]
 pub struct SendmsgtopeerParams {
-    pub peer_id: f64,
+    pub peer_id: u64,
     pub msg_type: String,
     pub msg: String,
 }
@@ -1110,8 +1110,8 @@ pub struct SendmsgtopeerParams {
 #[derive(Debug, Serialize)]
 pub struct SendrawtransactionParams {
     pub hexstring: String,
-    pub maxfeerate: serde_json::Value,
-    pub maxburnamount: serde_json::Value,
+    pub maxfeerate: f64,
+    pub maxburnamount: f64,
 }
 
 /// Send an amount to a given address.
@@ -1119,7 +1119,7 @@ pub struct SendrawtransactionParams {
 #[derive(Debug, Serialize)]
 pub struct SendtoaddressParams {
     pub address: String,
-    pub amount: serde_json::Value,
+    pub amount: bitcoin::Amount,
     pub comment: String,
     pub comment_to: String,
     pub subtractfeefromamount: bool,
@@ -1127,7 +1127,7 @@ pub struct SendtoaddressParams {
     pub conf_target: u64,
     pub estimate_mode: String,
     pub avoid_reuse: bool,
-    pub fee_rate: serde_json::Value,
+    pub fee_rate: f64,
     pub verbose: bool,
 }
 
@@ -1175,7 +1175,7 @@ pub struct SetnetworkactiveParams {
 /// Can be deactivated by passing 0 as the fee. In that case automatic fee selection will be used by default.
 #[derive(Debug, Serialize)]
 pub struct SettxfeeParams {
-    pub amount: serde_json::Value,
+    pub amount: bitcoin::Amount,
 }
 
 /// Change the state of the given wallet flag for a wallet.
@@ -1208,7 +1208,7 @@ pub struct SignmessagewithprivkeyParams {
 #[derive(Debug, Serialize)]
 pub struct SignrawtransactionwithkeyParams {
     pub hexstring: String,
-    pub privkeys: Vec<serde_json::Value>,
+    pub privkeys: Vec<String>,
     pub prevtxs: Vec<serde_json::Value>,
     pub sighashtype: String,
 }
@@ -1234,7 +1234,7 @@ pub struct SimulaterawtransactionParams {
 /// Request a graceful shutdown of Bitcoin Core.
 #[derive(Debug, Serialize)]
 pub struct StopParams {
-    pub wait: f64,
+    pub wait: u64,
 }
 
 /// Attempts to submit new block to network.
@@ -1242,7 +1242,7 @@ pub struct StopParams {
 #[derive(Debug, Serialize)]
 pub struct SubmitblockParams {
     pub hexdata: String,
-    pub dummy: String,
+    pub dummy: Option<String>,
 }
 
 /// Decode the given hexdata as a header and submit it as a candidate chain tip if valid.
@@ -1259,8 +1259,8 @@ pub struct SubmitheaderParams {
 #[derive(Debug, Serialize)]
 pub struct SubmitpackageParams {
     pub package: Vec<serde_json::Value>,
-    pub maxfeerate: serde_json::Value,
-    pub maxburnamount: serde_json::Value,
+    pub maxfeerate: f64,
+    pub maxburnamount: f64,
 }
 
 /// Returns result of mempool acceptance tests indicating if raw transaction(s) (serialized, hex-encoded) would be accepted by mempool.
@@ -1277,7 +1277,7 @@ pub struct SubmitpackageParams {
 #[derive(Debug, Serialize)]
 pub struct TestmempoolacceptParams {
     pub rawtxs: Vec<serde_json::Value>,
-    pub maxfeerate: serde_json::Value,
+    pub maxfeerate: f64,
 }
 
 /// Unloads the wallet referenced by the request endpoint, otherwise unloads the wallet specified in the argument.
@@ -1311,7 +1311,7 @@ pub struct ValidateaddressParams {
 /// Verifies blockchain database.
 #[derive(Debug, Serialize)]
 pub struct VerifychainParams {
-    pub checklevel: f64,
+    pub checklevel: u32,
     pub nblocks: u64,
 }
 
@@ -1371,7 +1371,7 @@ pub struct WaitfornewblockParams {
 pub struct WalletcreatefundedpsbtParams {
     pub inputs: Vec<serde_json::Value>,
     pub outputs: Vec<serde_json::Value>,
-    pub locktime: u64,
+    pub locktime: u32,
     pub options: serde_json::Value,
     pub bip32derivs: bool,
 }

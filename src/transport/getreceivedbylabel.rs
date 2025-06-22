@@ -7,7 +7,7 @@
 /// ```rust
 /// use bitcoin_rpc_codegen::client::latest::getreceivedbylabel;
 ///
-/// let client = Client::new("http://127.0.0.1:8332", auth);
+/// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.getreceivedbylabel(/* params */).await?;
 /// ```
 
@@ -17,7 +17,7 @@ use transport::{TransportTrait, TransportError};
 /// Returns the total amount received by addresses with <label> in transactions with at least [minconf] confirmations.
 #[derive(Debug, Deserialize, Serialize)]
 #[serde(transparent)]
-pub struct GetreceivedbylabelResponse(pub serde_json::Value);
+pub struct GetreceivedbylabelResponse(pub f64);
 
 
 

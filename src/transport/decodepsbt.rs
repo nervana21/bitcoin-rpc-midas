@@ -7,7 +7,7 @@
 /// ```rust
 /// use bitcoin_rpc_codegen::client::latest::decodepsbt;
 ///
-/// let client = Client::new("http://127.0.0.1:8332", auth);
+/// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.decodepsbt(/* params */).await?;
 /// ```
 
@@ -25,7 +25,7 @@ pub struct DecodepsbtResponse {
     pub inputs: Vec<serde_json::Value>,
     pub outputs: Vec<serde_json::Value>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub fee: Option<serde_json::Value>,
+    pub fee: Option<f64>,
 }
 
 

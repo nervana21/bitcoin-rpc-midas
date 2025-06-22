@@ -22,7 +22,7 @@
 /// ```rust
 /// use bitcoin_rpc_codegen::client::latest::scantxoutset;
 ///
-/// let client = Client::new("http://127.0.0.1:8332", auth);
+/// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.scantxoutset(/* params */).await?;
 /// ```
 
@@ -51,7 +51,7 @@ pub struct ScantxoutsetResponse {
         #[serde(skip_serializing_if = "Option::is_none")]
     pub success: Option<bool>,
         #[serde(skip_serializing_if = "Option::is_none")]
-    pub txouts: Option<f64>,
+    pub txouts: Option<u64>,
         #[serde(skip_serializing_if = "Option::is_none")]
     pub height: Option<u64>,
         #[serde(skip_serializing_if = "Option::is_none")]
@@ -59,9 +59,9 @@ pub struct ScantxoutsetResponse {
         #[serde(skip_serializing_if = "Option::is_none")]
     pub unspents: Option<Vec<serde_json::Value>>,
         #[serde(skip_serializing_if = "Option::is_none")]
-    pub total_amount: Option<serde_json::Value>,
+    pub total_amount: Option<f64>,
         #[serde(skip_serializing_if = "Option::is_none")]
-    pub progress: Option<f64>,
+    pub progress: Option<u64>,
 }
 
 

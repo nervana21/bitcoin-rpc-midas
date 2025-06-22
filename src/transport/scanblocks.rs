@@ -8,7 +8,7 @@
 /// ```rust
 /// use bitcoin_rpc_codegen::client::latest::scanblocks;
 ///
-/// let client = Client::new("http://127.0.0.1:8332", auth);
+/// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.scanblocks(/* params */).await?;
 /// ```
 
@@ -28,7 +28,7 @@ pub struct ScanblocksResponse {
         #[serde(skip_serializing_if = "Option::is_none")]
     pub completed: Option<bool>,
         #[serde(skip_serializing_if = "Option::is_none")]
-    pub progress: Option<f64>,
+    pub progress: Option<u64>,
         #[serde(skip_serializing_if = "Option::is_none")]
     pub current_height: Option<u64>,
 }

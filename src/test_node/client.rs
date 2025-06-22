@@ -10,7 +10,6 @@ use crate::node::{BitcoinNodeManager, TestConfig};
 use super::node::BitcoinNodeClient;
 use super::wallet::BitcoinWalletClient;
 
-use std::str::FromStr;
 use bitcoin::Amount;
 /// Trait for managing a Bitcoin node's lifecycle
 pub trait NodeManager: Send + Sync + std::fmt::Debug + std::any::Any {
@@ -255,12 +254,11 @@ let current_height = info.blocks;
 if current_height > 1 {
 // Invalidate all blocks except genesis
 for height in (1..=current_height).rev() {
-let hash_str = self.node_client.getblockhash(height).await?.0;
-let block_hash = bitcoin::BlockHash::from_str(&hash_str).map_err(|e| TransportError::Rpc(format!("Failed to parse block hash: {}", e)))?;
+let block_hash = self.node_client.getblockhash(height).await?.0;
 self.node_client.invalidateblock(block_hash).await?;
 }
 // Reconsider genesis block
-let genesis_hash = bitcoin::BlockHash::from_str(&self.node_client.getblockhash(0).await?.0).map_err(|e| TransportError::Rpc(format!("Failed to parse block hash: {}", e)))?;
+let genesis_hash = self.node_client.getblockhash(0).await?.0;
 self.node_client.reconsiderblock(genesis_hash).await?;
 }
 Ok(())
@@ -317,7 +315,7 @@ pub fn rpc(&self) -> &RpcClient {
 /// See ``importaddress`` for watchonly p2sh address support.
 /// If "label" is specified, assign address to that label.
 /// Note: This command is only compatible with legacy wallets.
-    pub async fn addmultisigaddress(&self, nrequired: f64, keys: Vec<serde_json::Value>, label: String, address_type: String) -> Result<AddmultisigaddressResponse, TransportError> {
+    pub async fn addmultisigaddress(&self, nrequired: u32, keys: Vec<String>, label: String, address_type: String) -> Result<AddmultisigaddressResponse, TransportError> {
         self.wallet_client.addmultisigaddress(nrequired, keys, label, address_type).await
     }
 
@@ -331,7 +329,7 @@ pub fn rpc(&self) -> &RpcClient {
     }
 
 /// Add the address of a potential peer to an address manager table. This RPC is for testing only.
-    pub async fn addpeeraddress(&self, address: String, port: f64, tried: bool) -> Result<AddpeeraddressResponse, TransportError> {
+    pub async fn addpeeraddress(&self, address: String, port: u16, tried: bool) -> Result<AddpeeraddressResponse, TransportError> {
         self.node_client.addpeeraddress(address, port, tried).await
     }
 
@@ -392,13 +390,13 @@ pub fn rpc(&self) -> &RpcClient {
 
 /// Creates a multi-signature address with n signature of m keys required.
 /// It returns a json object with the address and redeemScript.
-    pub async fn createmultisig(&self, nrequired: f64, keys: Vec<serde_json::Value>, address_type: String) -> Result<CreatemultisigResponse, TransportError> {
+    pub async fn createmultisig(&self, nrequired: u32, keys: Vec<String>, address_type: String) -> Result<CreatemultisigResponse, TransportError> {
         self.node_client.createmultisig(nrequired, keys, address_type).await
     }
 
 /// Creates a transaction in the Partially Signed Transaction format.
 /// Implements the Creator role.
-    pub async fn createpsbt(&self, inputs: Vec<serde_json::Value>, outputs: Vec<serde_json::Value>, locktime: u64, replaceable: bool) -> Result<CreatepsbtResponse, TransportError> {
+    pub async fn createpsbt(&self, inputs: Vec<serde_json::Value>, outputs: Vec<serde_json::Value>, locktime: u32, replaceable: bool) -> Result<CreatepsbtResponse, TransportError> {
         self.node_client.createpsbt(inputs, outputs, locktime, replaceable).await
     }
 
@@ -407,7 +405,7 @@ pub fn rpc(&self) -> &RpcClient {
 /// Returns hex-encoded raw transaction.
 /// Note that the transaction"s inputs are not signed, and
 /// it is not stored in the wallet or transmitted to the network.
-    pub async fn createrawtransaction(&self, inputs: Vec<serde_json::Value>, outputs: Vec<serde_json::Value>, locktime: u64, replaceable: bool) -> Result<CreaterawtransactionResponse, TransportError> {
+    pub async fn createrawtransaction(&self, inputs: Vec<serde_json::Value>, outputs: Vec<serde_json::Value>, locktime: u32, replaceable: bool) -> Result<CreaterawtransactionResponse, TransportError> {
         self.node_client.createrawtransaction(inputs, outputs, locktime, replaceable).await
     }
 
@@ -463,7 +461,7 @@ pub fn rpc(&self) -> &RpcClient {
 /// Strictly one out of "address" and "nodeid" can be provided to identify the node.
 ///
 /// To disconnect by nodeid, either set "address" to the empty string, or call using the named "nodeid" argument only.
-    pub async fn disconnectnode(&self, address: String, nodeid: f64) -> Result<(), TransportError> {
+    pub async fn disconnectnode(&self, address: String, nodeid: u64) -> Result<(), TransportError> {
         self.node_client.disconnectnode(address, nodeid).await
     }
 
@@ -543,7 +541,7 @@ pub fn rpc(&self) -> &RpcClient {
 /// Estimates the approximate fee per kilobyte needed for a transaction to begin
 /// confirmation within conf_target blocks if possible. Uses virtual transaction size as
 /// defined in BIP 141 (witness data is discounted).
-    pub async fn estimaterawfee(&self, conf_target: u64, threshold: f64) -> Result<EstimaterawfeeResponse, TransportError> {
+    pub async fn estimaterawfee(&self, conf_target: u64, threshold: u64) -> Result<EstimaterawfeeResponse, TransportError> {
         self.node_client.estimaterawfee(conf_target, threshold).await
     }
 
@@ -624,7 +622,7 @@ pub fn rpc(&self) -> &RpcClient {
 /// Returns the total available balance.
 /// The available balance is what the wallet considers currently spendable, and is
 /// thus affected by options which limit spendability such as -spendzeroconfchange.
-    pub async fn getbalance(&self, dummy: String, minconf: u32, include_watchonly: bool, avoid_reuse: bool) -> Result<GetbalanceResponse, TransportError> {
+    pub async fn getbalance(&self, dummy: Option<String>, minconf: u32, include_watchonly: bool, avoid_reuse: bool) -> Result<GetbalanceResponse, TransportError> {
         self.wallet_client.getbalance(dummy, minconf, include_watchonly, avoid_reuse).await
     }
 
@@ -642,7 +640,7 @@ pub fn rpc(&self) -> &RpcClient {
 /// If verbosity is 1, returns an Object with information about block <hash>.
 /// If verbosity is 2, returns an Object with information about block <hash> and information about each transaction.
 /// If verbosity is 3, returns an Object with information about block <hash> and information about each transaction, including prevout information for inputs (only for unpruned blocks in the current best chain).
-    pub async fn getblock(&self, blockhash: bitcoin::BlockHash, verbosity: f64) -> Result<GetblockResponse, TransportError> {
+    pub async fn getblock(&self, blockhash: bitcoin::BlockHash, verbosity: u32) -> Result<GetblockResponse, TransportError> {
         self.node_client.getblock(blockhash, verbosity).await
     }
 
@@ -672,7 +670,7 @@ pub fn rpc(&self) -> &RpcClient {
 /// Note: The block could be re-pruned as soon as it is received.
 ///
 /// Returns an empty JSON object if the request was successfully scheduled.
-    pub async fn getblockfrompeer(&self, blockhash: bitcoin::BlockHash, peer_id: f64) -> Result<GetblockfrompeerResponse, TransportError> {
+    pub async fn getblockfrompeer(&self, blockhash: bitcoin::BlockHash, peer_id: u64) -> Result<GetblockfrompeerResponse, TransportError> {
         self.node_client.getblockfrompeer(blockhash, peer_id).await
     }
 
@@ -814,7 +812,7 @@ pub fn rpc(&self) -> &RpcClient {
 /// Shows transactions in the tx orphanage.
 ///
 /// EXPERIMENTAL warning: this call may be changed in future releases.
-    pub async fn getorphantxs(&self, verbosity: f64) -> Result<GetorphantxsResponse, TransportError> {
+    pub async fn getorphantxs(&self, verbosity: u32) -> Result<GetorphantxsResponse, TransportError> {
         self.node_client.getorphantxs(verbosity).await
     }
 
@@ -858,7 +856,7 @@ pub fn rpc(&self) -> &RpcClient {
 /// If verbosity is 0 or omitted, returns the serialized transaction as a hex-encoded string.
 /// If verbosity is 1, returns a JSON Object with information about the transaction.
 /// If verbosity is 2, returns a JSON Object with information about the transaction, including fee and prevout information.
-    pub async fn getrawtransaction(&self, txid: bitcoin::Txid, verbosity: f64, blockhash: bitcoin::BlockHash) -> Result<GetrawtransactionResponse, TransportError> {
+    pub async fn getrawtransaction(&self, txid: bitcoin::Txid, verbosity: u32, blockhash: bitcoin::BlockHash) -> Result<GetrawtransactionResponse, TransportError> {
         self.node_client.getrawtransaction(txid, verbosity, blockhash).await
     }
 
@@ -878,12 +876,12 @@ pub fn rpc(&self) -> &RpcClient {
     }
 
 /// Get detailed information about in-wallet transaction <txid>
-    pub async fn gettransaction(&self, txid: String, include_watchonly: bool, verbose: bool) -> Result<GettransactionResponse, TransportError> {
+    pub async fn gettransaction(&self, txid: bitcoin::Txid, include_watchonly: bool, verbose: bool) -> Result<GettransactionResponse, TransportError> {
         self.wallet_client.gettransaction(txid, include_watchonly, verbose).await
     }
 
 /// Returns details about an unspent transaction output.
-    pub async fn gettxout(&self, txid: String, n: f64, include_mempool: bool) -> Result<(), TransportError> {
+    pub async fn gettxout(&self, txid: bitcoin::Txid, n: u32, include_mempool: bool) -> Result<(), TransportError> {
         self.node_client.gettxout(txid, n, include_mempool).await
     }
 
@@ -893,7 +891,7 @@ pub fn rpc(&self) -> &RpcClient {
 /// unspent output in the utxo for this transaction. To make it always work,
 /// you need to maintain a transaction index, using the -txindex command line option or
 /// specify the block in which the transaction is included manually (by blockhash).
-    pub async fn gettxoutproof(&self, txids: Vec<serde_json::Value>, blockhash: bitcoin::BlockHash) -> Result<GettxoutproofResponse, TransportError> {
+    pub async fn gettxoutproof(&self, txids: Vec<bitcoin::Txid>, blockhash: bitcoin::BlockHash) -> Result<GettxoutproofResponse, TransportError> {
         self.node_client.gettxoutproof(txids, blockhash).await
     }
 
@@ -1067,21 +1065,21 @@ pub fn rpc(&self) -> &RpcClient {
 /// Get all transactions in blocks since block [blockhash], or all transactions if omitted.
 /// If "blockhash" is no longer a part of the main chain, transactions from the fork point onward are included.
 /// Additionally, if include_removed is set, transactions affecting the wallet which were removed are returned in the "removed" array.
-    pub async fn listsinceblock(&self, blockhash: String, target_confirmations: f64, include_watchonly: bool, include_removed: bool, include_change: bool, label: String) -> Result<ListsinceblockResponse, TransportError> {
+    pub async fn listsinceblock(&self, blockhash: bitcoin::BlockHash, target_confirmations: u64, include_watchonly: bool, include_removed: bool, include_change: bool, label: String) -> Result<ListsinceblockResponse, TransportError> {
         self.wallet_client.listsinceblock(blockhash, target_confirmations, include_watchonly, include_removed, include_change, label).await
     }
 
 /// If a label name is provided, this will return only incoming transactions paying to addresses with the specified label.
 ///
 /// Returns up to "count" most recent transactions skipping the first "from" transactions.
-    pub async fn listtransactions(&self, label: String, count: u64, skip: f64, include_watchonly: bool) -> Result<ListtransactionsResponse, TransportError> {
+    pub async fn listtransactions(&self, label: String, count: u64, skip: u64, include_watchonly: bool) -> Result<ListtransactionsResponse, TransportError> {
         self.wallet_client.listtransactions(label, count, skip, include_watchonly).await
     }
 
 /// Returns array of unspent transaction outputs
 /// with between minconf and maxconf (inclusive) confirmations.
 /// Optionally filter to only include txouts paid to specified addresses.
-    pub async fn listunspent(&self, minconf: u32, maxconf: f64, addresses: Vec<bitcoin::Address<bitcoin::address::NetworkUnchecked>>, include_unsafe: bool, query_options: serde_json::Value) -> Result<ListunspentResponse, TransportError> {
+    pub async fn listunspent(&self, minconf: u32, maxconf: u32, addresses: Vec<String>, include_unsafe: bool, query_options: serde_json::Value) -> Result<ListunspentResponse, TransportError> {
         self.wallet_client.listunspent(minconf, maxconf, addresses, include_unsafe, query_options).await
     }
 
@@ -1184,7 +1182,7 @@ pub fn rpc(&self) -> &RpcClient {
     }
 
 /// Accepts the transaction into mined blocks at a higher (or lower) priority
-    pub async fn prioritisetransaction(&self, txid: bitcoin::Txid, dummy: f64, fee_delta: f64) -> Result<PrioritisetransactionResponse, TransportError> {
+    pub async fn prioritisetransaction(&self, txid: bitcoin::Txid, dummy: Option<String>, fee_delta: f64) -> Result<PrioritisetransactionResponse, TransportError> {
         self.node_client.prioritisetransaction(txid, dummy, fee_delta).await
     }
 
@@ -1272,7 +1270,7 @@ pub fn rpc(&self) -> &RpcClient {
 /// EXPERIMENTAL warning: this call may be changed in future releases.
 ///
 /// Send a transaction.
-    pub async fn send(&self, outputs: Vec<serde_json::Value>, conf_target: u64, estimate_mode: String, fee_rate: serde_json::Value, options: serde_json::Value) -> Result<SendResponse, TransportError> {
+    pub async fn send(&self, outputs: Vec<serde_json::Value>, conf_target: u64, estimate_mode: String, fee_rate: f64, options: serde_json::Value) -> Result<SendResponse, TransportError> {
         self.wallet_client.send(outputs, conf_target, estimate_mode, fee_rate, options).await
     }
 
@@ -1281,20 +1279,20 @@ pub fn rpc(&self) -> &RpcClient {
 /// Spend the value of all (or specific) confirmed UTXOs and unconfirmed change in the wallet to one or more recipients.
 /// Unconfirmed inbound UTXOs and locked UTXOs will not be spent. Sendall will respect the avoid_reuse wallet flag.
 /// If your wallet contains many small inputs, either because it received tiny payments or as a result of accumulating change, consider using ``send_max`` to exclude inputs that are worth less than the fees needed to spend them.
-    pub async fn sendall(&self, recipients: Vec<serde_json::Value>, conf_target: u64, estimate_mode: String, fee_rate: serde_json::Value, options: serde_json::Value) -> Result<SendallResponse, TransportError> {
+    pub async fn sendall(&self, recipients: Vec<serde_json::Value>, conf_target: u64, estimate_mode: String, fee_rate: f64, options: serde_json::Value) -> Result<SendallResponse, TransportError> {
         self.wallet_client.sendall(recipients, conf_target, estimate_mode, fee_rate, options).await
     }
 
 /// Send multiple times. Amounts are double-precision floating point numbers.
 /// Requires wallet passphrase to be set with walletpassphrase call if wallet is encrypted.
-    pub async fn sendmany(&self, dummy: String, amounts: serde_json::Value, minconf: u32, comment: String, subtractfeefrom: Vec<serde_json::Value>, replaceable: bool, conf_target: u64, estimate_mode: String, fee_rate: serde_json::Value, verbose: bool) -> Result<SendmanyResponse, TransportError> {
+    pub async fn sendmany(&self, dummy: Option<String>, amounts: serde_json::Value, minconf: u32, comment: String, subtractfeefrom: Vec<serde_json::Value>, replaceable: bool, conf_target: u64, estimate_mode: String, fee_rate: f64, verbose: bool) -> Result<SendmanyResponse, TransportError> {
         self.wallet_client.sendmany(dummy, amounts, minconf, comment, subtractfeefrom, replaceable, conf_target, estimate_mode, fee_rate, verbose).await
     }
 
 /// Send a p2p message to a peer specified by id.
 /// The message type and body must be provided, the message header will be generated.
 /// This RPC is for testing only.
-    pub async fn sendmsgtopeer(&self, peer_id: f64, msg_type: String, msg: String) -> Result<SendmsgtopeerResponse, TransportError> {
+    pub async fn sendmsgtopeer(&self, peer_id: u64, msg_type: String, msg: String) -> Result<SendmsgtopeerResponse, TransportError> {
         self.node_client.sendmsgtopeer(peer_id, msg_type, msg).await
     }
 
@@ -1307,13 +1305,13 @@ pub fn rpc(&self) -> &RpcClient {
 /// A specific exception, RPC_TRANSACTION_ALREADY_IN_UTXO_SET, may throw if the transaction cannot be added to the mempool.
 ///
 /// Related RPCs: createrawtransaction, signrawtransactionwithkey
-    pub async fn sendrawtransaction(&self, hexstring: String, maxfeerate: serde_json::Value, maxburnamount: serde_json::Value) -> Result<SendrawtransactionResponse, TransportError> {
+    pub async fn sendrawtransaction(&self, hexstring: String, maxfeerate: f64, maxburnamount: f64) -> Result<SendrawtransactionResponse, TransportError> {
         self.node_client.sendrawtransaction(hexstring, maxfeerate, maxburnamount).await
     }
 
 /// Send an amount to a given address.
 /// Requires wallet passphrase to be set with walletpassphrase call if wallet is encrypted.
-    pub async fn sendtoaddress(&self, address: String, amount: serde_json::Value, comment: String, comment_to: String, subtractfeefromamount: bool, replaceable: bool, conf_target: u64, estimate_mode: String, avoid_reuse: bool, fee_rate: serde_json::Value, verbose: bool) -> Result<SendtoaddressResponse, TransportError> {
+    pub async fn sendtoaddress(&self, address: String, amount: bitcoin::Amount, comment: String, comment_to: String, subtractfeefromamount: bool, replaceable: bool, conf_target: u64, estimate_mode: String, avoid_reuse: bool, fee_rate: f64, verbose: bool) -> Result<SendtoaddressResponse, TransportError> {
         self.wallet_client.sendtoaddress(address, amount, comment, comment_to, subtractfeefromamount, replaceable, conf_target, estimate_mode, avoid_reuse, fee_rate, verbose).await
     }
 
@@ -1349,7 +1347,7 @@ pub fn rpc(&self) -> &RpcClient {
 
 /// Set the transaction fee rate in BTC/kvB for this wallet. Overrides the global -paytxfee command line parameter.
 /// Can be deactivated by passing 0 as the fee. In that case automatic fee selection will be used by default.
-    pub async fn settxfee(&self, amount: serde_json::Value) -> Result<SettxfeeResponse, TransportError> {
+    pub async fn settxfee(&self, amount: bitcoin::Amount) -> Result<SettxfeeResponse, TransportError> {
         self.wallet_client.settxfee(amount).await
     }
 
@@ -1374,7 +1372,7 @@ pub fn rpc(&self) -> &RpcClient {
 /// keys that will be the only keys used to sign the transaction.
 /// The third optional argument (may be null) is an array of previous transaction outputs that
 /// this transaction depends on but may not yet be in the block chain.
-    pub async fn signrawtransactionwithkey(&self, hexstring: String, privkeys: Vec<serde_json::Value>, prevtxs: Vec<serde_json::Value>, sighashtype: String) -> Result<SignrawtransactionwithkeyResponse, TransportError> {
+    pub async fn signrawtransactionwithkey(&self, hexstring: String, privkeys: Vec<String>, prevtxs: Vec<serde_json::Value>, sighashtype: String) -> Result<SignrawtransactionwithkeyResponse, TransportError> {
         self.node_client.signrawtransactionwithkey(hexstring, privkeys, prevtxs, sighashtype).await
     }
 
@@ -1392,13 +1390,13 @@ pub fn rpc(&self) -> &RpcClient {
     }
 
 /// Request a graceful shutdown of Bitcoin Core.
-    pub async fn stop(&self, wait: f64) -> Result<StopResponse, TransportError> {
+    pub async fn stop(&self, wait: u64) -> Result<StopResponse, TransportError> {
         self.node_client.stop(wait).await
     }
 
 /// Attempts to submit new block to network.
 /// See https://en.bitcoin.it/wiki/BIP_0022 for full specification.
-    pub async fn submitblock(&self, hexdata: String, dummy: String) -> Result<(), TransportError> {
+    pub async fn submitblock(&self, hexdata: String, dummy: Option<String>) -> Result<(), TransportError> {
         self.node_client.submitblock(hexdata, dummy).await
     }
 
@@ -1412,7 +1410,7 @@ pub fn rpc(&self) -> &RpcClient {
 /// The package will be validated according to consensus and mempool policy rules. If any transaction passes, it will be accepted to mempool.
 /// This RPC is experimental and the interface may be unstable. Refer to doc/policy/packages.md for documentation on package policies.
 /// Warning: successful submission does not mean the transactions will propagate throughout the network.
-    pub async fn submitpackage(&self, package: Vec<serde_json::Value>, maxfeerate: serde_json::Value, maxburnamount: serde_json::Value) -> Result<SubmitpackageResponse, TransportError> {
+    pub async fn submitpackage(&self, package: Vec<serde_json::Value>, maxfeerate: f64, maxburnamount: f64) -> Result<SubmitpackageResponse, TransportError> {
         self.node_client.submitpackage(package, maxfeerate, maxburnamount).await
     }
 
@@ -1432,7 +1430,7 @@ pub fn rpc(&self) -> &RpcClient {
 /// This checks if transactions violate the consensus or policy rules.
 ///
 /// See sendrawtransaction call.
-    pub async fn testmempoolaccept(&self, rawtxs: Vec<serde_json::Value>, maxfeerate: serde_json::Value) -> Result<TestmempoolacceptResponse, TransportError> {
+    pub async fn testmempoolaccept(&self, rawtxs: Vec<serde_json::Value>, maxfeerate: f64) -> Result<TestmempoolacceptResponse, TransportError> {
         self.node_client.testmempoolaccept(rawtxs, maxfeerate).await
     }
 
@@ -1464,7 +1462,7 @@ pub fn rpc(&self) -> &RpcClient {
     }
 
 /// Verifies blockchain database.
-    pub async fn verifychain(&self, checklevel: f64, nblocks: u64) -> Result<VerifychainResponse, TransportError> {
+    pub async fn verifychain(&self, checklevel: u32, nblocks: u64) -> Result<VerifychainResponse, TransportError> {
         self.node_client.verifychain(checklevel, nblocks).await
     }
 
@@ -1511,7 +1509,7 @@ pub fn rpc(&self) -> &RpcClient {
 /// Implements the Creator and Updater roles.
 /// All existing inputs must either have their previous output transaction be in the wallet
 /// or be in the UTXO set. Solving data must be provided for non-wallet inputs.
-    pub async fn walletcreatefundedpsbt(&self, inputs: Vec<serde_json::Value>, outputs: Vec<serde_json::Value>, locktime: u64, options: serde_json::Value, bip32derivs: bool) -> Result<WalletcreatefundedpsbtResponse, TransportError> {
+    pub async fn walletcreatefundedpsbt(&self, inputs: Vec<serde_json::Value>, outputs: Vec<serde_json::Value>, locktime: u32, options: serde_json::Value, bip32derivs: bool) -> Result<WalletcreatefundedpsbtResponse, TransportError> {
         self.wallet_client.walletcreatefundedpsbt(inputs, outputs, locktime, options, bip32derivs).await
     }
 
@@ -1568,7 +1566,7 @@ estimate_mode: String,
 ) -> Result<Value, TransportError> {
 Ok(serde_json::to_value(self.wallet_client.sendtoaddress(
 address,
-serde_json::to_value(amount.to_btc().to_string())?,
+amount,
 "".to_string(),
 "".to_string(),
 false,
@@ -1576,7 +1574,7 @@ true,
 conf_target,
 estimate_mode,
 false,
-serde_json::Value::Null,
+0.0,
 false,
 ).await?)?)
 }
@@ -1585,11 +1583,11 @@ pub async fn send_to_address_with_fee_rate(
 &self,
 address: String,
 amount: Amount,
-fee_rate: Amount,
+fee_rate: f64,
 ) -> Result<Value, TransportError> {
 Ok(serde_json::to_value(self.wallet_client.sendtoaddress(
 address,
-serde_json::to_value(amount.to_btc().to_string())?,
+amount,
 "".to_string(),
 "".to_string(),
 false,
@@ -1597,7 +1595,7 @@ true,
 0u64,
 "unset".to_string(),
 false,
-serde_json::to_value(fee_rate.to_btc().to_string())?,
+fee_rate,
 false,
 ).await?)?)
 }

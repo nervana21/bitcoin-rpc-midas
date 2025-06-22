@@ -9,7 +9,7 @@
 /// ```rust
 /// use bitcoin_rpc_codegen::client::latest::getbalance;
 ///
-/// let client = Client::new("http://127.0.0.1:8332", auth);
+/// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.getbalance(/* params */).await?;
 /// ```
 
@@ -21,7 +21,7 @@ use transport::{TransportTrait, TransportError};
     /// thus affected by options which limit spendability such as -spendzeroconfchange.
 #[derive(Debug, Deserialize, Serialize)]
 #[serde(transparent)]
-pub struct GetbalanceResponse(pub serde_json::Value);
+pub struct GetbalanceResponse(pub f64);
 
 
 

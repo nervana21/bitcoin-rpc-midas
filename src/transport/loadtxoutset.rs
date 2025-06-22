@@ -10,7 +10,7 @@
 /// ```rust
 /// use bitcoin_rpc_codegen::client::latest::loadtxoutset;
 ///
-/// let client = Client::new("http://127.0.0.1:8332", auth);
+/// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.loadtxoutset(/* params */).await?;
 /// ```
 
@@ -25,7 +25,7 @@ use transport::{TransportTrait, TransportError};
     /// You can find more information on this process in the `assumeutxo` design document (<https://github.com/bitcoin/bitcoin/blob/master/doc/design/assumeutxo.md>).
 #[derive(Debug, Deserialize, Serialize)]
 pub struct LoadtxoutsetResponse {
-    pub coins_loaded: f64,
+    pub coins_loaded: u64,
     pub tip_hash: String,
     pub base_height: u64,
     pub path: String,

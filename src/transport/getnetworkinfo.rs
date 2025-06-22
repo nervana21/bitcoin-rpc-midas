@@ -7,7 +7,7 @@
 /// ```rust
 /// use bitcoin_rpc_codegen::client::latest::getnetworkinfo;
 ///
-/// let client = Client::new("http://127.0.0.1:8332", auth);
+/// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.getnetworkinfo().await?;
 /// ```
 
@@ -24,14 +24,14 @@ pub struct GetnetworkinfoResponse {
     pub localservicesnames: Vec<serde_json::Value>,
     pub localrelay: bool,
     pub timeoffset: u64,
-    pub connections: f64,
-    pub connections_in: f64,
-    pub connections_out: f64,
+    pub connections: u64,
+    pub connections_in: u64,
+    pub connections_out: u64,
     pub networkactive: bool,
     pub networks: Vec<serde_json::Value>,
     pub relayfee: f64,
     pub incrementalfee: f64,
-    pub localaddresses: Vec<bitcoin::Address<bitcoin::address::NetworkUnchecked>>,
+    pub localaddresses: Vec<String>,
     pub warnings: Vec<serde_json::Value>,
 }
 

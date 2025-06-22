@@ -7,7 +7,7 @@
 /// ```rust
 /// use bitcoin_rpc_codegen::client::latest::getblockchaininfo;
 ///
-/// let client = Client::new("http://127.0.0.1:8332", auth);
+/// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.getblockchaininfo().await?;
 /// ```
 
@@ -19,12 +19,12 @@ use transport::{TransportTrait, TransportError};
 pub struct GetblockchaininfoResponse {
     pub chain: String,
     pub blocks: u64,
-    pub headers: f64,
-    pub bestblockhash: String,
+    pub headers: u64,
+    pub bestblockhash: bitcoin::BlockHash,
     pub difficulty: f64,
     pub time: serde_json::Value,
     pub mediantime: serde_json::Value,
-    pub verificationprogress: f64,
+    pub verificationprogress: u64,
     pub initialblockdownload: bool,
     pub chainwork: String,
     pub size_on_disk: u64,

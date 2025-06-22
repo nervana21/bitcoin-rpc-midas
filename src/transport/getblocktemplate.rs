@@ -13,7 +13,7 @@
 /// ```rust
 /// use bitcoin_rpc_codegen::client::latest::getblocktemplate;
 ///
-/// let client = Client::new("http://127.0.0.1:8332", auth);
+/// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.getblocktemplate(/* params */).await?;
 /// ```
 
@@ -38,15 +38,15 @@ pub struct GetblocktemplateResponse {
         #[serde(skip_serializing_if = "Option::is_none")]
     pub capabilities: Option<Vec<serde_json::Value>>,
         #[serde(skip_serializing_if = "Option::is_none")]
-    pub vbrequired: Option<f64>,
+    pub vbrequired: Option<u64>,
         #[serde(skip_serializing_if = "Option::is_none")]
-    pub previousblockhash: Option<String>,
+    pub previousblockhash: Option<bitcoin::BlockHash>,
         #[serde(skip_serializing_if = "Option::is_none")]
     pub transactions: Option<Vec<serde_json::Value>>,
         #[serde(skip_serializing_if = "Option::is_none")]
     pub coinbaseaux: Option<serde_json::Value>,
         #[serde(skip_serializing_if = "Option::is_none")]
-    pub coinbasevalue: Option<f64>,
+    pub coinbasevalue: Option<u64>,
         #[serde(skip_serializing_if = "Option::is_none")]
     pub longpollid: Option<String>,
         #[serde(skip_serializing_if = "Option::is_none")]
@@ -58,11 +58,11 @@ pub struct GetblocktemplateResponse {
         #[serde(skip_serializing_if = "Option::is_none")]
     pub noncerange: Option<String>,
         #[serde(skip_serializing_if = "Option::is_none")]
-    pub sigoplimit: Option<f64>,
+    pub sigoplimit: Option<u64>,
         #[serde(skip_serializing_if = "Option::is_none")]
     pub sizelimit: Option<u64>,
         #[serde(skip_serializing_if = "Option::is_none")]
-    pub weightlimit: Option<f64>,
+    pub weightlimit: Option<u64>,
         #[serde(skip_serializing_if = "Option::is_none")]
     pub curtime: Option<serde_json::Value>,
         #[serde(skip_serializing_if = "Option::is_none")]

@@ -17,7 +17,7 @@
 /// ```rust
 /// use bitcoin_rpc_codegen::client::latest::importaddress;
 ///
-/// let client = Client::new("http://127.0.0.1:8332", auth);
+/// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.importaddress(/* params */).await?;
 /// ```
 

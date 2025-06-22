@@ -4,7 +4,7 @@
 [![Docs.rs](https://img.shields.io/docsrs/bitcoin-rpc-midas)](https://docs.rs/bitcoin-rpc-midas)
 [![crates.io](https://img.shields.io/crates/v/bitcoin-rpc-midas)](https://crates.io/crates/bitcoin-rpc-midas)
 
-A type-safe, async client for Bitcoin Core's JSON-RPC interface. This crate provides strongly-typed access to all Bitcoin Core RPC methods with compile-time guarantees and built-in test node support.
+Type-safe Rust client for Bitcoin Core v28 RPCs, with test node support. Generated from a version-flexible toolchain.
 
 ## Why Use This?
 
@@ -17,23 +17,23 @@ Compared to hand-written RPC clients, this toolchain offers:
 - Improved isolation from environment and port conflicts
 - Built-in RPC batching to reduce network roundtrips
 
-These features are intended to make Bitcoin Core RPCs easier to integrate, test, and maintain in Rust projects. The result is a type-safe client that remains aligned with upstream changes and is suitable for production use.
+These features are intended to make Bitcoin Core RPCs easier to integrate, test, and maintain in Rust projects. The intended result is a client that remains aligned with upstream changes and is suitable for production use.
 
 ## Architecture
 
 The crate is organized into focused modules:
 
-- `transport/`: Async RPC transport with error handling and batching
-- `types/`: Generated type definitions for all RPC responses
 - `client_trait/`: Trait definitions for type-safe RPC method calls
 - `node/`: Regtest node management and test configuration
 - `test_node/`: Integration testing helpers with embedded Bitcoin nodes
+- `transport/`: Async RPC transport with error handling and batching
+- `types/`: Generated type definitions for all RPC responses
 
 ## Quick Start
 
 ```rust
 use anyhow::Result;
-use bitcoin_rpc_midas::**;
+use bitcoin_rpc_midas::*;
 
 #[tokio::main]
 async fn main() -> Result<()> {

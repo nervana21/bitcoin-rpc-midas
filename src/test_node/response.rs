@@ -175,7 +175,7 @@ pub struct GetaddrmaninfoResponse(pub serde_json::Value);
 
 #[derive(Debug, Deserialize)]
 #[serde(transparent)]
-pub struct GetbalanceResponse(pub serde_json::Value);
+pub struct GetbalanceResponse(pub f64);
 
 #[derive(Debug, Deserialize)]
 #[serde(transparent)]
@@ -183,7 +183,7 @@ pub struct GetbalancesResponse(pub serde_json::Value);
 
 #[derive(Debug, Deserialize)]
 #[serde(transparent)]
-pub struct GetbestblockhashResponse(pub String);
+pub struct GetbestblockhashResponse(pub bitcoin::BlockHash);
 
 #[derive(Debug, Deserialize)]
 #[serde(transparent)]
@@ -191,7 +191,7 @@ pub struct GetblockchaininfoResponse(pub serde_json::Value);
 
 #[derive(Debug, Deserialize)]
 #[serde(transparent)]
-pub struct GetblockcountResponse(pub f64);
+pub struct GetblockcountResponse(pub u64);
 
 #[derive(Debug, Deserialize)]
 #[serde(transparent)]
@@ -203,7 +203,7 @@ pub struct GetblockfrompeerResponse(pub serde_json::Value);
 
 #[derive(Debug, Deserialize)]
 #[serde(transparent)]
-pub struct GetblockhashResponse(pub String);
+pub struct GetblockhashResponse(pub bitcoin::BlockHash);
 
 #[derive(Debug, Deserialize)]
 #[serde(transparent)]
@@ -223,7 +223,7 @@ pub struct GetchaintxstatsResponse(pub serde_json::Value);
 
 #[derive(Debug, Deserialize)]
 #[serde(transparent)]
-pub struct GetconnectioncountResponse(pub f64);
+pub struct GetconnectioncountResponse(pub u64);
 
 #[derive(Debug, Deserialize)]
 #[serde(transparent)]
@@ -263,7 +263,7 @@ pub struct GetnettotalsResponse(pub serde_json::Value);
 
 #[derive(Debug, Deserialize)]
 #[serde(transparent)]
-pub struct GetnetworkhashpsResponse(pub f64);
+pub struct GetnetworkhashpsResponse(pub u64);
 
 #[derive(Debug, Deserialize)]
 #[serde(transparent)]
@@ -295,11 +295,11 @@ pub struct GetrawchangeaddressResponse(pub String);
 
 #[derive(Debug, Deserialize)]
 #[serde(transparent)]
-pub struct GetreceivedbyaddressResponse(pub serde_json::Value);
+pub struct GetreceivedbyaddressResponse(pub f64);
 
 #[derive(Debug, Deserialize)]
 #[serde(transparent)]
-pub struct GetreceivedbylabelResponse(pub serde_json::Value);
+pub struct GetreceivedbylabelResponse(pub f64);
 
 #[derive(Debug, Deserialize)]
 #[serde(transparent)]
@@ -323,7 +323,7 @@ pub struct GettxspendingprevoutResponse(pub Vec<serde_json::Value>);
 
 #[derive(Debug, Deserialize)]
 #[serde(transparent)]
-pub struct GetunconfirmedbalanceResponse(pub f64);
+pub struct GetunconfirmedbalanceResponse(pub bitcoin::Amount);
 
 #[derive(Debug, Deserialize)]
 #[serde(transparent)]
@@ -463,7 +463,7 @@ pub struct PrioritisetransactionResponse(pub bool);
 
 #[derive(Debug, Deserialize)]
 #[serde(transparent)]
-pub struct PruneblockchainResponse(pub f64);
+pub struct PruneblockchainResponse(pub u64);
 
 #[derive(Debug, Deserialize)]
 #[serde(transparent)]
@@ -583,7 +583,7 @@ pub struct UpgradewalletResponse(pub serde_json::Value);
 
 #[derive(Debug, Deserialize)]
 #[serde(transparent)]
-pub struct UptimeResponse(pub f64);
+pub struct UptimeResponse(pub u64);
 
 #[derive(Debug, Deserialize)]
 #[serde(transparent)]

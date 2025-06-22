@@ -7,7 +7,7 @@
 /// ```rust
 /// use bitcoin_rpc_codegen::client::latest::uptime;
 ///
-/// let client = Client::new("http://127.0.0.1:8332", auth);
+/// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.uptime().await?;
 /// ```
 
@@ -17,7 +17,7 @@ use transport::{TransportTrait, TransportError};
 /// Returns the total uptime of the server.
 #[derive(Debug, Deserialize, Serialize)]
 #[serde(transparent)]
-pub struct UptimeResponse(pub f64);
+pub struct UptimeResponse(pub u64);
 
 
 

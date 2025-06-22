@@ -7,7 +7,7 @@
 /// ```rust
 /// use bitcoin_rpc_codegen::client::latest::getmempoolentry;
 ///
-/// let client = Client::new("http://127.0.0.1:8332", auth);
+/// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.getmempoolentry(/* params */).await?;
 /// ```
 
@@ -18,7 +18,7 @@ use transport::{TransportTrait, TransportError};
 #[derive(Debug, Deserialize, Serialize)]
 pub struct GetmempoolentryResponse {
     pub vsize: u64,
-    pub weight: f64,
+    pub weight: u64,
     pub time: serde_json::Value,
     pub height: u64,
     pub descendantcount: u64,

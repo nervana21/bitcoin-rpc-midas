@@ -8,7 +8,7 @@
 /// ```rust
 /// use bitcoin_rpc_codegen::client::latest::getnettotals;
 ///
-/// let client = Client::new("http://127.0.0.1:8332", auth);
+/// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.getnettotals().await?;
 /// ```
 
@@ -19,8 +19,8 @@ use transport::{TransportTrait, TransportError};
     /// and current system time.
 #[derive(Debug, Deserialize, Serialize)]
 pub struct GetnettotalsResponse {
-    pub totalbytesrecv: f64,
-    pub totalbytessent: f64,
+    pub totalbytesrecv: u64,
+    pub totalbytessent: u64,
     pub timemillis: serde_json::Value,
     pub uploadtarget: serde_json::Value,
 }

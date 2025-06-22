@@ -7,7 +7,7 @@
 /// ```rust
 /// use bitcoin_rpc_codegen::client::latest::getmempoolinfo;
 ///
-/// let client = Client::new("http://127.0.0.1:8332", auth);
+/// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.getmempoolinfo().await?;
 /// ```
 
@@ -19,12 +19,12 @@ use transport::{TransportTrait, TransportError};
 pub struct GetmempoolinfoResponse {
     pub loaded: bool,
     pub size: u64,
-    pub bytes: f64,
-    pub usage: f64,
-    pub total_fee: serde_json::Value,
-    pub maxmempool: f64,
-    pub mempoolminfee: serde_json::Value,
-    pub minrelaytxfee: serde_json::Value,
+    pub bytes: u64,
+    pub usage: u64,
+    pub total_fee: f64,
+    pub maxmempool: u64,
+    pub mempoolminfee: f64,
+    pub minrelaytxfee: f64,
     pub incrementalrelayfee: f64,
     pub unbroadcastcount: u64,
     pub fullrbf: bool,

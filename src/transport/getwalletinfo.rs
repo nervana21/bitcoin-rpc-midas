@@ -7,7 +7,7 @@
 /// ```rust
 /// use bitcoin_rpc_codegen::client::latest::getwalletinfo;
 ///
-/// let client = Client::new("http://127.0.0.1:8332", auth);
+/// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.getwalletinfo().await?;
 /// ```
 
@@ -20,9 +20,9 @@ pub struct GetwalletinfoResponse {
     pub walletname: String,
     pub walletversion: u32,
     pub format: String,
-    pub balance: serde_json::Value,
-    pub unconfirmed_balance: serde_json::Value,
-    pub immature_balance: serde_json::Value,
+    pub balance: f64,
+    pub unconfirmed_balance: f64,
+    pub immature_balance: f64,
     pub txcount: u64,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub keypoololdest: Option<serde_json::Value>,
@@ -31,7 +31,7 @@ pub struct GetwalletinfoResponse {
     pub keypoolsize_hd_internal: Option<u64>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub unlocked_until: Option<serde_json::Value>,
-    pub paytxfee: serde_json::Value,
+    pub paytxfee: f64,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub hdseedid: Option<String>,
     pub private_keys_enabled: bool,

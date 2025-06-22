@@ -8,7 +8,7 @@
 /// ```rust
 /// use bitcoin_rpc_codegen::client::latest::getblockstats;
 ///
-/// let client = Client::new("http://127.0.0.1:8332", auth);
+/// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.getblockstats(/* params */).await?;
 /// ```
 
@@ -32,7 +32,7 @@ pub struct GetblockstatsResponse {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub height: Option<u64>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub ins: Option<f64>,
+    pub ins: Option<u64>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub maxfee: Option<f64>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -52,33 +52,33 @@ pub struct GetblockstatsResponse {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mintxsize: Option<u64>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub outs: Option<f64>,
+    pub outs: Option<u64>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub subsidy: Option<f64>,
+    pub subsidy: Option<u64>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub swtotal_size: Option<u64>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub swtotal_weight: Option<f64>,
+    pub swtotal_weight: Option<u64>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub swtxs: Option<f64>,
+    pub swtxs: Option<u64>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub time: Option<u64>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub total_out: Option<f64>,
+    pub total_out: Option<u64>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub total_size: Option<u64>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub total_weight: Option<f64>,
+    pub total_weight: Option<u64>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub totalfee: Option<f64>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub txs: Option<f64>,
+    pub txs: Option<u64>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub utxo_increase: Option<f64>,
+    pub utxo_increase: Option<u64>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub utxo_size_inc: Option<u64>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub utxo_increase_actual: Option<f64>,
+    pub utxo_increase_actual: Option<u64>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub utxo_size_inc_actual: Option<u64>,
 }

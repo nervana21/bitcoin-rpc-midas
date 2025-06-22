@@ -8,7 +8,7 @@
 /// ```rust
 /// use bitcoin_rpc_codegen::client::latest::getblockheader;
 ///
-/// let client = Client::new("http://127.0.0.1:8332", auth);
+/// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.getblockheader(/* params */).await?;
 /// ```
 
@@ -22,7 +22,7 @@ pub struct GetblockheaderResponse {
         #[serde(skip_serializing_if = "Option::is_none")]
     pub hash: Option<String>,
         #[serde(skip_serializing_if = "Option::is_none")]
-    pub confirmations: Option<f64>,
+    pub confirmations: Option<u64>,
         #[serde(skip_serializing_if = "Option::is_none")]
     pub height: Option<u64>,
         #[serde(skip_serializing_if = "Option::is_none")]
@@ -36,7 +36,7 @@ pub struct GetblockheaderResponse {
         #[serde(skip_serializing_if = "Option::is_none")]
     pub mediantime: Option<serde_json::Value>,
         #[serde(skip_serializing_if = "Option::is_none")]
-    pub nonce: Option<f64>,
+    pub nonce: Option<u64>,
         #[serde(skip_serializing_if = "Option::is_none")]
     pub bits: Option<String>,
         #[serde(skip_serializing_if = "Option::is_none")]
@@ -44,7 +44,7 @@ pub struct GetblockheaderResponse {
         #[serde(skip_serializing_if = "Option::is_none")]
     pub chainwork: Option<String>,
         #[serde(skip_serializing_if = "Option::is_none")]
-    pub n_tx: Option<f64>,
+    pub n_tx: Option<u64>,
         #[serde(skip_serializing_if = "Option::is_none")]
     pub previousblockhash: Option<bitcoin::BlockHash>,
         #[serde(skip_serializing_if = "Option::is_none")]

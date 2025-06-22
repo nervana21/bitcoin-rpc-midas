@@ -8,7 +8,7 @@
 /// ```rust
 /// use bitcoin_rpc_codegen::client::latest::getrawmempool;
 ///
-/// let client = Client::new("http://127.0.0.1:8332", auth);
+/// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.getrawmempool(/* params */).await?;
 /// ```
 
@@ -21,9 +21,9 @@ use transport::{TransportTrait, TransportError};
 #[derive(Debug, Deserialize, Serialize)]
 pub struct GetrawmempoolResponse {
         #[serde(skip_serializing_if = "Option::is_none")]
-    pub txids: Option<Vec<serde_json::Value>>,
+    pub txids: Option<Vec<bitcoin::Txid>>,
         #[serde(skip_serializing_if = "Option::is_none")]
-    pub mempool_sequence: Option<f64>,
+    pub mempool_sequence: Option<u64>,
 }
 
 

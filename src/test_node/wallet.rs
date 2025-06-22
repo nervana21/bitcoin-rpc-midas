@@ -46,7 +46,7 @@ impl BitcoinWalletClient {
 /// See ``importaddress`` for watchonly p2sh address support.
 /// If "label" is specified, assign address to that label.
 /// Note: This command is only compatible with legacy wallets.
-    pub async fn addmultisigaddress(&self, nrequired: f64, keys: Vec<serde_json::Value>, label: String, address_type: String) -> Result<AddmultisigaddressResponse, TransportError> {
+    pub async fn addmultisigaddress(&self, nrequired: u32, keys: Vec<String>, label: String, address_type: String) -> Result<AddmultisigaddressResponse, TransportError> {
         let mut params = Vec::new();
         params.push(serde_json::to_value(nrequired)?);
         params.push(serde_json::to_value(keys)?);
@@ -157,7 +157,7 @@ impl BitcoinWalletClient {
 /// Returns the total available balance.
 /// The available balance is what the wallet considers currently spendable, and is
 /// thus affected by options which limit spendability such as -spendzeroconfchange.
-    pub async fn getbalance(&self, dummy: String, minconf: u32, include_watchonly: bool, avoid_reuse: bool) -> Result<GetbalanceResponse, TransportError> {
+    pub async fn getbalance(&self, dummy: Option<String>, minconf: u32, include_watchonly: bool, avoid_reuse: bool) -> Result<GetbalanceResponse, TransportError> {
         let mut params = Vec::new();
         params.push(serde_json::to_value(dummy)?);
         params.push(serde_json::to_value(minconf)?);
@@ -214,7 +214,7 @@ impl BitcoinWalletClient {
     }
 
 /// Get detailed information about in-wallet transaction <txid>
-    pub async fn gettransaction(&self, txid: String, include_watchonly: bool, verbose: bool) -> Result<GettransactionResponse, TransportError> {
+    pub async fn gettransaction(&self, txid: bitcoin::Txid, include_watchonly: bool, verbose: bool) -> Result<GettransactionResponse, TransportError> {
         let mut params = Vec::new();
         params.push(serde_json::to_value(txid)?);
         params.push(serde_json::to_value(include_watchonly)?);
@@ -411,7 +411,7 @@ impl BitcoinWalletClient {
 /// Get all transactions in blocks since block [blockhash], or all transactions if omitted.
 /// If "blockhash" is no longer a part of the main chain, transactions from the fork point onward are included.
 /// Additionally, if include_removed is set, transactions affecting the wallet which were removed are returned in the "removed" array.
-    pub async fn listsinceblock(&self, blockhash: String, target_confirmations: f64, include_watchonly: bool, include_removed: bool, include_change: bool, label: String) -> Result<ListsinceblockResponse, TransportError> {
+    pub async fn listsinceblock(&self, blockhash: bitcoin::BlockHash, target_confirmations: u64, include_watchonly: bool, include_removed: bool, include_change: bool, label: String) -> Result<ListsinceblockResponse, TransportError> {
         let mut params = Vec::new();
         params.push(serde_json::to_value(blockhash)?);
         params.push(serde_json::to_value(target_confirmations)?);
@@ -426,7 +426,7 @@ impl BitcoinWalletClient {
 /// If a label name is provided, this will return only incoming transactions paying to addresses with the specified label.
 ///
 /// Returns up to "count" most recent transactions skipping the first "from" transactions.
-    pub async fn listtransactions(&self, label: String, count: u64, skip: f64, include_watchonly: bool) -> Result<ListtransactionsResponse, TransportError> {
+    pub async fn listtransactions(&self, label: String, count: u64, skip: u64, include_watchonly: bool) -> Result<ListtransactionsResponse, TransportError> {
         let mut params = Vec::new();
         params.push(serde_json::to_value(label)?);
         params.push(serde_json::to_value(count)?);
@@ -439,7 +439,7 @@ impl BitcoinWalletClient {
 /// Returns array of unspent transaction outputs
 /// with between minconf and maxconf (inclusive) confirmations.
 /// Optionally filter to only include txouts paid to specified addresses.
-    pub async fn listunspent(&self, minconf: u32, maxconf: f64, addresses: Vec<bitcoin::Address<bitcoin::address::NetworkUnchecked>>, include_unsafe: bool, query_options: serde_json::Value) -> Result<ListunspentResponse, TransportError> {
+    pub async fn listunspent(&self, minconf: u32, maxconf: u32, addresses: Vec<String>, include_unsafe: bool, query_options: serde_json::Value) -> Result<ListunspentResponse, TransportError> {
         let mut params = Vec::new();
         params.push(serde_json::to_value(minconf)?);
         params.push(serde_json::to_value(maxconf)?);
@@ -578,7 +578,7 @@ impl BitcoinWalletClient {
 /// EXPERIMENTAL warning: this call may be changed in future releases.
 ///
 /// Send a transaction.
-    pub async fn send(&self, outputs: Vec<serde_json::Value>, conf_target: u64, estimate_mode: String, fee_rate: serde_json::Value, options: serde_json::Value) -> Result<SendResponse, TransportError> {
+    pub async fn send(&self, outputs: Vec<serde_json::Value>, conf_target: u64, estimate_mode: String, fee_rate: f64, options: serde_json::Value) -> Result<SendResponse, TransportError> {
         let mut params = Vec::new();
         params.push(serde_json::to_value(outputs)?);
         params.push(serde_json::to_value(conf_target)?);
@@ -594,7 +594,7 @@ impl BitcoinWalletClient {
 /// Spend the value of all (or specific) confirmed UTXOs and unconfirmed change in the wallet to one or more recipients.
 /// Unconfirmed inbound UTXOs and locked UTXOs will not be spent. Sendall will respect the avoid_reuse wallet flag.
 /// If your wallet contains many small inputs, either because it received tiny payments or as a result of accumulating change, consider using ``send_max`` to exclude inputs that are worth less than the fees needed to spend them.
-    pub async fn sendall(&self, recipients: Vec<serde_json::Value>, conf_target: u64, estimate_mode: String, fee_rate: serde_json::Value, options: serde_json::Value) -> Result<SendallResponse, TransportError> {
+    pub async fn sendall(&self, recipients: Vec<serde_json::Value>, conf_target: u64, estimate_mode: String, fee_rate: f64, options: serde_json::Value) -> Result<SendallResponse, TransportError> {
         let mut params = Vec::new();
         params.push(serde_json::to_value(recipients)?);
         params.push(serde_json::to_value(conf_target)?);
@@ -607,7 +607,7 @@ impl BitcoinWalletClient {
 
 /// Send multiple times. Amounts are double-precision floating point numbers.
 /// Requires wallet passphrase to be set with walletpassphrase call if wallet is encrypted.
-    pub async fn sendmany(&self, dummy: String, amounts: serde_json::Value, minconf: u32, comment: String, subtractfeefrom: Vec<serde_json::Value>, replaceable: bool, conf_target: u64, estimate_mode: String, fee_rate: serde_json::Value, verbose: bool) -> Result<SendmanyResponse, TransportError> {
+    pub async fn sendmany(&self, dummy: Option<String>, amounts: serde_json::Value, minconf: u32, comment: String, subtractfeefrom: Vec<serde_json::Value>, replaceable: bool, conf_target: u64, estimate_mode: String, fee_rate: f64, verbose: bool) -> Result<SendmanyResponse, TransportError> {
         let mut params = Vec::new();
         params.push(serde_json::to_value(dummy)?);
         params.push(serde_json::to_value(amounts)?);
@@ -625,7 +625,7 @@ impl BitcoinWalletClient {
 
 /// Send an amount to a given address.
 /// Requires wallet passphrase to be set with walletpassphrase call if wallet is encrypted.
-    pub async fn sendtoaddress(&self, address: String, amount: serde_json::Value, comment: String, comment_to: String, subtractfeefromamount: bool, replaceable: bool, conf_target: u64, estimate_mode: String, avoid_reuse: bool, fee_rate: serde_json::Value, verbose: bool) -> Result<SendtoaddressResponse, TransportError> {
+    pub async fn sendtoaddress(&self, address: String, amount: bitcoin::Amount, comment: String, comment_to: String, subtractfeefromamount: bool, replaceable: bool, conf_target: u64, estimate_mode: String, avoid_reuse: bool, fee_rate: f64, verbose: bool) -> Result<SendtoaddressResponse, TransportError> {
         let mut params = Vec::new();
         params.push(serde_json::to_value(address)?);
         params.push(serde_json::to_value(amount)?);
@@ -667,7 +667,7 @@ impl BitcoinWalletClient {
 
 /// Set the transaction fee rate in BTC/kvB for this wallet. Overrides the global -paytxfee command line parameter.
 /// Can be deactivated by passing 0 as the fee. In that case automatic fee selection will be used by default.
-    pub async fn settxfee(&self, amount: serde_json::Value) -> Result<SettxfeeResponse, TransportError> {
+    pub async fn settxfee(&self, amount: bitcoin::Amount) -> Result<SettxfeeResponse, TransportError> {
         let mut params = Vec::new();
         params.push(serde_json::to_value(amount)?);
         // dispatch and deserialize to `SettxfeeResponse`
@@ -738,7 +738,7 @@ impl BitcoinWalletClient {
 /// Implements the Creator and Updater roles.
 /// All existing inputs must either have their previous output transaction be in the wallet
 /// or be in the UTXO set. Solving data must be provided for non-wallet inputs.
-    pub async fn walletcreatefundedpsbt(&self, inputs: Vec<serde_json::Value>, outputs: Vec<serde_json::Value>, locktime: u64, options: serde_json::Value, bip32derivs: bool) -> Result<WalletcreatefundedpsbtResponse, TransportError> {
+    pub async fn walletcreatefundedpsbt(&self, inputs: Vec<serde_json::Value>, outputs: Vec<serde_json::Value>, locktime: u32, options: serde_json::Value, bip32derivs: bool) -> Result<WalletcreatefundedpsbtResponse, TransportError> {
         let mut params = Vec::new();
         params.push(serde_json::to_value(inputs)?);
         params.push(serde_json::to_value(outputs)?);

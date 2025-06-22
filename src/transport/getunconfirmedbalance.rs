@@ -8,7 +8,7 @@
 /// ```rust
 /// use bitcoin_rpc_codegen::client::latest::getunconfirmedbalance;
 ///
-/// let client = Client::new("http://127.0.0.1:8332", auth);
+/// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.getunconfirmedbalance().await?;
 /// ```
 
@@ -19,7 +19,7 @@ use transport::{TransportTrait, TransportError};
     /// Identical to getbalances().mine.untrusted_pending
 #[derive(Debug, Deserialize, Serialize)]
 #[serde(transparent)]
-pub struct GetunconfirmedbalanceResponse(pub f64);
+pub struct GetunconfirmedbalanceResponse(pub bitcoin::Amount);
 
 
 

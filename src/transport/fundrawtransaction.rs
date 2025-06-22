@@ -18,7 +18,7 @@
 /// ```rust
 /// use bitcoin_rpc_codegen::client::latest::fundrawtransaction;
 ///
-/// let client = Client::new("http://127.0.0.1:8332", auth);
+/// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.fundrawtransaction(/* params */).await?;
 /// ```
 
@@ -40,8 +40,8 @@ use transport::{TransportTrait, TransportError};
 #[derive(Debug, Deserialize, Serialize)]
 pub struct FundrawtransactionResponse {
     pub hex: String,
-    pub fee: serde_json::Value,
-    pub changepos: f64,
+    pub fee: f64,
+    pub changepos: u64,
 }
 
 

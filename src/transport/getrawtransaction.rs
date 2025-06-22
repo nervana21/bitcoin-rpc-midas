@@ -14,7 +14,7 @@
 /// ```rust
 /// use bitcoin_rpc_codegen::client::latest::getrawtransaction;
 ///
-/// let client = Client::new("http://127.0.0.1:8332", auth);
+/// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.getrawtransaction(/* params */).await?;
 /// ```
 
@@ -38,7 +38,7 @@ pub struct GetrawtransactionResponse {
         #[serde(skip_serializing_if = "Option::is_none")]
     pub blockhash: Option<bitcoin::BlockHash>,
         #[serde(skip_serializing_if = "Option::is_none")]
-    pub confirmations: Option<f64>,
+    pub confirmations: Option<u64>,
         #[serde(skip_serializing_if = "Option::is_none")]
     pub blocktime: Option<serde_json::Value>,
         #[serde(skip_serializing_if = "Option::is_none")]
@@ -54,7 +54,7 @@ pub struct GetrawtransactionResponse {
         #[serde(skip_serializing_if = "Option::is_none")]
     pub vsize: Option<u64>,
         #[serde(skip_serializing_if = "Option::is_none")]
-    pub weight: Option<f64>,
+    pub weight: Option<u64>,
         #[serde(skip_serializing_if = "Option::is_none")]
     pub version: Option<u32>,
         #[serde(skip_serializing_if = "Option::is_none")]

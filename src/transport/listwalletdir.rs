@@ -7,7 +7,7 @@
 /// ```rust
 /// use bitcoin_rpc_codegen::client::latest::listwalletdir;
 ///
-/// let client = Client::new("http://127.0.0.1:8332", auth);
+/// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.listwalletdir().await?;
 /// ```
 
@@ -17,7 +17,7 @@ use transport::{TransportTrait, TransportError};
 /// Returns a list of wallets in the wallet directory.
 #[derive(Debug, Deserialize, Serialize)]
 pub struct ListwalletdirResponse {
-    pub wallets: Vec<serde_json::Value>,
+    pub wallets: Vec<String>,
 }
 
 

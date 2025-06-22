@@ -7,9 +7,9 @@ use serde::de::DeserializeOwned;
 use crate::types::*;
 use std::future::Future;
 
-#[doc = r#"A versioned client trait for Bitcoin Core v0.1.2"#]
+#[doc = r#"A versioned client trait for Bitcoin Core V28"#]
 #[async_trait]
-pub trait BitcoinClientV012: Send + Sync + TransportTrait + TransportExt + RpcDispatchExt {
+pub trait BitcoinClientV28: Send + Sync + TransportTrait + TransportExt + RpcDispatchExt {
     /// Mark in-wallet transaction <txid> as abandoned
     /// This will mark this transaction and all its in-wallet descendants as abandoned which will allow
     /// for their inputs to be respent.  It can be used to replace "stuck" or evicted transactions.
@@ -47,7 +47,7 @@ pub trait BitcoinClientV012: Send + Sync + TransportTrait + TransportExt + RpcDi
     /// See `importaddress` for watchonly p2sh address support.
     /// If 'label' is specified, assign address to that label.
     /// Note: This command is only compatible with legacy wallets.
-    async fn addmultisigaddress(&self, _nrequired: f64, _keys: Vec<serde_json::Value>, _label: Option<String>, _address_type: Option<String>) -> Result<AddmultisigaddressResponse, TransportError> {
+    async fn addmultisigaddress(&self, _nrequired: u32, _keys: Vec<String>, _label: Option<String>, _address_type: Option<String>) -> Result<AddmultisigaddressResponse, TransportError> {
         let params = vec![
             serde_json::json!(_nrequired),
             serde_json::json!(_keys),
@@ -72,7 +72,7 @@ pub trait BitcoinClientV012: Send + Sync + TransportTrait + TransportExt + RpcDi
     }
 
     /// Add the address of a potential peer to an address manager table. This RPC is for testing only.
-    async fn addpeeraddress(&self, _address: String, _port: f64, _tried: Option<bool>) -> Result<AddpeeraddressResponse, TransportError> {
+    async fn addpeeraddress(&self, _address: String, _port: u16, _tried: Option<bool>) -> Result<AddpeeraddressResponse, TransportError> {
         let params = vec![
             serde_json::json!(_address),
             serde_json::json!(_port),
@@ -165,7 +165,7 @@ pub trait BitcoinClientV012: Send + Sync + TransportTrait + TransportExt + RpcDi
 
     /// Creates a multi-signature address with n signature of m keys required.
     /// It returns a json object with the address and redeemScript.
-    async fn createmultisig(&self, _nrequired: f64, _keys: Vec<serde_json::Value>, _address_type: Option<String>) -> Result<CreatemultisigResponse, TransportError> {
+    async fn createmultisig(&self, _nrequired: u32, _keys: Vec<String>, _address_type: Option<String>) -> Result<CreatemultisigResponse, TransportError> {
         let params = vec![
             serde_json::json!(_nrequired),
             serde_json::json!(_keys),
@@ -176,7 +176,7 @@ pub trait BitcoinClientV012: Send + Sync + TransportTrait + TransportExt + RpcDi
 
     /// Creates a transaction in the Partially Signed Transaction format.
     /// Implements the Creator role.
-    async fn createpsbt(&self, _inputs: Vec<serde_json::Value>, _outputs: Vec<serde_json::Value>, _locktime: Option<u64>, _replaceable: Option<bool>) -> Result<CreatepsbtResponse, TransportError> {
+    async fn createpsbt(&self, _inputs: Vec<serde_json::Value>, _outputs: Vec<serde_json::Value>, _locktime: Option<u32>, _replaceable: Option<bool>) -> Result<CreatepsbtResponse, TransportError> {
         let params = vec![
             serde_json::json!(_inputs),
             serde_json::json!(_outputs),
@@ -191,7 +191,7 @@ pub trait BitcoinClientV012: Send + Sync + TransportTrait + TransportExt + RpcDi
     /// Returns hex-encoded raw transaction.
     /// Note that the transaction's inputs are not signed, and
     /// it is not stored in the wallet or transmitted to the network.
-    async fn createrawtransaction(&self, _inputs: Vec<serde_json::Value>, _outputs: Vec<serde_json::Value>, _locktime: Option<u64>, _replaceable: Option<bool>) -> Result<CreaterawtransactionResponse, TransportError> {
+    async fn createrawtransaction(&self, _inputs: Vec<serde_json::Value>, _outputs: Vec<serde_json::Value>, _locktime: Option<u32>, _replaceable: Option<bool>) -> Result<CreaterawtransactionResponse, TransportError> {
         let params = vec![
             serde_json::json!(_inputs),
             serde_json::json!(_outputs),
@@ -288,7 +288,7 @@ pub trait BitcoinClientV012: Send + Sync + TransportTrait + TransportExt + RpcDi
     /// Strictly one out of 'address' and 'nodeid' can be provided to identify the node.
     /// 
     /// To disconnect by nodeid, either set 'address' to the empty string, or call using the named 'nodeid' argument only.
-    async fn disconnectnode(&self, _address: Option<String>, _nodeid: Option<f64>) -> Result<(), TransportError> {
+    async fn disconnectnode(&self, _address: Option<String>, _nodeid: Option<u64>) -> Result<(), TransportError> {
         let params = vec![
             serde_json::json!(_address),
             serde_json::json!(_nodeid),
@@ -416,7 +416,7 @@ pub trait BitcoinClientV012: Send + Sync + TransportTrait + TransportExt + RpcDi
     /// Estimates the approximate fee per kilobyte needed for a transaction to begin
     /// confirmation within conf_target blocks if possible. Uses virtual transaction size as
     /// defined in BIP 141 (witness data is discounted).
-    async fn estimaterawfee(&self, _conf_target: u64, _threshold: Option<f64>) -> Result<EstimaterawfeeResponse, TransportError> {
+    async fn estimaterawfee(&self, _conf_target: u64, _threshold: Option<u64>) -> Result<EstimaterawfeeResponse, TransportError> {
         let params = vec![
             serde_json::json!(_conf_target),
             serde_json::json!(_threshold),
@@ -574,7 +574,7 @@ pub trait BitcoinClientV012: Send + Sync + TransportTrait + TransportExt + RpcDi
     /// If verbosity is 1, returns an Object with information about block <hash>.
     /// If verbosity is 2, returns an Object with information about block <hash> and information about each transaction.
     /// If verbosity is 3, returns an Object with information about block <hash> and information about each transaction, including prevout information for inputs (only for unpruned blocks in the current best chain).
-    async fn getblock(&self, _blockhash: bitcoin::BlockHash, _verbosity: Option<f64>) -> Result<GetblockResponse, TransportError> {
+    async fn getblock(&self, _blockhash: bitcoin::BlockHash, _verbosity: Option<u32>) -> Result<GetblockResponse, TransportError> {
         let params = vec![
             serde_json::json!(_blockhash),
             serde_json::json!(_verbosity),
@@ -618,7 +618,7 @@ pub trait BitcoinClientV012: Send + Sync + TransportTrait + TransportExt + RpcDi
     /// Note: The block could be re-pruned as soon as it is received.
     /// 
     /// Returns an empty JSON object if the request was successfully scheduled.
-    async fn getblockfrompeer(&self, _blockhash: bitcoin::BlockHash, _peer_id: f64) -> Result<GetblockfrompeerResponse, TransportError> {
+    async fn getblockfrompeer(&self, _blockhash: bitcoin::BlockHash, _peer_id: u64) -> Result<GetblockfrompeerResponse, TransportError> {
         let params = vec![
             serde_json::json!(_blockhash),
             serde_json::json!(_peer_id),
@@ -844,7 +844,7 @@ pub trait BitcoinClientV012: Send + Sync + TransportTrait + TransportExt + RpcDi
     /// Shows transactions in the tx orphanage.
     /// 
     /// EXPERIMENTAL warning: this call may be changed in future releases.
-    async fn getorphantxs(&self, _verbosity: Option<f64>) -> Result<GetorphantxsResponse, TransportError> {
+    async fn getorphantxs(&self, _verbosity: Option<u32>) -> Result<GetorphantxsResponse, TransportError> {
         let params = vec![
             serde_json::json!(_verbosity),
         ];
@@ -907,7 +907,7 @@ pub trait BitcoinClientV012: Send + Sync + TransportTrait + TransportExt + RpcDi
     /// If verbosity is 0 or omitted, returns the serialized transaction as a hex-encoded string.
     /// If verbosity is 1, returns a JSON Object with information about the transaction.
     /// If verbosity is 2, returns a JSON Object with information about the transaction, including fee and prevout information.
-    async fn getrawtransaction(&self, _txid: bitcoin::Txid, _verbosity: Option<f64>, _blockhash: Option<bitcoin::BlockHash>) -> Result<GetrawtransactionResponse, TransportError> {
+    async fn getrawtransaction(&self, _txid: bitcoin::Txid, _verbosity: Option<u32>, _blockhash: Option<bitcoin::BlockHash>) -> Result<GetrawtransactionResponse, TransportError> {
         let params = vec![
             serde_json::json!(_txid),
             serde_json::json!(_verbosity),
@@ -945,7 +945,7 @@ pub trait BitcoinClientV012: Send + Sync + TransportTrait + TransportExt + RpcDi
     }
 
     /// Get detailed information about in-wallet transaction <txid>
-    async fn gettransaction(&self, _txid: String, _include_watchonly: Option<bool>, _verbose: Option<bool>) -> Result<GettransactionResponse, TransportError> {
+    async fn gettransaction(&self, _txid: bitcoin::Txid, _include_watchonly: Option<bool>, _verbose: Option<bool>) -> Result<GettransactionResponse, TransportError> {
         let params = vec![
             serde_json::json!(_txid),
             serde_json::json!(_include_watchonly),
@@ -955,7 +955,7 @@ pub trait BitcoinClientV012: Send + Sync + TransportTrait + TransportExt + RpcDi
     }
 
     /// Returns details about an unspent transaction output.
-    async fn gettxout(&self, _txid: String, _n: f64, _include_mempool: Option<bool>) -> Result<(), TransportError> {
+    async fn gettxout(&self, _txid: bitcoin::Txid, _n: u32, _include_mempool: Option<bool>) -> Result<(), TransportError> {
         let params = vec![
             serde_json::json!(_txid),
             serde_json::json!(_n),
@@ -970,7 +970,7 @@ pub trait BitcoinClientV012: Send + Sync + TransportTrait + TransportExt + RpcDi
     /// unspent output in the utxo for this transaction. To make it always work,
     /// you need to maintain a transaction index, using the -txindex command line option or
     /// specify the block in which the transaction is included manually (by blockhash).
-    async fn gettxoutproof(&self, _txids: Vec<serde_json::Value>, _blockhash: Option<bitcoin::BlockHash>) -> Result<GettxoutproofResponse, TransportError> {
+    async fn gettxoutproof(&self, _txids: Vec<bitcoin::Txid>, _blockhash: Option<bitcoin::BlockHash>) -> Result<GettxoutproofResponse, TransportError> {
         let params = vec![
             serde_json::json!(_txids),
             serde_json::json!(_blockhash),
@@ -1236,7 +1236,7 @@ pub trait BitcoinClientV012: Send + Sync + TransportTrait + TransportExt + RpcDi
     /// Get all transactions in blocks since block [blockhash], or all transactions if omitted.
     /// If "blockhash" is no longer a part of the main chain, transactions from the fork point onward are included.
     /// Additionally, if include_removed is set, transactions affecting the wallet which were removed are returned in the "removed" array.
-    async fn listsinceblock(&self, _blockhash: Option<String>, _target_confirmations: Option<f64>, _include_watchonly: Option<bool>, _include_removed: Option<bool>, _include_change: Option<bool>, _label: Option<String>) -> Result<ListsinceblockResponse, TransportError> {
+    async fn listsinceblock(&self, _blockhash: Option<bitcoin::BlockHash>, _target_confirmations: Option<u64>, _include_watchonly: Option<bool>, _include_removed: Option<bool>, _include_change: Option<bool>, _label: Option<String>) -> Result<ListsinceblockResponse, TransportError> {
         let params = vec![
             serde_json::json!(_blockhash),
             serde_json::json!(_target_confirmations),
@@ -1251,7 +1251,7 @@ pub trait BitcoinClientV012: Send + Sync + TransportTrait + TransportExt + RpcDi
     /// If a label name is provided, this will return only incoming transactions paying to addresses with the specified label.
     /// 
     /// Returns up to 'count' most recent transactions skipping the first 'from' transactions.
-    async fn listtransactions(&self, _label: Option<String>, _count: Option<u64>, _skip: Option<f64>, _include_watchonly: Option<bool>) -> Result<ListtransactionsResponse, TransportError> {
+    async fn listtransactions(&self, _label: Option<String>, _count: Option<u64>, _skip: Option<u64>, _include_watchonly: Option<bool>) -> Result<ListtransactionsResponse, TransportError> {
         let params = vec![
             serde_json::json!(_label),
             serde_json::json!(_count),
@@ -1264,7 +1264,7 @@ pub trait BitcoinClientV012: Send + Sync + TransportTrait + TransportExt + RpcDi
     /// Returns array of unspent transaction outputs
     /// with between minconf and maxconf (inclusive) confirmations.
     /// Optionally filter to only include txouts paid to specified addresses.
-    async fn listunspent(&self, _minconf: Option<u32>, _maxconf: Option<f64>, _addresses: Option<Vec<bitcoin::Address<bitcoin::address::NetworkUnchecked>>>, _include_unsafe: Option<bool>, _query_options: Option<serde_json::Value>) -> Result<ListunspentResponse, TransportError> {
+    async fn listunspent(&self, _minconf: Option<u32>, _maxconf: Option<u32>, _addresses: Option<Vec<String>>, _include_unsafe: Option<bool>, _query_options: Option<serde_json::Value>) -> Result<ListunspentResponse, TransportError> {
         let params = vec![
             serde_json::json!(_minconf),
             serde_json::json!(_maxconf),
@@ -1412,7 +1412,7 @@ pub trait BitcoinClientV012: Send + Sync + TransportTrait + TransportExt + RpcDi
     }
 
     /// Accepts the transaction into mined blocks at a higher (or lower) priority
-    async fn prioritisetransaction(&self, _txid: bitcoin::Txid, _dummy: Option<f64>, _fee_delta: f64) -> Result<PrioritisetransactionResponse, TransportError> {
+    async fn prioritisetransaction(&self, _txid: bitcoin::Txid, _dummy: Option<String>, _fee_delta: f64) -> Result<PrioritisetransactionResponse, TransportError> {
         let params = vec![
             serde_json::json!(_txid),
             serde_json::json!(_dummy),
@@ -1542,7 +1542,7 @@ pub trait BitcoinClientV012: Send + Sync + TransportTrait + TransportExt + RpcDi
     /// EXPERIMENTAL warning: this call may be changed in future releases.
     /// 
     /// Send a transaction.
-    async fn send(&self, _outputs: Vec<serde_json::Value>, _conf_target: Option<u64>, _estimate_mode: Option<String>, _fee_rate: Option<serde_json::Value>, _options: Option<serde_json::Value>) -> Result<SendResponse, TransportError> {
+    async fn send(&self, _outputs: Vec<serde_json::Value>, _conf_target: Option<u64>, _estimate_mode: Option<String>, _fee_rate: Option<f64>, _options: Option<serde_json::Value>) -> Result<SendResponse, TransportError> {
         let params = vec![
             serde_json::json!(_outputs),
             serde_json::json!(_conf_target),
@@ -1558,7 +1558,7 @@ pub trait BitcoinClientV012: Send + Sync + TransportTrait + TransportExt + RpcDi
     /// Spend the value of all (or specific) confirmed UTXOs and unconfirmed change in the wallet to one or more recipients.
     /// Unconfirmed inbound UTXOs and locked UTXOs will not be spent. Sendall will respect the avoid_reuse wallet flag.
     /// If your wallet contains many small inputs, either because it received tiny payments or as a result of accumulating change, consider using `send_max` to exclude inputs that are worth less than the fees needed to spend them.
-    async fn sendall(&self, _recipients: Vec<serde_json::Value>, _conf_target: Option<u64>, _estimate_mode: Option<String>, _fee_rate: Option<serde_json::Value>, _options: Option<serde_json::Value>) -> Result<SendallResponse, TransportError> {
+    async fn sendall(&self, _recipients: Vec<serde_json::Value>, _conf_target: Option<u64>, _estimate_mode: Option<String>, _fee_rate: Option<f64>, _options: Option<serde_json::Value>) -> Result<SendallResponse, TransportError> {
         let params = vec![
             serde_json::json!(_recipients),
             serde_json::json!(_conf_target),
@@ -1571,7 +1571,7 @@ pub trait BitcoinClientV012: Send + Sync + TransportTrait + TransportExt + RpcDi
 
     /// Send multiple times. Amounts are double-precision floating point numbers.
     /// Requires wallet passphrase to be set with walletpassphrase call if wallet is encrypted.
-    async fn sendmany(&self, _dummy: Option<String>, _amounts: serde_json::Value, _minconf: Option<u32>, _comment: Option<String>, _subtractfeefrom: Option<Vec<serde_json::Value>>, _replaceable: Option<bool>, _conf_target: Option<u64>, _estimate_mode: Option<String>, _fee_rate: Option<serde_json::Value>, _verbose: Option<bool>) -> Result<SendmanyResponse, TransportError> {
+    async fn sendmany(&self, _dummy: Option<String>, _amounts: serde_json::Value, _minconf: Option<u32>, _comment: Option<String>, _subtractfeefrom: Option<Vec<serde_json::Value>>, _replaceable: Option<bool>, _conf_target: Option<u64>, _estimate_mode: Option<String>, _fee_rate: Option<f64>, _verbose: Option<bool>) -> Result<SendmanyResponse, TransportError> {
         let params = vec![
             serde_json::json!(_dummy),
             serde_json::json!(_amounts),
@@ -1590,7 +1590,7 @@ pub trait BitcoinClientV012: Send + Sync + TransportTrait + TransportExt + RpcDi
     /// Send a p2p message to a peer specified by id.
     /// The message type and body must be provided, the message header will be generated.
     /// This RPC is for testing only.
-    async fn sendmsgtopeer(&self, _peer_id: f64, _msg_type: String, _msg: String) -> Result<SendmsgtopeerResponse, TransportError> {
+    async fn sendmsgtopeer(&self, _peer_id: u64, _msg_type: String, _msg: String) -> Result<SendmsgtopeerResponse, TransportError> {
         let params = vec![
             serde_json::json!(_peer_id),
             serde_json::json!(_msg_type),
@@ -1608,7 +1608,7 @@ pub trait BitcoinClientV012: Send + Sync + TransportTrait + TransportExt + RpcDi
     /// A specific exception, RPC_TRANSACTION_ALREADY_IN_UTXO_SET, may throw if the transaction cannot be added to the mempool.
     /// 
     /// Related RPCs: createrawtransaction, signrawtransactionwithkey
-    async fn sendrawtransaction(&self, _hexstring: String, _maxfeerate: Option<serde_json::Value>, _maxburnamount: Option<serde_json::Value>) -> Result<SendrawtransactionResponse, TransportError> {
+    async fn sendrawtransaction(&self, _hexstring: String, _maxfeerate: Option<f64>, _maxburnamount: Option<f64>) -> Result<SendrawtransactionResponse, TransportError> {
         let params = vec![
             serde_json::json!(_hexstring),
             serde_json::json!(_maxfeerate),
@@ -1619,7 +1619,7 @@ pub trait BitcoinClientV012: Send + Sync + TransportTrait + TransportExt + RpcDi
 
     /// Send an amount to a given address.
     /// Requires wallet passphrase to be set with walletpassphrase call if wallet is encrypted.
-    async fn sendtoaddress(&self, _address: String, _amount: serde_json::Value, _comment: Option<String>, _comment_to: Option<String>, _subtractfeefromamount: Option<bool>, _replaceable: Option<bool>, _conf_target: Option<u64>, _estimate_mode: Option<String>, _avoid_reuse: Option<bool>, _fee_rate: Option<serde_json::Value>, _verbose: Option<bool>) -> Result<SendtoaddressResponse, TransportError> {
+    async fn sendtoaddress(&self, _address: String, _amount: bitcoin::Amount, _comment: Option<String>, _comment_to: Option<String>, _subtractfeefromamount: Option<bool>, _replaceable: Option<bool>, _conf_target: Option<u64>, _estimate_mode: Option<String>, _avoid_reuse: Option<bool>, _fee_rate: Option<f64>, _verbose: Option<bool>) -> Result<SendtoaddressResponse, TransportError> {
         let params = vec![
             serde_json::json!(_address),
             serde_json::json!(_amount),
@@ -1688,7 +1688,7 @@ pub trait BitcoinClientV012: Send + Sync + TransportTrait + TransportExt + RpcDi
 
     /// Set the transaction fee rate in BTC/kvB for this wallet. Overrides the global -paytxfee command line parameter.
     /// Can be deactivated by passing 0 as the fee. In that case automatic fee selection will be used by default.
-    async fn settxfee(&self, _amount: serde_json::Value) -> Result<SettxfeeResponse, TransportError> {
+    async fn settxfee(&self, _amount: bitcoin::Amount) -> Result<SettxfeeResponse, TransportError> {
         let params = vec![
             serde_json::json!(_amount),
         ];
@@ -1728,7 +1728,7 @@ pub trait BitcoinClientV012: Send + Sync + TransportTrait + TransportExt + RpcDi
     /// keys that will be the only keys used to sign the transaction.
     /// The third optional argument (may be null) is an array of previous transaction outputs that
     /// this transaction depends on but may not yet be in the block chain.
-    async fn signrawtransactionwithkey(&self, _hexstring: String, _privkeys: Vec<serde_json::Value>, _prevtxs: Option<Vec<serde_json::Value>>, _sighashtype: Option<String>) -> Result<SignrawtransactionwithkeyResponse, TransportError> {
+    async fn signrawtransactionwithkey(&self, _hexstring: String, _privkeys: Vec<String>, _prevtxs: Option<Vec<serde_json::Value>>, _sighashtype: Option<String>) -> Result<SignrawtransactionwithkeyResponse, TransportError> {
         let params = vec![
             serde_json::json!(_hexstring),
             serde_json::json!(_privkeys),
@@ -1761,7 +1761,7 @@ pub trait BitcoinClientV012: Send + Sync + TransportTrait + TransportExt + RpcDi
     }
 
     /// Request a graceful shutdown of Bitcoin Core.
-    async fn stop(&self, _wait: Option<f64>) -> Result<StopResponse, TransportError> {
+    async fn stop(&self, _wait: Option<u64>) -> Result<StopResponse, TransportError> {
         let params = vec![
             serde_json::json!(_wait),
         ];
@@ -1791,7 +1791,7 @@ pub trait BitcoinClientV012: Send + Sync + TransportTrait + TransportExt + RpcDi
     /// The package will be validated according to consensus and mempool policy rules. If any transaction passes, it will be accepted to mempool.
     /// This RPC is experimental and the interface may be unstable. Refer to doc/policy/packages.md for documentation on package policies.
     /// Warning: successful submission does not mean the transactions will propagate throughout the network.
-    async fn submitpackage(&self, _package: Vec<serde_json::Value>, _maxfeerate: Option<serde_json::Value>, _maxburnamount: Option<serde_json::Value>) -> Result<SubmitpackageResponse, TransportError> {
+    async fn submitpackage(&self, _package: Vec<serde_json::Value>, _maxfeerate: Option<f64>, _maxburnamount: Option<f64>) -> Result<SubmitpackageResponse, TransportError> {
         let params = vec![
             serde_json::json!(_package),
             serde_json::json!(_maxfeerate),
@@ -1819,7 +1819,7 @@ pub trait BitcoinClientV012: Send + Sync + TransportTrait + TransportExt + RpcDi
     /// This checks if transactions violate the consensus or policy rules.
     /// 
     /// See sendrawtransaction call.
-    async fn testmempoolaccept(&self, _rawtxs: Vec<serde_json::Value>, _maxfeerate: Option<serde_json::Value>) -> Result<TestmempoolacceptResponse, TransportError> {
+    async fn testmempoolaccept(&self, _rawtxs: Vec<serde_json::Value>, _maxfeerate: Option<f64>) -> Result<TestmempoolacceptResponse, TransportError> {
         let params = vec![
             serde_json::json!(_rawtxs),
             serde_json::json!(_maxfeerate),
@@ -1872,7 +1872,7 @@ pub trait BitcoinClientV012: Send + Sync + TransportTrait + TransportExt + RpcDi
     }
 
     /// Verifies blockchain database.
-    async fn verifychain(&self, _checklevel: Option<f64>, _nblocks: Option<u64>) -> Result<VerifychainResponse, TransportError> {
+    async fn verifychain(&self, _checklevel: Option<u32>, _nblocks: Option<u64>) -> Result<VerifychainResponse, TransportError> {
         let params = vec![
             serde_json::json!(_checklevel),
             serde_json::json!(_nblocks),
@@ -1942,7 +1942,7 @@ pub trait BitcoinClientV012: Send + Sync + TransportTrait + TransportExt + RpcDi
     /// Implements the Creator and Updater roles.
     /// All existing inputs must either have their previous output transaction be in the wallet
     /// or be in the UTXO set. Solving data must be provided for non-wallet inputs.
-    async fn walletcreatefundedpsbt(&self, _inputs: Option<Vec<serde_json::Value>>, _outputs: Vec<serde_json::Value>, _locktime: Option<u64>, _options: Option<serde_json::Value>, _bip32derivs: Option<bool>) -> Result<WalletcreatefundedpsbtResponse, TransportError> {
+    async fn walletcreatefundedpsbt(&self, _inputs: Option<Vec<serde_json::Value>>, _outputs: Vec<serde_json::Value>, _locktime: Option<u32>, _options: Option<serde_json::Value>, _bip32derivs: Option<bool>) -> Result<WalletcreatefundedpsbtResponse, TransportError> {
         let params = vec![
             serde_json::json!(_inputs),
             serde_json::json!(_outputs),
@@ -2049,7 +2049,7 @@ impl<T: TransportTrait + TransportExt + ?Sized> WalletTransportExt for T {}
 
 // Provide default implementation for any type that implements TransportTrait + TransportExt
 #[async_trait]
-impl<T: TransportTrait + TransportExt + Send + Sync> BitcoinClientV012 for T {
+impl<T: TransportTrait + TransportExt + Send + Sync> BitcoinClientV28 for T {
     /// Mark in-wallet transaction <txid> as abandoned
     /// This will mark this transaction and all its in-wallet descendants as abandoned which will allow
     /// for their inputs to be respent.  It can be used to replace "stuck" or evicted transactions.
@@ -2087,7 +2087,7 @@ impl<T: TransportTrait + TransportExt + Send + Sync> BitcoinClientV012 for T {
     /// See `importaddress` for watchonly p2sh address support.
     /// If 'label' is specified, assign address to that label.
     /// Note: This command is only compatible with legacy wallets.
-    async fn addmultisigaddress(&self, _nrequired: f64, _keys: Vec<serde_json::Value>, _label: Option<String>, _address_type: Option<String>) -> Result<AddmultisigaddressResponse, TransportError> {
+    async fn addmultisigaddress(&self, _nrequired: u32, _keys: Vec<String>, _label: Option<String>, _address_type: Option<String>) -> Result<AddmultisigaddressResponse, TransportError> {
         let params = vec![
             serde_json::json!(_nrequired),
             serde_json::json!(_keys),
@@ -2112,7 +2112,7 @@ impl<T: TransportTrait + TransportExt + Send + Sync> BitcoinClientV012 for T {
     }
 
     /// Add the address of a potential peer to an address manager table. This RPC is for testing only.
-    async fn addpeeraddress(&self, _address: String, _port: f64, _tried: Option<bool>) -> Result<AddpeeraddressResponse, TransportError> {
+    async fn addpeeraddress(&self, _address: String, _port: u16, _tried: Option<bool>) -> Result<AddpeeraddressResponse, TransportError> {
         let params = vec![
             serde_json::json!(_address),
             serde_json::json!(_port),
@@ -2205,7 +2205,7 @@ impl<T: TransportTrait + TransportExt + Send + Sync> BitcoinClientV012 for T {
 
     /// Creates a multi-signature address with n signature of m keys required.
     /// It returns a json object with the address and redeemScript.
-    async fn createmultisig(&self, _nrequired: f64, _keys: Vec<serde_json::Value>, _address_type: Option<String>) -> Result<CreatemultisigResponse, TransportError> {
+    async fn createmultisig(&self, _nrequired: u32, _keys: Vec<String>, _address_type: Option<String>) -> Result<CreatemultisigResponse, TransportError> {
         let params = vec![
             serde_json::json!(_nrequired),
             serde_json::json!(_keys),
@@ -2216,7 +2216,7 @@ impl<T: TransportTrait + TransportExt + Send + Sync> BitcoinClientV012 for T {
 
     /// Creates a transaction in the Partially Signed Transaction format.
     /// Implements the Creator role.
-    async fn createpsbt(&self, _inputs: Vec<serde_json::Value>, _outputs: Vec<serde_json::Value>, _locktime: Option<u64>, _replaceable: Option<bool>) -> Result<CreatepsbtResponse, TransportError> {
+    async fn createpsbt(&self, _inputs: Vec<serde_json::Value>, _outputs: Vec<serde_json::Value>, _locktime: Option<u32>, _replaceable: Option<bool>) -> Result<CreatepsbtResponse, TransportError> {
         let params = vec![
             serde_json::json!(_inputs),
             serde_json::json!(_outputs),
@@ -2231,7 +2231,7 @@ impl<T: TransportTrait + TransportExt + Send + Sync> BitcoinClientV012 for T {
     /// Returns hex-encoded raw transaction.
     /// Note that the transaction's inputs are not signed, and
     /// it is not stored in the wallet or transmitted to the network.
-    async fn createrawtransaction(&self, _inputs: Vec<serde_json::Value>, _outputs: Vec<serde_json::Value>, _locktime: Option<u64>, _replaceable: Option<bool>) -> Result<CreaterawtransactionResponse, TransportError> {
+    async fn createrawtransaction(&self, _inputs: Vec<serde_json::Value>, _outputs: Vec<serde_json::Value>, _locktime: Option<u32>, _replaceable: Option<bool>) -> Result<CreaterawtransactionResponse, TransportError> {
         let params = vec![
             serde_json::json!(_inputs),
             serde_json::json!(_outputs),
@@ -2328,7 +2328,7 @@ impl<T: TransportTrait + TransportExt + Send + Sync> BitcoinClientV012 for T {
     /// Strictly one out of 'address' and 'nodeid' can be provided to identify the node.
     /// 
     /// To disconnect by nodeid, either set 'address' to the empty string, or call using the named 'nodeid' argument only.
-    async fn disconnectnode(&self, _address: Option<String>, _nodeid: Option<f64>) -> Result<(), TransportError> {
+    async fn disconnectnode(&self, _address: Option<String>, _nodeid: Option<u64>) -> Result<(), TransportError> {
         let params = vec![
             serde_json::json!(_address),
             serde_json::json!(_nodeid),
@@ -2456,7 +2456,7 @@ impl<T: TransportTrait + TransportExt + Send + Sync> BitcoinClientV012 for T {
     /// Estimates the approximate fee per kilobyte needed for a transaction to begin
     /// confirmation within conf_target blocks if possible. Uses virtual transaction size as
     /// defined in BIP 141 (witness data is discounted).
-    async fn estimaterawfee(&self, _conf_target: u64, _threshold: Option<f64>) -> Result<EstimaterawfeeResponse, TransportError> {
+    async fn estimaterawfee(&self, _conf_target: u64, _threshold: Option<u64>) -> Result<EstimaterawfeeResponse, TransportError> {
         let params = vec![
             serde_json::json!(_conf_target),
             serde_json::json!(_threshold),
@@ -2614,7 +2614,7 @@ impl<T: TransportTrait + TransportExt + Send + Sync> BitcoinClientV012 for T {
     /// If verbosity is 1, returns an Object with information about block <hash>.
     /// If verbosity is 2, returns an Object with information about block <hash> and information about each transaction.
     /// If verbosity is 3, returns an Object with information about block <hash> and information about each transaction, including prevout information for inputs (only for unpruned blocks in the current best chain).
-    async fn getblock(&self, _blockhash: bitcoin::BlockHash, _verbosity: Option<f64>) -> Result<GetblockResponse, TransportError> {
+    async fn getblock(&self, _blockhash: bitcoin::BlockHash, _verbosity: Option<u32>) -> Result<GetblockResponse, TransportError> {
         let params = vec![
             serde_json::json!(_blockhash),
             serde_json::json!(_verbosity),
@@ -2658,7 +2658,7 @@ impl<T: TransportTrait + TransportExt + Send + Sync> BitcoinClientV012 for T {
     /// Note: The block could be re-pruned as soon as it is received.
     /// 
     /// Returns an empty JSON object if the request was successfully scheduled.
-    async fn getblockfrompeer(&self, _blockhash: bitcoin::BlockHash, _peer_id: f64) -> Result<GetblockfrompeerResponse, TransportError> {
+    async fn getblockfrompeer(&self, _blockhash: bitcoin::BlockHash, _peer_id: u64) -> Result<GetblockfrompeerResponse, TransportError> {
         let params = vec![
             serde_json::json!(_blockhash),
             serde_json::json!(_peer_id),
@@ -2884,7 +2884,7 @@ impl<T: TransportTrait + TransportExt + Send + Sync> BitcoinClientV012 for T {
     /// Shows transactions in the tx orphanage.
     /// 
     /// EXPERIMENTAL warning: this call may be changed in future releases.
-    async fn getorphantxs(&self, _verbosity: Option<f64>) -> Result<GetorphantxsResponse, TransportError> {
+    async fn getorphantxs(&self, _verbosity: Option<u32>) -> Result<GetorphantxsResponse, TransportError> {
         let params = vec![
             serde_json::json!(_verbosity),
         ];
@@ -2947,7 +2947,7 @@ impl<T: TransportTrait + TransportExt + Send + Sync> BitcoinClientV012 for T {
     /// If verbosity is 0 or omitted, returns the serialized transaction as a hex-encoded string.
     /// If verbosity is 1, returns a JSON Object with information about the transaction.
     /// If verbosity is 2, returns a JSON Object with information about the transaction, including fee and prevout information.
-    async fn getrawtransaction(&self, _txid: bitcoin::Txid, _verbosity: Option<f64>, _blockhash: Option<bitcoin::BlockHash>) -> Result<GetrawtransactionResponse, TransportError> {
+    async fn getrawtransaction(&self, _txid: bitcoin::Txid, _verbosity: Option<u32>, _blockhash: Option<bitcoin::BlockHash>) -> Result<GetrawtransactionResponse, TransportError> {
         let params = vec![
             serde_json::json!(_txid),
             serde_json::json!(_verbosity),
@@ -2985,7 +2985,7 @@ impl<T: TransportTrait + TransportExt + Send + Sync> BitcoinClientV012 for T {
     }
 
     /// Get detailed information about in-wallet transaction <txid>
-    async fn gettransaction(&self, _txid: String, _include_watchonly: Option<bool>, _verbose: Option<bool>) -> Result<GettransactionResponse, TransportError> {
+    async fn gettransaction(&self, _txid: bitcoin::Txid, _include_watchonly: Option<bool>, _verbose: Option<bool>) -> Result<GettransactionResponse, TransportError> {
         let params = vec![
             serde_json::json!(_txid),
             serde_json::json!(_include_watchonly),
@@ -2995,7 +2995,7 @@ impl<T: TransportTrait + TransportExt + Send + Sync> BitcoinClientV012 for T {
     }
 
     /// Returns details about an unspent transaction output.
-    async fn gettxout(&self, _txid: String, _n: f64, _include_mempool: Option<bool>) -> Result<(), TransportError> {
+    async fn gettxout(&self, _txid: bitcoin::Txid, _n: u32, _include_mempool: Option<bool>) -> Result<(), TransportError> {
         let params = vec![
             serde_json::json!(_txid),
             serde_json::json!(_n),
@@ -3010,7 +3010,7 @@ impl<T: TransportTrait + TransportExt + Send + Sync> BitcoinClientV012 for T {
     /// unspent output in the utxo for this transaction. To make it always work,
     /// you need to maintain a transaction index, using the -txindex command line option or
     /// specify the block in which the transaction is included manually (by blockhash).
-    async fn gettxoutproof(&self, _txids: Vec<serde_json::Value>, _blockhash: Option<bitcoin::BlockHash>) -> Result<GettxoutproofResponse, TransportError> {
+    async fn gettxoutproof(&self, _txids: Vec<bitcoin::Txid>, _blockhash: Option<bitcoin::BlockHash>) -> Result<GettxoutproofResponse, TransportError> {
         let params = vec![
             serde_json::json!(_txids),
             serde_json::json!(_blockhash),
@@ -3276,7 +3276,7 @@ impl<T: TransportTrait + TransportExt + Send + Sync> BitcoinClientV012 for T {
     /// Get all transactions in blocks since block [blockhash], or all transactions if omitted.
     /// If "blockhash" is no longer a part of the main chain, transactions from the fork point onward are included.
     /// Additionally, if include_removed is set, transactions affecting the wallet which were removed are returned in the "removed" array.
-    async fn listsinceblock(&self, _blockhash: Option<String>, _target_confirmations: Option<f64>, _include_watchonly: Option<bool>, _include_removed: Option<bool>, _include_change: Option<bool>, _label: Option<String>) -> Result<ListsinceblockResponse, TransportError> {
+    async fn listsinceblock(&self, _blockhash: Option<bitcoin::BlockHash>, _target_confirmations: Option<u64>, _include_watchonly: Option<bool>, _include_removed: Option<bool>, _include_change: Option<bool>, _label: Option<String>) -> Result<ListsinceblockResponse, TransportError> {
         let params = vec![
             serde_json::json!(_blockhash),
             serde_json::json!(_target_confirmations),
@@ -3291,7 +3291,7 @@ impl<T: TransportTrait + TransportExt + Send + Sync> BitcoinClientV012 for T {
     /// If a label name is provided, this will return only incoming transactions paying to addresses with the specified label.
     /// 
     /// Returns up to 'count' most recent transactions skipping the first 'from' transactions.
-    async fn listtransactions(&self, _label: Option<String>, _count: Option<u64>, _skip: Option<f64>, _include_watchonly: Option<bool>) -> Result<ListtransactionsResponse, TransportError> {
+    async fn listtransactions(&self, _label: Option<String>, _count: Option<u64>, _skip: Option<u64>, _include_watchonly: Option<bool>) -> Result<ListtransactionsResponse, TransportError> {
         let params = vec![
             serde_json::json!(_label),
             serde_json::json!(_count),
@@ -3304,7 +3304,7 @@ impl<T: TransportTrait + TransportExt + Send + Sync> BitcoinClientV012 for T {
     /// Returns array of unspent transaction outputs
     /// with between minconf and maxconf (inclusive) confirmations.
     /// Optionally filter to only include txouts paid to specified addresses.
-    async fn listunspent(&self, _minconf: Option<u32>, _maxconf: Option<f64>, _addresses: Option<Vec<bitcoin::Address<bitcoin::address::NetworkUnchecked>>>, _include_unsafe: Option<bool>, _query_options: Option<serde_json::Value>) -> Result<ListunspentResponse, TransportError> {
+    async fn listunspent(&self, _minconf: Option<u32>, _maxconf: Option<u32>, _addresses: Option<Vec<String>>, _include_unsafe: Option<bool>, _query_options: Option<serde_json::Value>) -> Result<ListunspentResponse, TransportError> {
         let params = vec![
             serde_json::json!(_minconf),
             serde_json::json!(_maxconf),
@@ -3452,7 +3452,7 @@ impl<T: TransportTrait + TransportExt + Send + Sync> BitcoinClientV012 for T {
     }
 
     /// Accepts the transaction into mined blocks at a higher (or lower) priority
-    async fn prioritisetransaction(&self, _txid: bitcoin::Txid, _dummy: Option<f64>, _fee_delta: f64) -> Result<PrioritisetransactionResponse, TransportError> {
+    async fn prioritisetransaction(&self, _txid: bitcoin::Txid, _dummy: Option<String>, _fee_delta: f64) -> Result<PrioritisetransactionResponse, TransportError> {
         let params = vec![
             serde_json::json!(_txid),
             serde_json::json!(_dummy),
@@ -3582,7 +3582,7 @@ impl<T: TransportTrait + TransportExt + Send + Sync> BitcoinClientV012 for T {
     /// EXPERIMENTAL warning: this call may be changed in future releases.
     /// 
     /// Send a transaction.
-    async fn send(&self, _outputs: Vec<serde_json::Value>, _conf_target: Option<u64>, _estimate_mode: Option<String>, _fee_rate: Option<serde_json::Value>, _options: Option<serde_json::Value>) -> Result<SendResponse, TransportError> {
+    async fn send(&self, _outputs: Vec<serde_json::Value>, _conf_target: Option<u64>, _estimate_mode: Option<String>, _fee_rate: Option<f64>, _options: Option<serde_json::Value>) -> Result<SendResponse, TransportError> {
         let params = vec![
             serde_json::json!(_outputs),
             serde_json::json!(_conf_target),
@@ -3598,7 +3598,7 @@ impl<T: TransportTrait + TransportExt + Send + Sync> BitcoinClientV012 for T {
     /// Spend the value of all (or specific) confirmed UTXOs and unconfirmed change in the wallet to one or more recipients.
     /// Unconfirmed inbound UTXOs and locked UTXOs will not be spent. Sendall will respect the avoid_reuse wallet flag.
     /// If your wallet contains many small inputs, either because it received tiny payments or as a result of accumulating change, consider using `send_max` to exclude inputs that are worth less than the fees needed to spend them.
-    async fn sendall(&self, _recipients: Vec<serde_json::Value>, _conf_target: Option<u64>, _estimate_mode: Option<String>, _fee_rate: Option<serde_json::Value>, _options: Option<serde_json::Value>) -> Result<SendallResponse, TransportError> {
+    async fn sendall(&self, _recipients: Vec<serde_json::Value>, _conf_target: Option<u64>, _estimate_mode: Option<String>, _fee_rate: Option<f64>, _options: Option<serde_json::Value>) -> Result<SendallResponse, TransportError> {
         let params = vec![
             serde_json::json!(_recipients),
             serde_json::json!(_conf_target),
@@ -3611,7 +3611,7 @@ impl<T: TransportTrait + TransportExt + Send + Sync> BitcoinClientV012 for T {
 
     /// Send multiple times. Amounts are double-precision floating point numbers.
     /// Requires wallet passphrase to be set with walletpassphrase call if wallet is encrypted.
-    async fn sendmany(&self, _dummy: Option<String>, _amounts: serde_json::Value, _minconf: Option<u32>, _comment: Option<String>, _subtractfeefrom: Option<Vec<serde_json::Value>>, _replaceable: Option<bool>, _conf_target: Option<u64>, _estimate_mode: Option<String>, _fee_rate: Option<serde_json::Value>, _verbose: Option<bool>) -> Result<SendmanyResponse, TransportError> {
+    async fn sendmany(&self, _dummy: Option<String>, _amounts: serde_json::Value, _minconf: Option<u32>, _comment: Option<String>, _subtractfeefrom: Option<Vec<serde_json::Value>>, _replaceable: Option<bool>, _conf_target: Option<u64>, _estimate_mode: Option<String>, _fee_rate: Option<f64>, _verbose: Option<bool>) -> Result<SendmanyResponse, TransportError> {
         let params = vec![
             serde_json::json!(_dummy),
             serde_json::json!(_amounts),
@@ -3630,7 +3630,7 @@ impl<T: TransportTrait + TransportExt + Send + Sync> BitcoinClientV012 for T {
     /// Send a p2p message to a peer specified by id.
     /// The message type and body must be provided, the message header will be generated.
     /// This RPC is for testing only.
-    async fn sendmsgtopeer(&self, _peer_id: f64, _msg_type: String, _msg: String) -> Result<SendmsgtopeerResponse, TransportError> {
+    async fn sendmsgtopeer(&self, _peer_id: u64, _msg_type: String, _msg: String) -> Result<SendmsgtopeerResponse, TransportError> {
         let params = vec![
             serde_json::json!(_peer_id),
             serde_json::json!(_msg_type),
@@ -3648,7 +3648,7 @@ impl<T: TransportTrait + TransportExt + Send + Sync> BitcoinClientV012 for T {
     /// A specific exception, RPC_TRANSACTION_ALREADY_IN_UTXO_SET, may throw if the transaction cannot be added to the mempool.
     /// 
     /// Related RPCs: createrawtransaction, signrawtransactionwithkey
-    async fn sendrawtransaction(&self, _hexstring: String, _maxfeerate: Option<serde_json::Value>, _maxburnamount: Option<serde_json::Value>) -> Result<SendrawtransactionResponse, TransportError> {
+    async fn sendrawtransaction(&self, _hexstring: String, _maxfeerate: Option<f64>, _maxburnamount: Option<f64>) -> Result<SendrawtransactionResponse, TransportError> {
         let params = vec![
             serde_json::json!(_hexstring),
             serde_json::json!(_maxfeerate),
@@ -3659,7 +3659,7 @@ impl<T: TransportTrait + TransportExt + Send + Sync> BitcoinClientV012 for T {
 
     /// Send an amount to a given address.
     /// Requires wallet passphrase to be set with walletpassphrase call if wallet is encrypted.
-    async fn sendtoaddress(&self, _address: String, _amount: serde_json::Value, _comment: Option<String>, _comment_to: Option<String>, _subtractfeefromamount: Option<bool>, _replaceable: Option<bool>, _conf_target: Option<u64>, _estimate_mode: Option<String>, _avoid_reuse: Option<bool>, _fee_rate: Option<serde_json::Value>, _verbose: Option<bool>) -> Result<SendtoaddressResponse, TransportError> {
+    async fn sendtoaddress(&self, _address: String, _amount: bitcoin::Amount, _comment: Option<String>, _comment_to: Option<String>, _subtractfeefromamount: Option<bool>, _replaceable: Option<bool>, _conf_target: Option<u64>, _estimate_mode: Option<String>, _avoid_reuse: Option<bool>, _fee_rate: Option<f64>, _verbose: Option<bool>) -> Result<SendtoaddressResponse, TransportError> {
         let params = vec![
             serde_json::json!(_address),
             serde_json::json!(_amount),
@@ -3728,7 +3728,7 @@ impl<T: TransportTrait + TransportExt + Send + Sync> BitcoinClientV012 for T {
 
     /// Set the transaction fee rate in BTC/kvB for this wallet. Overrides the global -paytxfee command line parameter.
     /// Can be deactivated by passing 0 as the fee. In that case automatic fee selection will be used by default.
-    async fn settxfee(&self, _amount: serde_json::Value) -> Result<SettxfeeResponse, TransportError> {
+    async fn settxfee(&self, _amount: bitcoin::Amount) -> Result<SettxfeeResponse, TransportError> {
         let params = vec![
             serde_json::json!(_amount),
         ];
@@ -3768,7 +3768,7 @@ impl<T: TransportTrait + TransportExt + Send + Sync> BitcoinClientV012 for T {
     /// keys that will be the only keys used to sign the transaction.
     /// The third optional argument (may be null) is an array of previous transaction outputs that
     /// this transaction depends on but may not yet be in the block chain.
-    async fn signrawtransactionwithkey(&self, _hexstring: String, _privkeys: Vec<serde_json::Value>, _prevtxs: Option<Vec<serde_json::Value>>, _sighashtype: Option<String>) -> Result<SignrawtransactionwithkeyResponse, TransportError> {
+    async fn signrawtransactionwithkey(&self, _hexstring: String, _privkeys: Vec<String>, _prevtxs: Option<Vec<serde_json::Value>>, _sighashtype: Option<String>) -> Result<SignrawtransactionwithkeyResponse, TransportError> {
         let params = vec![
             serde_json::json!(_hexstring),
             serde_json::json!(_privkeys),
@@ -3801,7 +3801,7 @@ impl<T: TransportTrait + TransportExt + Send + Sync> BitcoinClientV012 for T {
     }
 
     /// Request a graceful shutdown of Bitcoin Core.
-    async fn stop(&self, _wait: Option<f64>) -> Result<StopResponse, TransportError> {
+    async fn stop(&self, _wait: Option<u64>) -> Result<StopResponse, TransportError> {
         let params = vec![
             serde_json::json!(_wait),
         ];
@@ -3831,7 +3831,7 @@ impl<T: TransportTrait + TransportExt + Send + Sync> BitcoinClientV012 for T {
     /// The package will be validated according to consensus and mempool policy rules. If any transaction passes, it will be accepted to mempool.
     /// This RPC is experimental and the interface may be unstable. Refer to doc/policy/packages.md for documentation on package policies.
     /// Warning: successful submission does not mean the transactions will propagate throughout the network.
-    async fn submitpackage(&self, _package: Vec<serde_json::Value>, _maxfeerate: Option<serde_json::Value>, _maxburnamount: Option<serde_json::Value>) -> Result<SubmitpackageResponse, TransportError> {
+    async fn submitpackage(&self, _package: Vec<serde_json::Value>, _maxfeerate: Option<f64>, _maxburnamount: Option<f64>) -> Result<SubmitpackageResponse, TransportError> {
         let params = vec![
             serde_json::json!(_package),
             serde_json::json!(_maxfeerate),
@@ -3859,7 +3859,7 @@ impl<T: TransportTrait + TransportExt + Send + Sync> BitcoinClientV012 for T {
     /// This checks if transactions violate the consensus or policy rules.
     /// 
     /// See sendrawtransaction call.
-    async fn testmempoolaccept(&self, _rawtxs: Vec<serde_json::Value>, _maxfeerate: Option<serde_json::Value>) -> Result<TestmempoolacceptResponse, TransportError> {
+    async fn testmempoolaccept(&self, _rawtxs: Vec<serde_json::Value>, _maxfeerate: Option<f64>) -> Result<TestmempoolacceptResponse, TransportError> {
         let params = vec![
             serde_json::json!(_rawtxs),
             serde_json::json!(_maxfeerate),
@@ -3912,7 +3912,7 @@ impl<T: TransportTrait + TransportExt + Send + Sync> BitcoinClientV012 for T {
     }
 
     /// Verifies blockchain database.
-    async fn verifychain(&self, _checklevel: Option<f64>, _nblocks: Option<u64>) -> Result<VerifychainResponse, TransportError> {
+    async fn verifychain(&self, _checklevel: Option<u32>, _nblocks: Option<u64>) -> Result<VerifychainResponse, TransportError> {
         let params = vec![
             serde_json::json!(_checklevel),
             serde_json::json!(_nblocks),
@@ -3982,7 +3982,7 @@ impl<T: TransportTrait + TransportExt + Send + Sync> BitcoinClientV012 for T {
     /// Implements the Creator and Updater roles.
     /// All existing inputs must either have their previous output transaction be in the wallet
     /// or be in the UTXO set. Solving data must be provided for non-wallet inputs.
-    async fn walletcreatefundedpsbt(&self, _inputs: Option<Vec<serde_json::Value>>, _outputs: Vec<serde_json::Value>, _locktime: Option<u64>, _options: Option<serde_json::Value>, _bip32derivs: Option<bool>) -> Result<WalletcreatefundedpsbtResponse, TransportError> {
+    async fn walletcreatefundedpsbt(&self, _inputs: Option<Vec<serde_json::Value>>, _outputs: Vec<serde_json::Value>, _locktime: Option<u32>, _options: Option<serde_json::Value>, _bip32derivs: Option<bool>) -> Result<WalletcreatefundedpsbtResponse, TransportError> {
         let params = vec![
             serde_json::json!(_inputs),
             serde_json::json!(_outputs),

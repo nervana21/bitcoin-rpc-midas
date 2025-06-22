@@ -7,7 +7,7 @@
 /// ```rust
 /// use bitcoin_rpc_codegen::client::latest::gettransaction;
 ///
-/// let client = Client::new("http://127.0.0.1:8332", auth);
+/// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.gettransaction(/* params */).await?;
 /// ```
 
@@ -17,10 +17,10 @@ use transport::{TransportTrait, TransportError};
 /// Get detailed information about in-wallet transaction <txid>
 #[derive(Debug, Deserialize, Serialize)]
 pub struct GettransactionResponse {
-    pub amount: serde_json::Value,
+    pub amount: f64,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub fee: Option<serde_json::Value>,
-    pub confirmations: f64,
+    pub fee: Option<f64>,
+    pub confirmations: u64,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub generated: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]

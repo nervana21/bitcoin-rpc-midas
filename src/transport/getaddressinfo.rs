@@ -8,7 +8,7 @@
 /// ```rust
 /// use bitcoin_rpc_codegen::client::latest::getaddressinfo;
 ///
-/// let client = Client::new("http://127.0.0.1:8332", auth);
+/// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.getaddressinfo(/* params */).await?;
 /// ```
 
@@ -41,9 +41,9 @@ pub struct GetaddressinfoResponse {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub hex: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub pubkeys: Option<Vec<serde_json::Value>>,
+    pub pubkeys: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub sigsrequired: Option<f64>,
+    pub sigsrequired: Option<u64>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub pubkey: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
