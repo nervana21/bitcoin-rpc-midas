@@ -11,12 +11,11 @@
 /// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.getblockstats(/* params */).await?;
 /// ```
-
 use serde::{Deserialize, Serialize};
-use serde_json::{Value, json};
-use transport::{TransportTrait, TransportError};
+use serde_json::{json, Value};
+use transport::{TransportError, TransportTrait};
 /// Compute per block statistics for a given window. All amounts are in satoshis.
-    /// It won't work for some heights with pruning.
+/// It won't work for some heights with pruning.
 #[derive(Debug, Deserialize, Serialize)]
 pub struct GetblockstatsResponse {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -83,12 +82,14 @@ pub struct GetblockstatsResponse {
     pub utxo_size_inc_actual: Option<u64>,
 }
 
-
-
 /// Calls the `getblockstats` RPC method.
 ///
 /// Generated transport wrapper for JSON-RPC.
-pub async fn getblockstats(transport: &dyn TransportTrait, hash_or_height: serde_json::Value, stats: serde_json::Value) -> Result<GetblockstatsResponse, TransportError> {
+pub async fn getblockstats(
+    transport: &dyn TransportTrait,
+    hash_or_height: serde_json::Value,
+    stats: serde_json::Value,
+) -> Result<GetblockstatsResponse, TransportError> {
     let params = vec![json!(hash_or_height), json!(stats)];
     let raw = transport.send_request("getblockstats", &params).await?;
     Ok(serde_json::from_value::<GetblockstatsResponse>(raw)?)

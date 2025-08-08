@@ -10,10 +10,9 @@
 /// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.getwalletinfo().await?;
 /// ```
-
 use serde::{Deserialize, Serialize};
-use serde_json::{Value, json};
-use transport::{TransportTrait, TransportError};
+use serde_json::{json, Value};
+use transport::{TransportError, TransportTrait};
 /// Returns an object containing various wallet state info.
 #[derive(Debug, Deserialize, Serialize)]
 pub struct GetwalletinfoResponse {
@@ -39,12 +38,12 @@ pub struct GetwalletinfoResponse {
     pub lastprocessedblock: serde_json::Value,
 }
 
-
-
 /// Calls the `getwalletinfo` RPC method.
 ///
 /// Generated transport wrapper for JSON-RPC.
-pub async fn getwalletinfo(transport: &dyn TransportTrait) -> Result<GetwalletinfoResponse, TransportError> {
+pub async fn getwalletinfo(
+    transport: &dyn TransportTrait,
+) -> Result<GetwalletinfoResponse, TransportError> {
     let params = Vec::<Value>::new();
     let raw = transport.send_request("getwalletinfo", &params).await?;
     Ok(serde_json::from_value::<GetwalletinfoResponse>(raw)?)

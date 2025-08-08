@@ -10,10 +10,9 @@
 /// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.gettransaction(/* params */).await?;
 /// ```
-
 use serde::{Deserialize, Serialize};
-use serde_json::{Value, json};
-use transport::{TransportTrait, TransportError};
+use serde_json::{json, Value};
+use transport::{TransportError, TransportTrait};
 /// Get detailed information about in-wallet transaction <txid>
 #[derive(Debug, Deserialize, Serialize)]
 pub struct GettransactionResponse {
@@ -57,12 +56,15 @@ pub struct GettransactionResponse {
     pub lastprocessedblock: serde_json::Value,
 }
 
-
-
 /// Calls the `gettransaction` RPC method.
 ///
 /// Generated transport wrapper for JSON-RPC.
-pub async fn gettransaction(transport: &dyn TransportTrait, txid: serde_json::Value, include_watchonly: serde_json::Value, verbose: serde_json::Value) -> Result<GettransactionResponse, TransportError> {
+pub async fn gettransaction(
+    transport: &dyn TransportTrait,
+    txid: serde_json::Value,
+    include_watchonly: serde_json::Value,
+    verbose: serde_json::Value,
+) -> Result<GettransactionResponse, TransportError> {
     let params = vec![json!(txid), json!(include_watchonly), json!(verbose)];
     let raw = transport.send_request("gettransaction", &params).await?;
     Ok(serde_json::from_value::<GettransactionResponse>(raw)?)

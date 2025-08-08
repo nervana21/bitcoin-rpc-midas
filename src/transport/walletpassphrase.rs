@@ -14,16 +14,18 @@
 /// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.walletpassphrase(/* params */).await?;
 /// ```
-
 use serde::{Deserialize, Serialize};
-use serde_json::{Value, json};
-use transport::{TransportTrait, TransportError};
-
+use serde_json::{json, Value};
+use transport::{TransportError, TransportTrait};
 
 /// Calls the `walletpassphrase` RPC method.
 ///
 /// Generated transport wrapper for JSON-RPC.
-pub async fn walletpassphrase(transport: &dyn TransportTrait, passphrase: serde_json::Value, timeout: serde_json::Value) -> Result<Value, TransportError> {
+pub async fn walletpassphrase(
+    transport: &dyn TransportTrait,
+    passphrase: serde_json::Value,
+    timeout: serde_json::Value,
+) -> Result<Value, TransportError> {
     let params = vec![json!(passphrase), json!(timeout)];
     let raw = transport.send_request("walletpassphrase", &params).await?;
     Ok(raw)

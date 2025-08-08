@@ -11,13 +11,12 @@
 /// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.send(/* params */).await?;
 /// ```
-
 use serde::{Deserialize, Serialize};
-use serde_json::{Value, json};
-use transport::{TransportTrait, TransportError};
+use serde_json::{json, Value};
+use transport::{TransportError, TransportTrait};
 /// EXPERIMENTAL warning: this call may be changed in future releases.
-    /// 
-    /// Send a transaction.
+///
+/// Send a transaction.
 #[derive(Debug, Deserialize, Serialize)]
 pub struct SendResponse {
     pub complete: bool,
@@ -29,13 +28,24 @@ pub struct SendResponse {
     pub psbt: Option<String>,
 }
 
-
-
 /// Calls the `send` RPC method.
 ///
 /// Generated transport wrapper for JSON-RPC.
-pub async fn send(transport: &dyn TransportTrait, outputs: serde_json::Value, conf_target: serde_json::Value, estimate_mode: serde_json::Value, fee_rate: serde_json::Value, options: serde_json::Value) -> Result<SendResponse, TransportError> {
-    let params = vec![json!(outputs), json!(conf_target), json!(estimate_mode), json!(fee_rate), json!(options)];
+pub async fn send(
+    transport: &dyn TransportTrait,
+    outputs: serde_json::Value,
+    conf_target: serde_json::Value,
+    estimate_mode: serde_json::Value,
+    fee_rate: serde_json::Value,
+    options: serde_json::Value,
+) -> Result<SendResponse, TransportError> {
+    let params = vec![
+        json!(outputs),
+        json!(conf_target),
+        json!(estimate_mode),
+        json!(fee_rate),
+        json!(options),
+    ];
     let raw = transport.send_request("send", &params).await?;
     Ok(serde_json::from_value::<SendResponse>(raw)?)
 }

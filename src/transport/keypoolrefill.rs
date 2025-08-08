@@ -12,16 +12,17 @@
 /// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.keypoolrefill(/* params */).await?;
 /// ```
-
 use serde::{Deserialize, Serialize};
-use serde_json::{Value, json};
-use transport::{TransportTrait, TransportError};
-
+use serde_json::{json, Value};
+use transport::{TransportError, TransportTrait};
 
 /// Calls the `keypoolrefill` RPC method.
 ///
 /// Generated transport wrapper for JSON-RPC.
-pub async fn keypoolrefill(transport: &dyn TransportTrait, newsize: serde_json::Value) -> Result<Value, TransportError> {
+pub async fn keypoolrefill(
+    transport: &dyn TransportTrait,
+    newsize: serde_json::Value,
+) -> Result<Value, TransportError> {
     let params = vec![json!(newsize)];
     let raw = transport.send_request("keypoolrefill", &params).await?;
     Ok(raw)

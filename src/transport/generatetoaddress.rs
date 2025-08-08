@@ -10,21 +10,23 @@
 /// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.generatetoaddress(/* params */).await?;
 /// ```
-
 use serde::{Deserialize, Serialize};
-use serde_json::{Value, json};
-use transport::{TransportTrait, TransportError};
+use serde_json::{json, Value};
+use transport::{TransportError, TransportTrait};
 /// Mine to a specified address and return the block hashes.
 #[derive(Debug, Deserialize, Serialize)]
 #[serde(transparent)]
 pub struct GeneratetoaddressResponse(pub Vec<serde_json::Value>);
 
-
-
 /// Calls the `generatetoaddress` RPC method.
 ///
 /// Generated transport wrapper for JSON-RPC.
-pub async fn generatetoaddress(transport: &dyn TransportTrait, nblocks: serde_json::Value, address: serde_json::Value, maxtries: serde_json::Value) -> Result<GeneratetoaddressResponse, TransportError> {
+pub async fn generatetoaddress(
+    transport: &dyn TransportTrait,
+    nblocks: serde_json::Value,
+    address: serde_json::Value,
+    maxtries: serde_json::Value,
+) -> Result<GeneratetoaddressResponse, TransportError> {
     let params = vec![json!(nblocks), json!(address), json!(maxtries)];
     let raw = transport.send_request("generatetoaddress", &params).await?;
     Ok(serde_json::from_value::<GeneratetoaddressResponse>(raw)?)

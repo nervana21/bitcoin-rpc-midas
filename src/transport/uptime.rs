@@ -10,16 +10,13 @@
 /// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.uptime().await?;
 /// ```
-
 use serde::{Deserialize, Serialize};
-use serde_json::{Value, json};
-use transport::{TransportTrait, TransportError};
+use serde_json::{json, Value};
+use transport::{TransportError, TransportTrait};
 /// Returns the total uptime of the server.
 #[derive(Debug, Deserialize, Serialize)]
 #[serde(transparent)]
 pub struct UptimeResponse(pub u64);
-
-
 
 /// Calls the `uptime` RPC method.
 ///

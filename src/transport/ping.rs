@@ -12,11 +12,9 @@
 /// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.ping().await?;
 /// ```
-
 use serde::{Deserialize, Serialize};
-use serde_json::{Value, json};
-use transport::{TransportTrait, TransportError};
-
+use serde_json::{json, Value};
+use transport::{TransportError, TransportTrait};
 
 /// Calls the `ping` RPC method.
 ///

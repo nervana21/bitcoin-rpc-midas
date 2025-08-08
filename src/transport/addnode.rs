@@ -14,16 +14,19 @@
 /// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.addnode(/* params */).await?;
 /// ```
-
 use serde::{Deserialize, Serialize};
-use serde_json::{Value, json};
-use transport::{TransportTrait, TransportError};
-
+use serde_json::{json, Value};
+use transport::{TransportError, TransportTrait};
 
 /// Calls the `addnode` RPC method.
 ///
 /// Generated transport wrapper for JSON-RPC.
-pub async fn addnode(transport: &dyn TransportTrait, node: serde_json::Value, command: serde_json::Value, v2transport: serde_json::Value) -> Result<Value, TransportError> {
+pub async fn addnode(
+    transport: &dyn TransportTrait,
+    node: serde_json::Value,
+    command: serde_json::Value,
+    v2transport: serde_json::Value,
+) -> Result<Value, TransportError> {
     let params = vec![json!(node), json!(command), json!(v2transport)];
     let raw = transport.send_request("addnode", &params).await?;
     Ok(raw)

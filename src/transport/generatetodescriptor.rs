@@ -10,22 +10,26 @@
 /// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.generatetodescriptor(/* params */).await?;
 /// ```
-
 use serde::{Deserialize, Serialize};
-use serde_json::{Value, json};
-use transport::{TransportTrait, TransportError};
+use serde_json::{json, Value};
+use transport::{TransportError, TransportTrait};
 /// Mine to a specified descriptor and return the block hashes.
 #[derive(Debug, Deserialize, Serialize)]
 #[serde(transparent)]
 pub struct GeneratetodescriptorResponse(pub Vec<serde_json::Value>);
 
-
-
 /// Calls the `generatetodescriptor` RPC method.
 ///
 /// Generated transport wrapper for JSON-RPC.
-pub async fn generatetodescriptor(transport: &dyn TransportTrait, num_blocks: serde_json::Value, descriptor: serde_json::Value, maxtries: serde_json::Value) -> Result<GeneratetodescriptorResponse, TransportError> {
+pub async fn generatetodescriptor(
+    transport: &dyn TransportTrait,
+    num_blocks: serde_json::Value,
+    descriptor: serde_json::Value,
+    maxtries: serde_json::Value,
+) -> Result<GeneratetodescriptorResponse, TransportError> {
     let params = vec![json!(num_blocks), json!(descriptor), json!(maxtries)];
-    let raw = transport.send_request("generatetodescriptor", &params).await?;
+    let raw = transport
+        .send_request("generatetodescriptor", &params)
+        .await?;
     Ok(serde_json::from_value::<GeneratetodescriptorResponse>(raw)?)
 }

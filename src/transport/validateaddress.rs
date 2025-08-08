@@ -10,10 +10,9 @@
 /// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.validateaddress(/* params */).await?;
 /// ```
-
 use serde::{Deserialize, Serialize};
-use serde_json::{Value, json};
-use transport::{TransportTrait, TransportError};
+use serde_json::{json, Value};
+use transport::{TransportError, TransportTrait};
 /// Return information about the given bitcoin address.
 #[derive(Debug, Deserialize, Serialize)]
 pub struct ValidateaddressResponse {
@@ -36,12 +35,13 @@ pub struct ValidateaddressResponse {
     pub error_locations: Option<Vec<serde_json::Value>>,
 }
 
-
-
 /// Calls the `validateaddress` RPC method.
 ///
 /// Generated transport wrapper for JSON-RPC.
-pub async fn validateaddress(transport: &dyn TransportTrait, address: serde_json::Value) -> Result<ValidateaddressResponse, TransportError> {
+pub async fn validateaddress(
+    transport: &dyn TransportTrait,
+    address: serde_json::Value,
+) -> Result<ValidateaddressResponse, TransportError> {
     let params = vec![json!(address)];
     let raw = transport.send_request("validateaddress", &params).await?;
     Ok(serde_json::from_value::<ValidateaddressResponse>(raw)?)

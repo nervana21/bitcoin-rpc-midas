@@ -10,22 +10,23 @@
 /// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.getzmqnotifications().await?;
 /// ```
-
 use serde::{Deserialize, Serialize};
-use serde_json::{Value, json};
-use transport::{TransportTrait, TransportError};
+use serde_json::{json, Value};
+use transport::{TransportError, TransportTrait};
 /// Returns information about the active ZeroMQ notifications.
 #[derive(Debug, Deserialize, Serialize)]
 #[serde(transparent)]
 pub struct GetzmqnotificationsResponse(pub Vec<serde_json::Value>);
 
-
-
 /// Calls the `getzmqnotifications` RPC method.
 ///
 /// Generated transport wrapper for JSON-RPC.
-pub async fn getzmqnotifications(transport: &dyn TransportTrait) -> Result<GetzmqnotificationsResponse, TransportError> {
+pub async fn getzmqnotifications(
+    transport: &dyn TransportTrait,
+) -> Result<GetzmqnotificationsResponse, TransportError> {
     let params = Vec::<Value>::new();
-    let raw = transport.send_request("getzmqnotifications", &params).await?;
+    let raw = transport
+        .send_request("getzmqnotifications", &params)
+        .await?;
     Ok(serde_json::from_value::<GetzmqnotificationsResponse>(raw)?)
 }

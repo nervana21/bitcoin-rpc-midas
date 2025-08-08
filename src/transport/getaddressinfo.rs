@@ -11,12 +11,11 @@
 /// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.getaddressinfo(/* params */).await?;
 /// ```
-
 use serde::{Deserialize, Serialize};
-use serde_json::{Value, json};
-use transport::{TransportTrait, TransportError};
+use serde_json::{json, Value};
+use transport::{TransportError, TransportTrait};
 /// Return information about the given bitcoin address.
-    /// Some of the information will only be present if the address is in the active wallet.
+/// Some of the information will only be present if the address is in the active wallet.
 #[derive(Debug, Deserialize, Serialize)]
 pub struct GetaddressinfoResponse {
     pub address: String,
@@ -61,12 +60,13 @@ pub struct GetaddressinfoResponse {
     pub labels: Vec<serde_json::Value>,
 }
 
-
-
 /// Calls the `getaddressinfo` RPC method.
 ///
 /// Generated transport wrapper for JSON-RPC.
-pub async fn getaddressinfo(transport: &dyn TransportTrait, address: serde_json::Value) -> Result<GetaddressinfoResponse, TransportError> {
+pub async fn getaddressinfo(
+    transport: &dyn TransportTrait,
+    address: serde_json::Value,
+) -> Result<GetaddressinfoResponse, TransportError> {
     let params = vec![json!(address)];
     let raw = transport.send_request("getaddressinfo", &params).await?;
     Ok(serde_json::from_value::<GetaddressinfoResponse>(raw)?)

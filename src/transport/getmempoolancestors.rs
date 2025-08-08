@@ -10,24 +10,27 @@
 /// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.getmempoolancestors(/* params */).await?;
 /// ```
-
 use serde::{Deserialize, Serialize};
-use serde_json::{Value, json};
-use transport::{TransportTrait, TransportError};
+use serde_json::{json, Value};
+use transport::{TransportError, TransportTrait};
 /// If txid is in the mempool, returns all in-mempool ancestors.
 #[derive(Debug, Deserialize, Serialize)]
 pub struct GetmempoolancestorsResponse {
-        #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub transactionid: Option<serde_json::Value>,
 }
-
-
 
 /// Calls the `getmempoolancestors` RPC method.
 ///
 /// Generated transport wrapper for JSON-RPC.
-pub async fn getmempoolancestors(transport: &dyn TransportTrait, txid: serde_json::Value, verbose: serde_json::Value) -> Result<GetmempoolancestorsResponse, TransportError> {
+pub async fn getmempoolancestors(
+    transport: &dyn TransportTrait,
+    txid: serde_json::Value,
+    verbose: serde_json::Value,
+) -> Result<GetmempoolancestorsResponse, TransportError> {
     let params = vec![json!(txid), json!(verbose)];
-    let raw = transport.send_request("getmempoolancestors", &params).await?;
+    let raw = transport
+        .send_request("getmempoolancestors", &params)
+        .await?;
     Ok(serde_json::from_value::<GetmempoolancestorsResponse>(raw)?)
 }

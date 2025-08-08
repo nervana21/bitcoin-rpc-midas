@@ -1301,4 +1301,3 @@ pub struct WalletprocesspsbtParams {
     pub bip32derivs: bool,
     pub finalize: bool,
 }
-

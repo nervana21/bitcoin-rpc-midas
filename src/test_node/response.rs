@@ -600,4 +600,3 @@ pub struct WalletpassphrasechangeResponse(pub serde_json::Value);
 #[derive(Debug, Deserialize)]
 #[serde(transparent)]
 pub struct WalletprocesspsbtResponse(pub serde_json::Value);
-

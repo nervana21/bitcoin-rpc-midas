@@ -10,16 +10,17 @@
 /// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.setmocktime(/* params */).await?;
 /// ```
-
 use serde::{Deserialize, Serialize};
-use serde_json::{Value, json};
-use transport::{TransportTrait, TransportError};
-
+use serde_json::{json, Value};
+use transport::{TransportError, TransportTrait};
 
 /// Calls the `setmocktime` RPC method.
 ///
 /// Generated transport wrapper for JSON-RPC.
-pub async fn setmocktime(transport: &dyn TransportTrait, timestamp: serde_json::Value) -> Result<Value, TransportError> {
+pub async fn setmocktime(
+    transport: &dyn TransportTrait,
+    timestamp: serde_json::Value,
+) -> Result<Value, TransportError> {
     let params = vec![json!(timestamp)];
     let raw = transport.send_request("setmocktime", &params).await?;
     Ok(raw)

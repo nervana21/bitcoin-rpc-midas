@@ -10,10 +10,9 @@
 /// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.getmempoolinfo().await?;
 /// ```
-
 use serde::{Deserialize, Serialize};
-use serde_json::{Value, json};
-use transport::{TransportTrait, TransportError};
+use serde_json::{json, Value};
+use transport::{TransportError, TransportTrait};
 /// Returns details on the active state of the TX memory pool.
 #[derive(Debug, Deserialize, Serialize)]
 pub struct GetmempoolinfoResponse {
@@ -32,12 +31,12 @@ pub struct GetmempoolinfoResponse {
     pub maxdatacarriersize: u64,
 }
 
-
-
 /// Calls the `getmempoolinfo` RPC method.
 ///
 /// Generated transport wrapper for JSON-RPC.
-pub async fn getmempoolinfo(transport: &dyn TransportTrait) -> Result<GetmempoolinfoResponse, TransportError> {
+pub async fn getmempoolinfo(
+    transport: &dyn TransportTrait,
+) -> Result<GetmempoolinfoResponse, TransportError> {
     let params = Vec::<Value>::new();
     let raw = transport.send_request("getmempoolinfo", &params).await?;
     Ok(serde_json::from_value::<GetmempoolinfoResponse>(raw)?)

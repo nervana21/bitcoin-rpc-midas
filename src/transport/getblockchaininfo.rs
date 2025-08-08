@@ -10,10 +10,9 @@
 /// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.getblockchaininfo().await?;
 /// ```
-
 use serde::{Deserialize, Serialize};
-use serde_json::{Value, json};
-use transport::{TransportTrait, TransportError};
+use serde_json::{json, Value};
+use transport::{TransportError, TransportTrait};
 /// Returns an object containing various state info regarding blockchain processing.
 #[derive(Debug, Deserialize, Serialize)]
 pub struct GetblockchaininfoResponse {
@@ -42,12 +41,12 @@ pub struct GetblockchaininfoResponse {
     pub warnings: Vec<serde_json::Value>,
 }
 
-
-
 /// Calls the `getblockchaininfo` RPC method.
 ///
 /// Generated transport wrapper for JSON-RPC.
-pub async fn getblockchaininfo(transport: &dyn TransportTrait) -> Result<GetblockchaininfoResponse, TransportError> {
+pub async fn getblockchaininfo(
+    transport: &dyn TransportTrait,
+) -> Result<GetblockchaininfoResponse, TransportError> {
     let params = Vec::<Value>::new();
     let raw = transport.send_request("getblockchaininfo", &params).await?;
     Ok(serde_json::from_value::<GetblockchaininfoResponse>(raw)?)

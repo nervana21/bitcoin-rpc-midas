@@ -10,10 +10,9 @@
 /// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.getchaintxstats(/* params */).await?;
 /// ```
-
 use serde::{Deserialize, Serialize};
-use serde_json::{Value, json};
-use transport::{TransportTrait, TransportError};
+use serde_json::{json, Value};
+use transport::{TransportError, TransportTrait};
 /// Compute statistics about the total number and rate of transactions in the chain.
 #[derive(Debug, Deserialize, Serialize)]
 pub struct GetchaintxstatsResponse {
@@ -31,12 +30,14 @@ pub struct GetchaintxstatsResponse {
     pub txrate: Option<f64>,
 }
 
-
-
 /// Calls the `getchaintxstats` RPC method.
 ///
 /// Generated transport wrapper for JSON-RPC.
-pub async fn getchaintxstats(transport: &dyn TransportTrait, nblocks: serde_json::Value, blockhash: serde_json::Value) -> Result<GetchaintxstatsResponse, TransportError> {
+pub async fn getchaintxstats(
+    transport: &dyn TransportTrait,
+    nblocks: serde_json::Value,
+    blockhash: serde_json::Value,
+) -> Result<GetchaintxstatsResponse, TransportError> {
     let params = vec![json!(nblocks), json!(blockhash)];
     let raw = transport.send_request("getchaintxstats", &params).await?;
     Ok(serde_json::from_value::<GetchaintxstatsResponse>(raw)?)

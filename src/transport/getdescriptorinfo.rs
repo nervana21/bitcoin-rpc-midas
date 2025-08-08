@@ -10,10 +10,9 @@
 /// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.getdescriptorinfo(/* params */).await?;
 /// ```
-
 use serde::{Deserialize, Serialize};
-use serde_json::{Value, json};
-use transport::{TransportTrait, TransportError};
+use serde_json::{json, Value};
+use transport::{TransportError, TransportTrait};
 /// Analyses a descriptor.
 #[derive(Debug, Deserialize, Serialize)]
 pub struct GetdescriptorinfoResponse {
@@ -26,12 +25,13 @@ pub struct GetdescriptorinfoResponse {
     pub hasprivatekeys: bool,
 }
 
-
-
 /// Calls the `getdescriptorinfo` RPC method.
 ///
 /// Generated transport wrapper for JSON-RPC.
-pub async fn getdescriptorinfo(transport: &dyn TransportTrait, descriptor: serde_json::Value) -> Result<GetdescriptorinfoResponse, TransportError> {
+pub async fn getdescriptorinfo(
+    transport: &dyn TransportTrait,
+    descriptor: serde_json::Value,
+) -> Result<GetdescriptorinfoResponse, TransportError> {
     let params = vec![json!(descriptor)];
     let raw = transport.send_request("getdescriptorinfo", &params).await?;
     Ok(serde_json::from_value::<GetdescriptorinfoResponse>(raw)?)

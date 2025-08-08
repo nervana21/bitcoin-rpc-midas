@@ -10,21 +10,21 @@
 /// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.gethdkeys(/* params */).await?;
 /// ```
-
 use serde::{Deserialize, Serialize};
-use serde_json::{Value, json};
-use transport::{TransportTrait, TransportError};
+use serde_json::{json, Value};
+use transport::{TransportError, TransportTrait};
 /// List all BIP 32 HD keys in the wallet and which descriptors use them.
 #[derive(Debug, Deserialize, Serialize)]
 #[serde(transparent)]
 pub struct GethdkeysResponse(pub Vec<serde_json::Value>);
 
-
-
 /// Calls the `gethdkeys` RPC method.
 ///
 /// Generated transport wrapper for JSON-RPC.
-pub async fn gethdkeys(transport: &dyn TransportTrait, options: serde_json::Value) -> Result<GethdkeysResponse, TransportError> {
+pub async fn gethdkeys(
+    transport: &dyn TransportTrait,
+    options: serde_json::Value,
+) -> Result<GethdkeysResponse, TransportError> {
     let params = vec![json!(options)];
     let raw = transport.send_request("gethdkeys", &params).await?;
     Ok(serde_json::from_value::<GethdkeysResponse>(raw)?)

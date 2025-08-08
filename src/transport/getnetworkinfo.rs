@@ -10,10 +10,9 @@
 /// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.getnetworkinfo().await?;
 /// ```
-
 use serde::{Deserialize, Serialize};
-use serde_json::{Value, json};
-use transport::{TransportTrait, TransportError};
+use serde_json::{json, Value};
+use transport::{TransportError, TransportTrait};
 /// Returns an object containing various state info regarding P2P networking.
 #[derive(Debug, Deserialize, Serialize)]
 pub struct GetnetworkinfoResponse {
@@ -35,12 +34,12 @@ pub struct GetnetworkinfoResponse {
     pub warnings: Vec<serde_json::Value>,
 }
 
-
-
 /// Calls the `getnetworkinfo` RPC method.
 ///
 /// Generated transport wrapper for JSON-RPC.
-pub async fn getnetworkinfo(transport: &dyn TransportTrait) -> Result<GetnetworkinfoResponse, TransportError> {
+pub async fn getnetworkinfo(
+    transport: &dyn TransportTrait,
+) -> Result<GetnetworkinfoResponse, TransportError> {
     let params = Vec::<Value>::new();
     let raw = transport.send_request("getnetworkinfo", &params).await?;
     Ok(serde_json::from_value::<GetnetworkinfoResponse>(raw)?)
