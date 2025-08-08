@@ -21,6 +21,8 @@ use transport::{TransportTrait, TransportError};
 #[derive(Debug, Deserialize, Serialize)]
 pub struct GetrawmempoolResponse {
         #[serde(skip_serializing_if = "Option::is_none")]
+    pub transactionid: Option<serde_json::Value>,
+        #[serde(skip_serializing_if = "Option::is_none")]
     pub txids: Option<Vec<bitcoin::Txid>>,
         #[serde(skip_serializing_if = "Option::is_none")]
     pub mempool_sequence: Option<u64>,

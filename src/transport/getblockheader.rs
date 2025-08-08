@@ -40,6 +40,8 @@ pub struct GetblockheaderResponse {
         #[serde(skip_serializing_if = "Option::is_none")]
     pub bits: Option<String>,
         #[serde(skip_serializing_if = "Option::is_none")]
+    pub target: Option<String>,
+        #[serde(skip_serializing_if = "Option::is_none")]
     pub difficulty: Option<f64>,
         #[serde(skip_serializing_if = "Option::is_none")]
     pub chainwork: Option<String>,

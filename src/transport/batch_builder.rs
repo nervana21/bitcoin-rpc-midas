@@ -10,11 +10,9 @@ pub struct BatchResults {
     pub abandontransaction: (),
     pub abortrescan: Option<AbortrescanResponse>,
     pub addconnection: Option<AddconnectionResponse>,
-    pub addmultisigaddress: Option<AddmultisigaddressResponse>,
     pub addnode: (),
     pub addpeeraddress: Option<AddpeeraddressResponse>,
     pub analyzepsbt: Option<AnalyzepsbtResponse>,
-    pub api: Option<ApiResponse>,
     pub backupwallet: (),
     pub bumpfee: Option<BumpfeeResponse>,
     pub clearbanned: (),
@@ -32,9 +30,7 @@ pub struct BatchResults {
     pub deriveaddresses: Option<DeriveaddressesResponse>,
     pub descriptorprocesspsbt: Option<DescriptorprocesspsbtResponse>,
     pub disconnectnode: (),
-    pub dumpprivkey: Option<DumpprivkeyResponse>,
     pub dumptxoutset: Option<DumptxoutsetResponse>,
-    pub dumpwallet: Option<DumpwalletResponse>,
     pub echo: Option<EchoResponse>,
     pub echoipc: Option<EchoipcResponse>,
     pub echojson: Option<EchojsonResponse>,
@@ -69,6 +65,7 @@ pub struct BatchResults {
     pub getchaintxstats: Option<GetchaintxstatsResponse>,
     pub getconnectioncount: Option<GetconnectioncountResponse>,
     pub getdeploymentinfo: Option<GetdeploymentinfoResponse>,
+    pub getdescriptoractivity: Option<GetdescriptoractivityResponse>,
     pub getdescriptorinfo: Option<GetdescriptorinfoResponse>,
     pub getdifficulty: Option<GetdifficultyResponse>,
     pub gethdkeys: Option<GethdkeysResponse>,
@@ -99,17 +96,12 @@ pub struct BatchResults {
     pub gettxoutproof: Option<GettxoutproofResponse>,
     pub gettxoutsetinfo: Option<GettxoutsetinfoResponse>,
     pub gettxspendingprevout: Option<GettxspendingprevoutResponse>,
-    pub getunconfirmedbalance: Option<GetunconfirmedbalanceResponse>,
     pub getwalletinfo: Option<GetwalletinfoResponse>,
+    pub getzmqnotifications: Option<GetzmqnotificationsResponse>,
     pub help: Option<HelpResponse>,
-    pub importaddress: (),
     pub importdescriptors: Option<ImportdescriptorsResponse>,
     pub importmempool: Option<ImportmempoolResponse>,
-    pub importmulti: Option<ImportmultiResponse>,
-    pub importprivkey: (),
     pub importprunedfunds: (),
-    pub importpubkey: (),
-    pub importwallet: (),
     pub invalidateblock: (),
     pub joinpsbts: Option<JoinpsbtsResponse>,
     pub keypoolrefill: (),
@@ -131,7 +123,6 @@ pub struct BatchResults {
     pub logging: Option<LoggingResponse>,
     pub migratewallet: Option<MigratewalletResponse>,
     pub mockscheduler: (),
-    pub newkeypool: (),
     pub ping: (),
     pub preciousblock: (),
     pub prioritisetransaction: Option<PrioritisetransactionResponse>,
@@ -144,6 +135,7 @@ pub struct BatchResults {
     pub savemempool: Option<SavemempoolResponse>,
     pub scanblocks: Option<ScanblocksResponse>,
     pub scantxoutset: Option<ScantxoutsetResponse>,
+    pub schema: Option<SchemaResponse>,
     pub send: Option<SendResponse>,
     pub sendall: Option<SendallResponse>,
     pub sendmany: Option<SendmanyResponse>,
@@ -151,7 +143,6 @@ pub struct BatchResults {
     pub sendrawtransaction: Option<SendrawtransactionResponse>,
     pub sendtoaddress: Option<SendtoaddressResponse>,
     pub setban: (),
-    pub sethdseed: (),
     pub setlabel: (),
     pub setmocktime: (),
     pub setnetworkactive: Option<SetnetworkactiveResponse>,
@@ -169,7 +160,6 @@ pub struct BatchResults {
     pub syncwithvalidationinterfacequeue: (),
     pub testmempoolaccept: Option<TestmempoolacceptResponse>,
     pub unloadwallet: Option<UnloadwalletResponse>,
-    pub upgradewallet: Option<UpgradewalletResponse>,
     pub uptime: Option<UptimeResponse>,
     pub utxoupdatepsbt: Option<UtxoupdatepsbtResponse>,
     pub validateaddress: Option<ValidateaddressResponse>,
@@ -220,12 +210,6 @@ impl BatchBuilder {
         self
     }
 
-    /// Queue a `addmultisigaddress` RPC call
-    pub fn addmultisigaddress(mut self, nrequired: Value, keys: Value, label: Value, address_type: Value) -> Self {
-        self.calls.push(("addmultisigaddress", vec![json!(nrequired), json!(keys), json!(label), json!(address_type)]));
-        self
-    }
-
     /// Queue a `addnode` RPC call
     pub fn addnode(mut self, node: Value, command: Value, v2transport: Value) -> Self {
         self.calls.push(("addnode", vec![json!(node), json!(command), json!(v2transport)]));
@@ -241,12 +225,6 @@ impl BatchBuilder {
     /// Queue a `analyzepsbt` RPC call
     pub fn analyzepsbt(mut self, psbt: Value) -> Self {
         self.calls.push(("analyzepsbt", vec![json!(psbt)]));
-        self
-    }
-
-    /// Queue a `api` RPC call
-    pub fn api(mut self) -> Self {
-        self.calls.push(("api", Vec::new()));
         self
     }
 
@@ -352,21 +330,9 @@ impl BatchBuilder {
         self
     }
 
-    /// Queue a `dumpprivkey` RPC call
-    pub fn dumpprivkey(mut self, address: Value) -> Self {
-        self.calls.push(("dumpprivkey", vec![json!(address)]));
-        self
-    }
-
     /// Queue a `dumptxoutset` RPC call
     pub fn dumptxoutset(mut self, path: Value, r#type: Value, options: Value) -> Self {
         self.calls.push(("dumptxoutset", vec![json!(path), json!(r#type), json!(options)]));
-        self
-    }
-
-    /// Queue a `dumpwallet` RPC call
-    pub fn dumpwallet(mut self, filename: Value) -> Self {
-        self.calls.push(("dumpwallet", vec![json!(filename)]));
         self
     }
 
@@ -574,6 +540,12 @@ impl BatchBuilder {
         self
     }
 
+    /// Queue a `getdescriptoractivity` RPC call
+    pub fn getdescriptoractivity(mut self, blockhashes: Value, scanobjects: Value, include_mempool: Value) -> Self {
+        self.calls.push(("getdescriptoractivity", vec![json!(blockhashes), json!(scanobjects), json!(include_mempool)]));
+        self
+    }
+
     /// Queue a `getdescriptorinfo` RPC call
     pub fn getdescriptorinfo(mut self, descriptor: Value) -> Self {
         self.calls.push(("getdescriptorinfo", vec![json!(descriptor)]));
@@ -754,27 +726,21 @@ impl BatchBuilder {
         self
     }
 
-    /// Queue a `getunconfirmedbalance` RPC call
-    pub fn getunconfirmedbalance(mut self) -> Self {
-        self.calls.push(("getunconfirmedbalance", Vec::new()));
-        self
-    }
-
     /// Queue a `getwalletinfo` RPC call
     pub fn getwalletinfo(mut self) -> Self {
         self.calls.push(("getwalletinfo", Vec::new()));
         self
     }
 
-    /// Queue a `help` RPC call
-    pub fn help(mut self, command: Value) -> Self {
-        self.calls.push(("help", vec![json!(command)]));
+    /// Queue a `getzmqnotifications` RPC call
+    pub fn getzmqnotifications(mut self) -> Self {
+        self.calls.push(("getzmqnotifications", Vec::new()));
         self
     }
 
-    /// Queue a `importaddress` RPC call
-    pub fn importaddress(mut self, address: Value, label: Value, rescan: Value, p2sh: Value) -> Self {
-        self.calls.push(("importaddress", vec![json!(address), json!(label), json!(rescan), json!(p2sh)]));
+    /// Queue a `help` RPC call
+    pub fn help(mut self, command: Value) -> Self {
+        self.calls.push(("help", vec![json!(command)]));
         self
     }
 
@@ -790,33 +756,9 @@ impl BatchBuilder {
         self
     }
 
-    /// Queue a `importmulti` RPC call
-    pub fn importmulti(mut self, requests: Value, options: Value) -> Self {
-        self.calls.push(("importmulti", vec![json!(requests), json!(options)]));
-        self
-    }
-
-    /// Queue a `importprivkey` RPC call
-    pub fn importprivkey(mut self, privkey: Value, label: Value, rescan: Value) -> Self {
-        self.calls.push(("importprivkey", vec![json!(privkey), json!(label), json!(rescan)]));
-        self
-    }
-
     /// Queue a `importprunedfunds` RPC call
     pub fn importprunedfunds(mut self, rawtransaction: Value, txoutproof: Value) -> Self {
         self.calls.push(("importprunedfunds", vec![json!(rawtransaction), json!(txoutproof)]));
-        self
-    }
-
-    /// Queue a `importpubkey` RPC call
-    pub fn importpubkey(mut self, pubkey: Value, label: Value, rescan: Value) -> Self {
-        self.calls.push(("importpubkey", vec![json!(pubkey), json!(label), json!(rescan)]));
-        self
-    }
-
-    /// Queue a `importwallet` RPC call
-    pub fn importwallet(mut self, filename: Value) -> Self {
-        self.calls.push(("importwallet", vec![json!(filename)]));
         self
     }
 
@@ -946,12 +888,6 @@ impl BatchBuilder {
         self
     }
 
-    /// Queue a `newkeypool` RPC call
-    pub fn newkeypool(mut self) -> Self {
-        self.calls.push(("newkeypool", Vec::new()));
-        self
-    }
-
     /// Queue a `ping` RPC call
     pub fn ping(mut self) -> Self {
         self.calls.push(("ping", Vec::new()));
@@ -1024,6 +960,12 @@ impl BatchBuilder {
         self
     }
 
+    /// Queue a `schema` RPC call
+    pub fn schema(mut self) -> Self {
+        self.calls.push(("schema", Vec::new()));
+        self
+    }
+
     /// Queue a `send` RPC call
     pub fn send(mut self, outputs: Value, conf_target: Value, estimate_mode: Value, fee_rate: Value, options: Value) -> Self {
         self.calls.push(("send", vec![json!(outputs), json!(conf_target), json!(estimate_mode), json!(fee_rate), json!(options)]));
@@ -1063,12 +1005,6 @@ impl BatchBuilder {
     /// Queue a `setban` RPC call
     pub fn setban(mut self, subnet: Value, command: Value, bantime: Value, absolute: Value) -> Self {
         self.calls.push(("setban", vec![json!(subnet), json!(command), json!(bantime), json!(absolute)]));
-        self
-    }
-
-    /// Queue a `sethdseed` RPC call
-    pub fn sethdseed(mut self, newkeypool: Value, seed: Value) -> Self {
-        self.calls.push(("sethdseed", vec![json!(newkeypool), json!(seed)]));
         self
     }
 
@@ -1174,12 +1110,6 @@ impl BatchBuilder {
         self
     }
 
-    /// Queue a `upgradewallet` RPC call
-    pub fn upgradewallet(mut self, version: Value) -> Self {
-        self.calls.push(("upgradewallet", vec![json!(version)]));
-        self
-    }
-
     /// Queue a `uptime` RPC call
     pub fn uptime(mut self) -> Self {
         self.calls.push(("uptime", Vec::new()));
@@ -1229,8 +1159,8 @@ impl BatchBuilder {
     }
 
     /// Queue a `waitfornewblock` RPC call
-    pub fn waitfornewblock(mut self, timeout: Value) -> Self {
-        self.calls.push(("waitfornewblock", vec![json!(timeout)]));
+    pub fn waitfornewblock(mut self, timeout: Value, current_tip: Value) -> Self {
+        self.calls.push(("waitfornewblock", vec![json!(timeout), json!(current_tip)]));
         self
     }
 
@@ -1287,11 +1217,9 @@ impl BatchBuilder {
             abandontransaction: (),
             abortrescan: None,
             addconnection: None,
-            addmultisigaddress: None,
             addnode: (),
             addpeeraddress: None,
             analyzepsbt: None,
-            api: None,
             backupwallet: (),
             bumpfee: None,
             clearbanned: (),
@@ -1309,9 +1237,7 @@ impl BatchBuilder {
             deriveaddresses: None,
             descriptorprocesspsbt: None,
             disconnectnode: (),
-            dumpprivkey: None,
             dumptxoutset: None,
-            dumpwallet: None,
             echo: None,
             echoipc: None,
             echojson: None,
@@ -1346,6 +1272,7 @@ impl BatchBuilder {
             getchaintxstats: None,
             getconnectioncount: None,
             getdeploymentinfo: None,
+            getdescriptoractivity: None,
             getdescriptorinfo: None,
             getdifficulty: None,
             gethdkeys: None,
@@ -1376,17 +1303,12 @@ impl BatchBuilder {
             gettxoutproof: None,
             gettxoutsetinfo: None,
             gettxspendingprevout: None,
-            getunconfirmedbalance: None,
             getwalletinfo: None,
+            getzmqnotifications: None,
             help: None,
-            importaddress: (),
             importdescriptors: None,
             importmempool: None,
-            importmulti: None,
-            importprivkey: (),
             importprunedfunds: (),
-            importpubkey: (),
-            importwallet: (),
             invalidateblock: (),
             joinpsbts: None,
             keypoolrefill: (),
@@ -1408,7 +1330,6 @@ impl BatchBuilder {
             logging: None,
             migratewallet: None,
             mockscheduler: (),
-            newkeypool: (),
             ping: (),
             preciousblock: (),
             prioritisetransaction: None,
@@ -1421,6 +1342,7 @@ impl BatchBuilder {
             savemempool: None,
             scanblocks: None,
             scantxoutset: None,
+            schema: None,
             send: None,
             sendall: None,
             sendmany: None,
@@ -1428,7 +1350,6 @@ impl BatchBuilder {
             sendrawtransaction: None,
             sendtoaddress: None,
             setban: (),
-            sethdseed: (),
             setlabel: (),
             setmocktime: (),
             setnetworkactive: None,
@@ -1446,7 +1367,6 @@ impl BatchBuilder {
             syncwithvalidationinterfacequeue: (),
             testmempoolaccept: None,
             unloadwallet: None,
-            upgradewallet: None,
             uptime: None,
             utxoupdatepsbt: None,
             validateaddress: None,
@@ -1471,11 +1391,9 @@ impl BatchBuilder {
                 "abandontransaction" => results.abandontransaction = (),
                 "abortrescan" => results.abortrescan = Some(serde_json::from_value::<AbortrescanResponse>(raw_results[i].clone())?),
                 "addconnection" => results.addconnection = Some(serde_json::from_value::<AddconnectionResponse>(raw_results[i].clone())?),
-                "addmultisigaddress" => results.addmultisigaddress = Some(serde_json::from_value::<AddmultisigaddressResponse>(raw_results[i].clone())?),
                 "addnode" => results.addnode = (),
                 "addpeeraddress" => results.addpeeraddress = Some(serde_json::from_value::<AddpeeraddressResponse>(raw_results[i].clone())?),
                 "analyzepsbt" => results.analyzepsbt = Some(serde_json::from_value::<AnalyzepsbtResponse>(raw_results[i].clone())?),
-                "api" => results.api = Some(serde_json::from_value::<ApiResponse>(raw_results[i].clone())?),
                 "backupwallet" => results.backupwallet = (),
                 "bumpfee" => results.bumpfee = Some(serde_json::from_value::<BumpfeeResponse>(raw_results[i].clone())?),
                 "clearbanned" => results.clearbanned = (),
@@ -1493,9 +1411,7 @@ impl BatchBuilder {
                 "deriveaddresses" => results.deriveaddresses = Some(serde_json::from_value::<DeriveaddressesResponse>(raw_results[i].clone())?),
                 "descriptorprocesspsbt" => results.descriptorprocesspsbt = Some(serde_json::from_value::<DescriptorprocesspsbtResponse>(raw_results[i].clone())?),
                 "disconnectnode" => results.disconnectnode = (),
-                "dumpprivkey" => results.dumpprivkey = Some(serde_json::from_value::<DumpprivkeyResponse>(raw_results[i].clone())?),
                 "dumptxoutset" => results.dumptxoutset = Some(serde_json::from_value::<DumptxoutsetResponse>(raw_results[i].clone())?),
-                "dumpwallet" => results.dumpwallet = Some(serde_json::from_value::<DumpwalletResponse>(raw_results[i].clone())?),
                 "echo" => results.echo = Some(serde_json::from_value::<EchoResponse>(raw_results[i].clone())?),
                 "echoipc" => results.echoipc = Some(serde_json::from_value::<EchoipcResponse>(raw_results[i].clone())?),
                 "echojson" => results.echojson = Some(serde_json::from_value::<EchojsonResponse>(raw_results[i].clone())?),
@@ -1530,6 +1446,7 @@ impl BatchBuilder {
                 "getchaintxstats" => results.getchaintxstats = Some(serde_json::from_value::<GetchaintxstatsResponse>(raw_results[i].clone())?),
                 "getconnectioncount" => results.getconnectioncount = Some(serde_json::from_value::<GetconnectioncountResponse>(raw_results[i].clone())?),
                 "getdeploymentinfo" => results.getdeploymentinfo = Some(serde_json::from_value::<GetdeploymentinfoResponse>(raw_results[i].clone())?),
+                "getdescriptoractivity" => results.getdescriptoractivity = Some(serde_json::from_value::<GetdescriptoractivityResponse>(raw_results[i].clone())?),
                 "getdescriptorinfo" => results.getdescriptorinfo = Some(serde_json::from_value::<GetdescriptorinfoResponse>(raw_results[i].clone())?),
                 "getdifficulty" => results.getdifficulty = Some(serde_json::from_value::<GetdifficultyResponse>(raw_results[i].clone())?),
                 "gethdkeys" => results.gethdkeys = Some(serde_json::from_value::<GethdkeysResponse>(raw_results[i].clone())?),
@@ -1560,17 +1477,12 @@ impl BatchBuilder {
                 "gettxoutproof" => results.gettxoutproof = Some(serde_json::from_value::<GettxoutproofResponse>(raw_results[i].clone())?),
                 "gettxoutsetinfo" => results.gettxoutsetinfo = Some(serde_json::from_value::<GettxoutsetinfoResponse>(raw_results[i].clone())?),
                 "gettxspendingprevout" => results.gettxspendingprevout = Some(serde_json::from_value::<GettxspendingprevoutResponse>(raw_results[i].clone())?),
-                "getunconfirmedbalance" => results.getunconfirmedbalance = Some(serde_json::from_value::<GetunconfirmedbalanceResponse>(raw_results[i].clone())?),
                 "getwalletinfo" => results.getwalletinfo = Some(serde_json::from_value::<GetwalletinfoResponse>(raw_results[i].clone())?),
+                "getzmqnotifications" => results.getzmqnotifications = Some(serde_json::from_value::<GetzmqnotificationsResponse>(raw_results[i].clone())?),
                 "help" => results.help = Some(serde_json::from_value::<HelpResponse>(raw_results[i].clone())?),
-                "importaddress" => results.importaddress = (),
                 "importdescriptors" => results.importdescriptors = Some(serde_json::from_value::<ImportdescriptorsResponse>(raw_results[i].clone())?),
                 "importmempool" => results.importmempool = Some(serde_json::from_value::<ImportmempoolResponse>(raw_results[i].clone())?),
-                "importmulti" => results.importmulti = Some(serde_json::from_value::<ImportmultiResponse>(raw_results[i].clone())?),
-                "importprivkey" => results.importprivkey = (),
                 "importprunedfunds" => results.importprunedfunds = (),
-                "importpubkey" => results.importpubkey = (),
-                "importwallet" => results.importwallet = (),
                 "invalidateblock" => results.invalidateblock = (),
                 "joinpsbts" => results.joinpsbts = Some(serde_json::from_value::<JoinpsbtsResponse>(raw_results[i].clone())?),
                 "keypoolrefill" => results.keypoolrefill = (),
@@ -1592,7 +1504,6 @@ impl BatchBuilder {
                 "logging" => results.logging = Some(serde_json::from_value::<LoggingResponse>(raw_results[i].clone())?),
                 "migratewallet" => results.migratewallet = Some(serde_json::from_value::<MigratewalletResponse>(raw_results[i].clone())?),
                 "mockscheduler" => results.mockscheduler = (),
-                "newkeypool" => results.newkeypool = (),
                 "ping" => results.ping = (),
                 "preciousblock" => results.preciousblock = (),
                 "prioritisetransaction" => results.prioritisetransaction = Some(serde_json::from_value::<PrioritisetransactionResponse>(raw_results[i].clone())?),
@@ -1605,6 +1516,7 @@ impl BatchBuilder {
                 "savemempool" => results.savemempool = Some(serde_json::from_value::<SavemempoolResponse>(raw_results[i].clone())?),
                 "scanblocks" => results.scanblocks = Some(serde_json::from_value::<ScanblocksResponse>(raw_results[i].clone())?),
                 "scantxoutset" => results.scantxoutset = Some(serde_json::from_value::<ScantxoutsetResponse>(raw_results[i].clone())?),
+                "schema" => results.schema = Some(serde_json::from_value::<SchemaResponse>(raw_results[i].clone())?),
                 "send" => results.send = Some(serde_json::from_value::<SendResponse>(raw_results[i].clone())?),
                 "sendall" => results.sendall = Some(serde_json::from_value::<SendallResponse>(raw_results[i].clone())?),
                 "sendmany" => results.sendmany = Some(serde_json::from_value::<SendmanyResponse>(raw_results[i].clone())?),
@@ -1612,7 +1524,6 @@ impl BatchBuilder {
                 "sendrawtransaction" => results.sendrawtransaction = Some(serde_json::from_value::<SendrawtransactionResponse>(raw_results[i].clone())?),
                 "sendtoaddress" => results.sendtoaddress = Some(serde_json::from_value::<SendtoaddressResponse>(raw_results[i].clone())?),
                 "setban" => results.setban = (),
-                "sethdseed" => results.sethdseed = (),
                 "setlabel" => results.setlabel = (),
                 "setmocktime" => results.setmocktime = (),
                 "setnetworkactive" => results.setnetworkactive = Some(serde_json::from_value::<SetnetworkactiveResponse>(raw_results[i].clone())?),
@@ -1630,7 +1541,6 @@ impl BatchBuilder {
                 "syncwithvalidationinterfacequeue" => results.syncwithvalidationinterfacequeue = (),
                 "testmempoolaccept" => results.testmempoolaccept = Some(serde_json::from_value::<TestmempoolacceptResponse>(raw_results[i].clone())?),
                 "unloadwallet" => results.unloadwallet = Some(serde_json::from_value::<UnloadwalletResponse>(raw_results[i].clone())?),
-                "upgradewallet" => results.upgradewallet = Some(serde_json::from_value::<UpgradewalletResponse>(raw_results[i].clone())?),
                 "uptime" => results.uptime = Some(serde_json::from_value::<UptimeResponse>(raw_results[i].clone())?),
                 "utxoupdatepsbt" => results.utxoupdatepsbt = Some(serde_json::from_value::<UtxoupdatepsbtResponse>(raw_results[i].clone())?),
                 "validateaddress" => results.validateaddress = Some(serde_json::from_value::<ValidateaddressResponse>(raw_results[i].clone())?),

@@ -1,7 +1,7 @@
 //! Generated RPC response types
 use serde::{Deserialize, Serialize};
 
-/// Stops current wallet rescan triggered by an RPC call, e.g. by an importprivkey call.
+/// Stops current wallet rescan triggered by an RPC call, e.g. by a rescanblockchain call.
     /// Note: Use \"getwalletinfo\" to query the scanning progress.
 #[derive(Debug, Deserialize, Serialize)]
 #[serde(transparent)]
@@ -13,22 +13,6 @@ pub struct AbortrescanResponse(pub bool);
 pub struct AddconnectionResponse {
     pub address: String,
     pub connection_type: String,
-}
-
-
-/// Add an nrequired-to-sign multisignature address to the wallet. Requires a new wallet backup.
-    /// Each key is a Bitcoin address or hex-encoded public key.
-    /// This functionality is only intended for use with non-watchonly addresses.
-    /// See `importaddress` for watchonly p2sh address support.
-    /// If 'label' is specified, assign address to that label.
-    /// Note: This command is only compatible with legacy wallets.
-#[derive(Debug, Deserialize, Serialize)]
-pub struct AddmultisigaddressResponse {
-    pub address: String,
-    pub redeem_script: String,
-    pub descriptor: String,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub warnings: Option<Vec<serde_json::Value>>,
 }
 
 
@@ -58,14 +42,8 @@ pub struct AnalyzepsbtResponse {
 }
 
 
-/// Return JSON description of RPC API.
-#[derive(Debug, Deserialize, Serialize)]
-#[serde(transparent)]
-pub struct ApiResponse(pub serde_json::Value);
-
-
-/// Bumps the fee of an opt-in-RBF transaction T, replacing it with a new transaction B.
-    /// An opt-in RBF transaction with the given txid must be in the wallet.
+/// Bumps the fee of a transaction T, replacing it with a new transaction B.
+    /// A transaction with the given txid must be in the wallet.
     /// The command will pay the additional fee by reducing change outputs or adding inputs when necessary.
     /// It may add a new change output if one does not already exist.
     /// All inputs in the original transaction will be included in the replacement transaction.
@@ -107,7 +85,7 @@ pub struct CombinerawtransactionResponse(pub String);
 pub struct ConverttopsbtResponse(pub String);
 
 
-/// Creates a multi-signature address with n signature of m keys required.
+/// Creates a multi-signature address with n signatures of m keys required.
     /// It returns a json object with the address and redeemScript.
 #[derive(Debug, Deserialize, Serialize)]
 pub struct CreatemultisigResponse {
@@ -121,6 +99,8 @@ pub struct CreatemultisigResponse {
 
 /// Creates a transaction in the Partially Signed Transaction format.
     /// Implements the Creator role.
+    /// Note that the transaction's inputs are not signed, and
+    /// it is not stored in the wallet or transmitted to the network.
 #[derive(Debug, Deserialize, Serialize)]
 #[serde(transparent)]
 pub struct CreatepsbtResponse(pub String);
@@ -225,17 +205,9 @@ pub struct DescriptorprocesspsbtResponse {
 }
 
 
-/// Reveals the private key corresponding to 'address'.
-    /// Then the importprivkey can be used with this output
-    /// Note: This command is only compatible with legacy wallets.
-#[derive(Debug, Deserialize, Serialize)]
-#[serde(transparent)]
-pub struct DumpprivkeyResponse(pub String);
-
-
 /// Write the serialized UTXO set to a file. This can be used in loadtxoutset afterwards if this snapshot height is supported in the chainparams as well.
     /// 
-    /// Unless the the \"latest\" type is requested, the node will roll back to the requested height and network activity will be suspended during this process. Because of this it is discouraged to interact with the node in any other way during the execution of this call to avoid inconsistent results and race conditions, particularly RPCs that interact with blockstorage.
+    /// Unless the \"latest\" type is requested, the node will roll back to the requested height and network activity will be suspended during this process. Because of this it is discouraged to interact with the node in any other way during the execution of this call to avoid inconsistent results and race conditions, particularly RPCs that interact with blockstorage.
     /// 
     /// This call may take several minutes. Make sure to use no RPC timeout (bitcoin-cli -rpcclienttimeout=0)
 #[derive(Debug, Deserialize, Serialize)]
@@ -246,17 +218,6 @@ pub struct DumptxoutsetResponse {
     pub path: String,
     pub txoutset_hash: String,
     pub nchaintx: u64,
-}
-
-
-/// Dumps all wallet keys in a human-readable format to a server-side file. This does not allow overwriting existing files.
-    /// Imported scripts are included in the dumpfile, but corresponding BIP173 addresses, etc. may not be added automatically by importwallet.
-    /// Note that if your wallet contains keys which are not derived from your HD seed (e.g. imported keys), these are not covered by
-    /// only backing up the seed itself, and must be backed up too (e.g. ensure you back up the whole dumpfile).
-    /// Note: This command is only compatible with legacy wallets.
-#[derive(Debug, Deserialize, Serialize)]
-pub struct DumpwalletResponse {
-    pub filename: String,
 }
 
 
@@ -289,7 +250,7 @@ pub struct EchojsonResponse(pub serde_json::Value);
 
 /// Encrypts the wallet with 'passphrase'. This is for first time encryption.
     /// After this, any calls that interact with private keys such as sending or signing
-    /// will require the passphrase to be set prior the making these calls.
+    /// will require the passphrase to be set prior to making these calls.
     /// Use the walletpassphrase call for this, and then walletlock call.
     /// If the wallet is already encrypted, use the walletpassphrasechange call.
     /// ** IMPORTANT **
@@ -365,9 +326,11 @@ pub struct FinalizepsbtResponse {
     /// All existing inputs must either have their previous output transaction be in the wallet
     /// or be in the UTXO set. Solving data must be provided for non-wallet inputs.
     /// Note that all inputs selected must be of standard form and P2SH scripts must be
-    /// in the wallet using importaddress or addmultisigaddress (to calculate fees).
+    /// in the wallet using importdescriptors (to calculate fees).
     /// You can see whether this is the case by checking the \"solvable\" field in the listunspent output.
-    /// Only pay-to-pubkey, multisig, and P2SH versions thereof are currently supported for watch-only
+    /// Note that if specifying an exact fee rate, the resulting transaction may have a higher fee rate
+    /// if the transaction has unconfirmed inputs. This is because the wallet will attempt to make the
+    /// entire package have the given fee rate, not the resulting transaction.
 #[derive(Debug, Deserialize, Serialize)]
 pub struct FundrawtransactionResponse {
     pub hex: String,
@@ -406,8 +369,9 @@ pub struct GetaddednodeinfoResponse(pub Vec<serde_json::Value>);
 
 /// Returns the list of addresses assigned the specified label.
 #[derive(Debug, Deserialize, Serialize)]
-#[serde(transparent)]
-pub struct GetaddressesbylabelResponse(pub serde_json::Value);
+pub struct GetaddressesbylabelResponse {
+    pub address: serde_json::Value,
+}
 
 
 /// Return information about the given bitcoin address.
@@ -459,8 +423,9 @@ pub struct GetaddressinfoResponse {
 
 /// Provides information about the node's address manager by returning the number of addresses in the `new` and `tried` tables and their sum for all networks.
 #[derive(Debug, Deserialize, Serialize)]
-#[serde(transparent)]
-pub struct GetaddrmaninfoResponse(pub serde_json::Value);
+pub struct GetaddrmaninfoResponse {
+    pub network: serde_json::Value,
+}
 
 
 /// Returns the total available balance.
@@ -475,8 +440,6 @@ pub struct GetbalanceResponse(pub f64);
 #[derive(Debug, Deserialize, Serialize)]
 pub struct GetbalancesResponse {
     pub mine: serde_json::Value,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub watchonly: Option<serde_json::Value>,
     pub lastprocessedblock: serde_json::Value,
 }
 
@@ -522,6 +485,8 @@ pub struct GetblockResponse {
         #[serde(skip_serializing_if = "Option::is_none")]
     pub bits: Option<String>,
         #[serde(skip_serializing_if = "Option::is_none")]
+    pub target: Option<String>,
+        #[serde(skip_serializing_if = "Option::is_none")]
     pub difficulty: Option<f64>,
         #[serde(skip_serializing_if = "Option::is_none")]
     pub chainwork: Option<String>,
@@ -543,10 +508,12 @@ pub struct GetblockchaininfoResponse {
     pub blocks: u64,
     pub headers: u64,
     pub bestblockhash: bitcoin::BlockHash,
+    pub bits: String,
+    pub target: String,
     pub difficulty: f64,
     pub time: serde_json::Value,
     pub mediantime: serde_json::Value,
-    pub verificationprogress: u64,
+    pub verificationprogress: f64,
     pub initialblockdownload: bool,
     pub chainwork: String,
     pub size_on_disk: u64,
@@ -557,6 +524,8 @@ pub struct GetblockchaininfoResponse {
     pub automatic_pruning: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub prune_target_size: Option<u64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub signet_challenge: Option<String>,
     pub warnings: Vec<serde_json::Value>,
 }
 
@@ -621,6 +590,8 @@ pub struct GetblockheaderResponse {
     pub nonce: Option<u64>,
         #[serde(skip_serializing_if = "Option::is_none")]
     pub bits: Option<String>,
+        #[serde(skip_serializing_if = "Option::is_none")]
+    pub target: Option<String>,
         #[serde(skip_serializing_if = "Option::is_none")]
     pub difficulty: Option<f64>,
         #[serde(skip_serializing_if = "Option::is_none")]
@@ -806,6 +777,14 @@ pub struct GetdeploymentinfoResponse {
 }
 
 
+/// Get spend and receive activity associated with a set of descriptors for a set of blocks. This command pairs well with the `relevant_blocks` output of `scanblocks()`.
+    /// This call may take several minutes. If you encounter timeouts, try specifying no RPC timeout (bitcoin-cli -rpcclienttimeout=0)
+#[derive(Debug, Deserialize, Serialize)]
+pub struct GetdescriptoractivityResponse {
+    pub activity: Vec<serde_json::Value>,
+}
+
+
 /// Analyses a descriptor.
 #[derive(Debug, Deserialize, Serialize)]
 pub struct GetdescriptorinfoResponse {
@@ -833,8 +812,9 @@ pub struct GethdkeysResponse(pub Vec<serde_json::Value>);
 
 /// Returns the status of one or all available indices currently running in the node.
 #[derive(Debug, Deserialize, Serialize)]
-#[serde(transparent)]
-pub struct GetindexinfoResponse(pub serde_json::Value);
+pub struct GetindexinfoResponse {
+    pub name: serde_json::Value,
+}
 
 
 /// Returns an object containing information about memory usage.
@@ -848,12 +828,16 @@ pub struct GetmemoryinfoResponse {
 /// If txid is in the mempool, returns all in-mempool ancestors.
 #[derive(Debug, Deserialize, Serialize)]
 pub struct GetmempoolancestorsResponse {
+        #[serde(skip_serializing_if = "Option::is_none")]
+    pub transactionid: Option<serde_json::Value>,
 }
 
 
 /// If txid is in the mempool, returns all in-mempool descendants.
 #[derive(Debug, Deserialize, Serialize)]
 pub struct GetmempooldescendantsResponse {
+        #[serde(skip_serializing_if = "Option::is_none")]
+    pub transactionid: Option<serde_json::Value>,
 }
 
 
@@ -891,6 +875,8 @@ pub struct GetmempoolinfoResponse {
     pub incrementalrelayfee: f64,
     pub unbroadcastcount: u64,
     pub fullrbf: bool,
+    pub permitbaremultisig: bool,
+    pub maxdatacarriersize: u64,
 }
 
 
@@ -902,10 +888,15 @@ pub struct GetmininginfoResponse {
     pub currentblockweight: Option<u64>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub currentblocktx: Option<u64>,
+    pub bits: String,
     pub difficulty: f64,
+    pub target: String,
     pub networkhashps: u64,
     pub pooledtx: u64,
     pub chain: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub signet_challenge: Option<String>,
+    pub next: serde_json::Value,
     pub warnings: Vec<serde_json::Value>,
 }
 
@@ -983,16 +974,18 @@ pub struct GetpeerinfoResponse(pub Vec<serde_json::Value>);
 
 /// Returns a map of all user-created (see prioritisetransaction) fee deltas by txid, and whether the tx is present in mempool.
 #[derive(Debug, Deserialize, Serialize)]
-#[serde(transparent)]
-pub struct GetprioritisedtransactionsResponse(pub serde_json::Value);
+pub struct GetprioritisedtransactionsResponse {
+    pub transactionid: serde_json::Value,
+}
 
 
 /// EXPERIMENTAL warning: this call may be changed in future releases.
     /// 
     /// Returns information on all address manager entries for the new and tried tables.
 #[derive(Debug, Deserialize, Serialize)]
-#[serde(transparent)]
-pub struct GetrawaddrmanResponse(pub serde_json::Value);
+pub struct GetrawaddrmanResponse {
+    pub table: serde_json::Value,
+}
 
 
 /// Returns a new Bitcoin address, for receiving change.
@@ -1007,6 +1000,8 @@ pub struct GetrawchangeaddressResponse(pub String);
     /// Hint: use getmempoolentry to fetch a specific transaction from the mempool.
 #[derive(Debug, Deserialize, Serialize)]
 pub struct GetrawmempoolResponse {
+        #[serde(skip_serializing_if = "Option::is_none")]
+    pub transactionid: Option<serde_json::Value>,
         #[serde(skip_serializing_if = "Option::is_none")]
     pub txids: Option<Vec<bitcoin::Txid>>,
         #[serde(skip_serializing_if = "Option::is_none")]
@@ -1174,33 +1169,19 @@ pub struct GettxoutsetinfoResponse {
 pub struct GettxspendingprevoutResponse(pub Vec<serde_json::Value>);
 
 
-/// DEPRECATED
-    /// Identical to getbalances().mine.untrusted_pending
-#[derive(Debug, Deserialize, Serialize)]
-#[serde(transparent)]
-pub struct GetunconfirmedbalanceResponse(pub bitcoin::Amount);
-
-
 /// Returns an object containing various wallet state info.
 #[derive(Debug, Deserialize, Serialize)]
 pub struct GetwalletinfoResponse {
     pub walletname: String,
     pub walletversion: u32,
     pub format: String,
-    pub balance: f64,
-    pub unconfirmed_balance: f64,
-    pub immature_balance: f64,
     pub txcount: u64,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub keypoololdest: Option<serde_json::Value>,
     pub keypoolsize: u64,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub keypoolsize_hd_internal: Option<u64>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub unlocked_until: Option<serde_json::Value>,
     pub paytxfee: f64,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub hdseedid: Option<String>,
     pub private_keys_enabled: bool,
     pub avoid_reuse: bool,
     pub scanning: serde_json::Value,
@@ -1209,8 +1190,15 @@ pub struct GetwalletinfoResponse {
     pub blank: bool,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub birthtime: Option<serde_json::Value>,
+    pub flags: Vec<serde_json::Value>,
     pub lastprocessedblock: serde_json::Value,
 }
+
+
+/// Returns information about the active ZeroMQ notifications.
+#[derive(Debug, Deserialize, Serialize)]
+#[serde(transparent)]
+pub struct GetzmqnotificationsResponse(pub Vec<serde_json::Value>);
 
 
 /// List all commands, or get help for a specified command.
@@ -1220,7 +1208,7 @@ pub struct HelpResponse {
 
 
 /// Import descriptors. This will trigger a rescan of the blockchain based on the earliest timestamp of all descriptors being imported. Requires a new wallet backup.
-    /// When importing descriptors with multipath key expressions, if the multipath specifier contains exactly two elements, the descriptor produced from the second elements will be imported as an internal descriptor.
+    /// When importing descriptors with multipath key expressions, if the multipath specifier contains exactly two elements, the descriptor produced from the second element will be imported as an internal descriptor.
     /// 
     /// Note: This call can take over an hour to complete if using an early timestamp; during that time, other rpc calls
     /// may report that the imported keys, addresses or scripts exist but related transactions are still missing.
@@ -1235,21 +1223,6 @@ pub struct ImportdescriptorsResponse(pub Vec<serde_json::Value>);
 #[derive(Debug, Deserialize, Serialize)]
 #[serde(transparent)]
 pub struct ImportmempoolResponse(pub serde_json::Value);
-
-
-/// Import addresses/scripts (with private or public keys, redeem script (P2SH)), optionally rescanning the blockchain from the earliest creation time of the imported scripts. Requires a new wallet backup.
-    /// If an address/script is imported without all of the private keys required to spend from that address, it will be watchonly. The 'watchonly' option must be set to true in this case or a warning will be returned.
-    /// Conversely, if all the private keys are provided and the address/script is spendable, the watchonly option must be set to false, or a warning will be returned.
-    /// 
-    /// Note: This call can take over an hour to complete if rescan is true, during that time, other rpc calls
-    /// may report that the imported keys, addresses or scripts exist but related transactions are still missing.
-    /// The rescan parameter can be set to false if the key was never used to create transactions. If it is set to false,
-    /// but the key was used to create transactions, rescanblockchain needs to be called with the appropriate block range.
-    /// Note: Use \"getwalletinfo\" to query the scanning progress.
-    /// Note: This command is only compatible with legacy wallets. Use \"importdescriptors\" for descriptor wallets.
-#[derive(Debug, Deserialize, Serialize)]
-#[serde(transparent)]
-pub struct ImportmultiResponse(pub Vec<serde_json::Value>);
 
 
 /// Joins multiple distinct PSBTs with different inputs and outputs into one PSBT with inputs and outputs from all of the PSBTs
@@ -1273,7 +1246,7 @@ pub struct ListaddressgroupingsResponse(pub Vec<serde_json::Value>);
 pub struct ListbannedResponse(pub Vec<serde_json::Value>);
 
 
-/// List descriptors imported into a descriptor-enabled wallet.
+/// List all descriptors present in a wallet.
 #[derive(Debug, Deserialize, Serialize)]
 pub struct ListdescriptorsResponse {
     pub wallet_name: String,
@@ -1397,8 +1370,9 @@ pub struct LockunspentResponse(pub bool);
     /// In addition, the following are available as category names with special meanings:
     /// - \"all\",  \"1\" : represent all logging categories.
 #[derive(Debug, Deserialize, Serialize)]
-#[serde(transparent)]
-pub struct LoggingResponse(pub serde_json::Value);
+pub struct LoggingResponse {
+    pub category: bool,
+}
 
 
 /// Migrate the wallet to a descriptor wallet.
@@ -1427,15 +1401,16 @@ pub struct MigratewalletResponse {
 pub struct PrioritisetransactionResponse(pub bool);
 
 
-/// 
+/// Attempts to delete block and undo data up to a specified height or timestamp, if eligible for pruning.
+    /// Requires `-prune` to be enabled at startup. While pruned data may be re-fetched in some cases (e.g., via `getblockfrompeer`), local deletion is irreversible.
 #[derive(Debug, Deserialize, Serialize)]
 #[serde(transparent)]
 pub struct PruneblockchainResponse(pub u64);
 
 
-/// Bumps the fee of an opt-in-RBF transaction T, replacing it with a new transaction B.
+/// Bumps the fee of a transaction T, replacing it with a new transaction B.
     /// Returns a PSBT instead of creating and signing a new transaction.
-    /// An opt-in RBF transaction with the given txid must be in the wallet.
+    /// A transaction with the given txid must be in the wallet.
     /// The command will pay the additional fee by reducing change outputs or adding inputs when necessary.
     /// It may add a new change output if one does not already exist.
     /// All inputs in the original transaction will be included in the replacement transaction.
@@ -1457,8 +1432,8 @@ pub struct PsbtbumpfeeResponse {
 
 /// Rescan the local blockchain for wallet related transactions.
     /// Note: Use \"getwalletinfo\" to query the scanning progress.
-    /// The rescan is significantly faster when used on a descriptor wallet
-    /// and block filters are available (using startup option \"-blockfilterindex=1\").
+    /// The rescan is significantly faster if block filters are available
+    /// (using startup option \"-blockfilterindex=1\").
 #[derive(Debug, Deserialize, Serialize)]
 pub struct RescanblockchainResponse {
     pub start_height: u64,
@@ -1468,8 +1443,8 @@ pub struct RescanblockchainResponse {
 
 /// Restores and loads a wallet from backup.
     /// 
-    /// The rescan is significantly faster if a descriptor wallet is restored
-    /// and block filters are available (using startup option \"-blockfilterindex=1\").
+    /// The rescan is significantly faster if block filters are available
+    /// (using startup option \"-blockfilterindex=1\").
 #[derive(Debug, Deserialize, Serialize)]
 pub struct RestorewalletResponse {
     pub name: String,
@@ -1538,6 +1513,12 @@ pub struct ScantxoutsetResponse {
         #[serde(skip_serializing_if = "Option::is_none")]
     pub progress: Option<u64>,
 }
+
+
+/// Return RPC command JSON Schema descriptions.
+#[derive(Debug, Deserialize, Serialize)]
+#[serde(transparent)]
+pub struct SchemaResponse(pub serde_json::Value);
 
 
 /// EXPERIMENTAL warning: this call may be changed in future releases.
@@ -1622,7 +1603,7 @@ pub struct SendtoaddressResponse {
 pub struct SetnetworkactiveResponse(pub bool);
 
 
-/// Set the transaction fee rate in BTC/kvB for this wallet. Overrides the global -paytxfee command line parameter.
+/// (DEPRECATED) Set the transaction fee rate in BTC/kvB for this wallet. Overrides the global -paytxfee command line parameter.
     /// Can be deactivated by passing 0 as the fee. In that case automatic fee selection will be used by default.
 #[derive(Debug, Deserialize, Serialize)]
 #[serde(transparent)]
@@ -1728,26 +1709,12 @@ pub struct SubmitpackageResponse {
 pub struct TestmempoolacceptResponse(pub Vec<serde_json::Value>);
 
 
-/// Unloads the wallet referenced by the request endpoint, otherwise unloads the wallet specified in the argument.
-    /// Specifying the wallet name on a wallet endpoint is invalid.
+/// Unloads the wallet referenced by the request endpoint or the wallet_name argument.
+    /// If both are specified, they must be identical.
 #[derive(Debug, Deserialize, Serialize)]
 pub struct UnloadwalletResponse {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub warnings: Option<Vec<serde_json::Value>>,
-}
-
-
-/// Upgrade the wallet. Upgrades to the latest version if no version number is specified.
-    /// New keys may be generated and a new wallet backup will need to be made.
-#[derive(Debug, Deserialize, Serialize)]
-pub struct UpgradewalletResponse {
-    pub wallet_name: String,
-    pub previous_version: u32,
-    pub current_version: u32,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub result: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub error: Option<String>,
 }
 
 

@@ -1,7 +1,7 @@
 //! This file is auto-generated. Do not edit manually.
 //! Generated for Bitcoin Core version: latest
 
-/// Creates a multi-signature address with n signature of m keys required.
+/// Creates a multi-signature address with n signatures of m keys required.
 /// It returns a json object with the address and redeemScript.
 
 /// # Example
@@ -15,7 +15,7 @@
 use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
 use transport::{TransportTrait, TransportError};
-/// Creates a multi-signature address with n signature of m keys required.
+/// Creates a multi-signature address with n signatures of m keys required.
     /// It returns a json object with the address and redeemScript.
 #[derive(Debug, Deserialize, Serialize)]
 pub struct CreatemultisigResponse {

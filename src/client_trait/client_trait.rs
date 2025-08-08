@@ -7,9 +7,9 @@ use serde::de::DeserializeOwned;
 use crate::types::*;
 use std::future::Future;
 
-#[doc = r#"A versioned client trait for Bitcoin Core V28"#]
+#[doc = r#"A versioned client trait for Bitcoin Core V29"#]
 #[async_trait]
-pub trait BitcoinClientV28: Send + Sync + TransportTrait + TransportExt + RpcDispatchExt {
+pub trait BitcoinClientV29: Send + Sync + TransportTrait + TransportExt + RpcDispatchExt {
     /// Mark in-wallet transaction <txid> as abandoned
     /// This will mark this transaction and all its in-wallet descendants as abandoned which will allow
     /// for their inputs to be respent.  It can be used to replace "stuck" or evicted transactions.
@@ -22,7 +22,7 @@ pub trait BitcoinClientV28: Send + Sync + TransportTrait + TransportExt + RpcDis
         self.dispatch_json::<()>("abandontransaction", &params).await
     }
 
-    /// Stops current wallet rescan triggered by an RPC call, e.g. by an importprivkey call.
+    /// Stops current wallet rescan triggered by an RPC call, e.g. by a rescanblockchain call.
     /// Note: Use "getwalletinfo" to query the scanning progress.
     async fn abortrescan(&self) -> Result<AbortrescanResponse, TransportError> {
         let params = vec![
@@ -39,22 +39,6 @@ pub trait BitcoinClientV28: Send + Sync + TransportTrait + TransportExt + RpcDis
             serde_json::json!(_v2transport),
         ];
         self.dispatch_json::<AddconnectionResponse>("addconnection", &params).await
-    }
-
-    /// Add an nrequired-to-sign multisignature address to the wallet. Requires a new wallet backup.
-    /// Each key is a Bitcoin address or hex-encoded public key.
-    /// This functionality is only intended for use with non-watchonly addresses.
-    /// See `importaddress` for watchonly p2sh address support.
-    /// If 'label' is specified, assign address to that label.
-    /// Note: This command is only compatible with legacy wallets.
-    async fn addmultisigaddress(&self, _nrequired: u32, _keys: Vec<String>, _label: Option<String>, _address_type: Option<String>) -> Result<AddmultisigaddressResponse, TransportError> {
-        let params = vec![
-            serde_json::json!(_nrequired),
-            serde_json::json!(_keys),
-            serde_json::json!(_label),
-            serde_json::json!(_address_type),
-        ];
-        self.dispatch_json::<AddmultisigaddressResponse>("addmultisigaddress", &params).await
     }
 
     /// Attempts to add or remove a node from the addnode list.
@@ -89,14 +73,6 @@ pub trait BitcoinClientV28: Send + Sync + TransportTrait + TransportExt + RpcDis
         self.dispatch_json::<AnalyzepsbtResponse>("analyzepsbt", &params).await
     }
 
-    /// Return JSON description of RPC API.
-    async fn api(&self) -> Result<ApiResponse, TransportError> {
-        let params = vec![
-
-        ];
-        self.dispatch_json::<ApiResponse>("api", &params).await
-    }
-
     /// Safely copies the current wallet file to the specified destination, which can either be a directory or a path with a filename.
     async fn backupwallet(&self, _destination: String) -> Result<(), TransportError> {
         let params = vec![
@@ -105,8 +81,8 @@ pub trait BitcoinClientV28: Send + Sync + TransportTrait + TransportExt + RpcDis
         self.dispatch_json::<()>("backupwallet", &params).await
     }
 
-    /// Bumps the fee of an opt-in-RBF transaction T, replacing it with a new transaction B.
-    /// An opt-in RBF transaction with the given txid must be in the wallet.
+    /// Bumps the fee of a transaction T, replacing it with a new transaction B.
+    /// A transaction with the given txid must be in the wallet.
     /// The command will pay the additional fee by reducing change outputs or adding inputs when necessary.
     /// It may add a new change output if one does not already exist.
     /// All inputs in the original transaction will be included in the replacement transaction.
@@ -163,7 +139,7 @@ pub trait BitcoinClientV28: Send + Sync + TransportTrait + TransportExt + RpcDis
         self.dispatch_json::<ConverttopsbtResponse>("converttopsbt", &params).await
     }
 
-    /// Creates a multi-signature address with n signature of m keys required.
+    /// Creates a multi-signature address with n signatures of m keys required.
     /// It returns a json object with the address and redeemScript.
     async fn createmultisig(&self, _nrequired: u32, _keys: Vec<String>, _address_type: Option<String>) -> Result<CreatemultisigResponse, TransportError> {
         let params = vec![
@@ -176,6 +152,8 @@ pub trait BitcoinClientV28: Send + Sync + TransportTrait + TransportExt + RpcDis
 
     /// Creates a transaction in the Partially Signed Transaction format.
     /// Implements the Creator role.
+    /// Note that the transaction's inputs are not signed, and
+    /// it is not stored in the wallet or transmitted to the network.
     async fn createpsbt(&self, _inputs: Vec<serde_json::Value>, _outputs: Vec<serde_json::Value>, _locktime: Option<u32>, _replaceable: Option<bool>) -> Result<CreatepsbtResponse, TransportError> {
         let params = vec![
             serde_json::json!(_inputs),
@@ -296,19 +274,9 @@ pub trait BitcoinClientV28: Send + Sync + TransportTrait + TransportExt + RpcDis
         self.dispatch_json::<()>("disconnectnode", &params).await
     }
 
-    /// Reveals the private key corresponding to 'address'.
-    /// Then the importprivkey can be used with this output
-    /// Note: This command is only compatible with legacy wallets.
-    async fn dumpprivkey(&self, _address: String) -> Result<DumpprivkeyResponse, TransportError> {
-        let params = vec![
-            serde_json::json!(_address),
-        ];
-        self.dispatch_json::<DumpprivkeyResponse>("dumpprivkey", &params).await
-    }
-
     /// Write the serialized UTXO set to a file. This can be used in loadtxoutset afterwards if this snapshot height is supported in the chainparams as well.
     /// 
-    /// Unless the the "latest" type is requested, the node will roll back to the requested height and network activity will be suspended during this process. Because of this it is discouraged to interact with the node in any other way during the execution of this call to avoid inconsistent results and race conditions, particularly RPCs that interact with blockstorage.
+    /// Unless the "latest" type is requested, the node will roll back to the requested height and network activity will be suspended during this process. Because of this it is discouraged to interact with the node in any other way during the execution of this call to avoid inconsistent results and race conditions, particularly RPCs that interact with blockstorage.
     /// 
     /// This call may take several minutes. Make sure to use no RPC timeout (bitcoin-cli -rpcclienttimeout=0)
     async fn dumptxoutset(&self, _path: String, r#_type: Option<String>, _options: Option<serde_json::Value>) -> Result<DumptxoutsetResponse, TransportError> {
@@ -318,18 +286,6 @@ pub trait BitcoinClientV28: Send + Sync + TransportTrait + TransportExt + RpcDis
             serde_json::json!(_options),
         ];
         self.dispatch_json::<DumptxoutsetResponse>("dumptxoutset", &params).await
-    }
-
-    /// Dumps all wallet keys in a human-readable format to a server-side file. This does not allow overwriting existing files.
-    /// Imported scripts are included in the dumpfile, but corresponding BIP173 addresses, etc. may not be added automatically by importwallet.
-    /// Note that if your wallet contains keys which are not derived from your HD seed (e.g. imported keys), these are not covered by
-    /// only backing up the seed itself, and must be backed up too (e.g. ensure you back up the whole dumpfile).
-    /// Note: This command is only compatible with legacy wallets.
-    async fn dumpwallet(&self, _filename: String) -> Result<DumpwalletResponse, TransportError> {
-        let params = vec![
-            serde_json::json!(_filename),
-        ];
-        self.dispatch_json::<DumpwalletResponse>("dumpwallet", &params).await
     }
 
     /// Simply echo back the input arguments. This command is for testing.
@@ -385,7 +341,7 @@ pub trait BitcoinClientV28: Send + Sync + TransportTrait + TransportExt + RpcDis
 
     /// Encrypts the wallet with 'passphrase'. This is for first time encryption.
     /// After this, any calls that interact with private keys such as sending or signing
-    /// will require the passphrase to be set prior the making these calls.
+    /// will require the passphrase to be set prior to making these calls.
     /// Use the walletpassphrase call for this, and then walletlock call.
     /// If the wallet is already encrypted, use the walletpassphrasechange call.
     /// ** IMPORTANT **
@@ -457,9 +413,11 @@ pub trait BitcoinClientV28: Send + Sync + TransportTrait + TransportExt + RpcDis
     /// All existing inputs must either have their previous output transaction be in the wallet
     /// or be in the UTXO set. Solving data must be provided for non-wallet inputs.
     /// Note that all inputs selected must be of standard form and P2SH scripts must be
-    /// in the wallet using importaddress or addmultisigaddress (to calculate fees).
+    /// in the wallet using importdescriptors (to calculate fees).
     /// You can see whether this is the case by checking the "solvable" field in the listunspent output.
-    /// Only pay-to-pubkey, multisig, and P2SH versions thereof are currently supported for watch-only
+    /// Note that if specifying an exact fee rate, the resulting transaction may have a higher fee rate
+    /// if the transaction has unconfirmed inputs. This is because the wallet will attempt to make the
+    /// entire package have the given fee rate, not the resulting transaction.
     async fn fundrawtransaction(&self, _hexstring: String, _options: Option<serde_json::Value>, _iswitness: Option<bool>) -> Result<FundrawtransactionResponse, TransportError> {
         let params = vec![
             serde_json::json!(_hexstring),
@@ -707,6 +665,17 @@ pub trait BitcoinClientV28: Send + Sync + TransportTrait + TransportExt + RpcDis
             serde_json::json!(_blockhash),
         ];
         self.dispatch_json::<GetdeploymentinfoResponse>("getdeploymentinfo", &params).await
+    }
+
+    /// Get spend and receive activity associated with a set of descriptors for a set of blocks. This command pairs well with the `relevant_blocks` output of `scanblocks()`.
+    /// This call may take several minutes. If you encounter timeouts, try specifying no RPC timeout (bitcoin-cli -rpcclienttimeout=0)
+    async fn getdescriptoractivity(&self, _blockhashes: Vec<serde_json::Value>, _scanobjects: Vec<serde_json::Value>, _include_mempool: Option<bool>) -> Result<GetdescriptoractivityResponse, TransportError> {
+        let params = vec![
+            serde_json::json!(_blockhashes),
+            serde_json::json!(_scanobjects),
+            serde_json::json!(_include_mempool),
+        ];
+        self.dispatch_json::<GetdescriptoractivityResponse>("getdescriptoractivity", &params).await
     }
 
     /// Analyses a descriptor.
@@ -997,21 +966,20 @@ pub trait BitcoinClientV28: Send + Sync + TransportTrait + TransportExt + RpcDis
         self.dispatch_json::<GettxspendingprevoutResponse>("gettxspendingprevout", &params).await
     }
 
-    /// DEPRECATED
-    /// Identical to getbalances().mine.untrusted_pending
-    async fn getunconfirmedbalance(&self) -> Result<GetunconfirmedbalanceResponse, TransportError> {
-        let params = vec![
-
-        ];
-        self.dispatch_json::<GetunconfirmedbalanceResponse>("getunconfirmedbalance", &params).await
-    }
-
     /// Returns an object containing various wallet state info.
     async fn getwalletinfo(&self) -> Result<GetwalletinfoResponse, TransportError> {
         let params = vec![
 
         ];
         self.dispatch_json::<GetwalletinfoResponse>("getwalletinfo", &params).await
+    }
+
+    /// Returns information about the active ZeroMQ notifications.
+    async fn getzmqnotifications(&self) -> Result<GetzmqnotificationsResponse, TransportError> {
+        let params = vec![
+
+        ];
+        self.dispatch_json::<GetzmqnotificationsResponse>("getzmqnotifications", &params).await
     }
 
     /// List all commands, or get help for a specified command.
@@ -1022,31 +990,8 @@ pub trait BitcoinClientV28: Send + Sync + TransportTrait + TransportExt + RpcDis
         self.dispatch_json::<HelpResponse>("help", &params).await
     }
 
-    /// Adds an address or script (in hex) that can be watched as if it were in your wallet but cannot be used to spend. Requires a new wallet backup.
-    /// 
-    /// Note: This call can take over an hour to complete if rescan is true, during that time, other rpc calls
-    /// may report that the imported address exists but related transactions are still missing, leading to temporarily incorrect/bogus balances and unspent outputs until rescan completes.
-    /// The rescan parameter can be set to false if the key was never used to create transactions. If it is set to false,
-    /// but the key was used to create transactions, rescanblockchain needs to be called with the appropriate block range.
-    /// If you have the full public key, you should call importpubkey instead of this.
-    /// Hint: use importmulti to import more than one address.
-    /// 
-    /// Note: If you import a non-standard raw script in hex form, outputs sending to it will be treated
-    /// as change, and not show up in many RPCs.
-    /// Note: Use "getwalletinfo" to query the scanning progress.
-    /// Note: This command is only compatible with legacy wallets. Use "importdescriptors" for descriptor wallets.
-    async fn importaddress(&self, _address: String, _label: Option<String>, _rescan: Option<bool>, _p2sh: Option<bool>) -> Result<(), TransportError> {
-        let params = vec![
-            serde_json::json!(_address),
-            serde_json::json!(_label),
-            serde_json::json!(_rescan),
-            serde_json::json!(_p2sh),
-        ];
-        self.dispatch_json::<()>("importaddress", &params).await
-    }
-
     /// Import descriptors. This will trigger a rescan of the blockchain based on the earliest timestamp of all descriptors being imported. Requires a new wallet backup.
-    /// When importing descriptors with multipath key expressions, if the multipath specifier contains exactly two elements, the descriptor produced from the second elements will be imported as an internal descriptor.
+    /// When importing descriptors with multipath key expressions, if the multipath specifier contains exactly two elements, the descriptor produced from the second element will be imported as an internal descriptor.
     /// 
     /// Note: This call can take over an hour to complete if using an early timestamp; during that time, other rpc calls
     /// may report that the imported keys, addresses or scripts exist but related transactions are still missing.
@@ -1068,42 +1013,6 @@ pub trait BitcoinClientV28: Send + Sync + TransportTrait + TransportExt + RpcDis
         self.dispatch_json::<ImportmempoolResponse>("importmempool", &params).await
     }
 
-    /// Import addresses/scripts (with private or public keys, redeem script (P2SH)), optionally rescanning the blockchain from the earliest creation time of the imported scripts. Requires a new wallet backup.
-    /// If an address/script is imported without all of the private keys required to spend from that address, it will be watchonly. The 'watchonly' option must be set to true in this case or a warning will be returned.
-    /// Conversely, if all the private keys are provided and the address/script is spendable, the watchonly option must be set to false, or a warning will be returned.
-    /// 
-    /// Note: This call can take over an hour to complete if rescan is true, during that time, other rpc calls
-    /// may report that the imported keys, addresses or scripts exist but related transactions are still missing.
-    /// The rescan parameter can be set to false if the key was never used to create transactions. If it is set to false,
-    /// but the key was used to create transactions, rescanblockchain needs to be called with the appropriate block range.
-    /// Note: Use "getwalletinfo" to query the scanning progress.
-    /// Note: This command is only compatible with legacy wallets. Use "importdescriptors" for descriptor wallets.
-    async fn importmulti(&self, _requests: Vec<serde_json::Value>, _options: Option<serde_json::Value>) -> Result<ImportmultiResponse, TransportError> {
-        let params = vec![
-            serde_json::json!(_requests),
-            serde_json::json!(_options),
-        ];
-        self.dispatch_json::<ImportmultiResponse>("importmulti", &params).await
-    }
-
-    /// Adds a private key (as returned by dumpprivkey) to your wallet. Requires a new wallet backup.
-    /// Hint: use importmulti to import more than one private key.
-    /// 
-    /// Note: This call can take over an hour to complete if rescan is true, during that time, other rpc calls
-    /// may report that the imported key exists but related transactions are still missing, leading to temporarily incorrect/bogus balances and unspent outputs until rescan completes.
-    /// The rescan parameter can be set to false if the key was never used to create transactions. If it is set to false,
-    /// but the key was used to create transactions, rescanblockchain needs to be called with the appropriate block range.
-    /// Note: Use "getwalletinfo" to query the scanning progress.
-    /// Note: This command is only compatible with legacy wallets. Use "importdescriptors" with "combo(X)" for descriptor wallets.
-    async fn importprivkey(&self, _privkey: String, _label: Option<String>, _rescan: Option<bool>) -> Result<(), TransportError> {
-        let params = vec![
-            serde_json::json!(_privkey),
-            serde_json::json!(_label),
-            serde_json::json!(_rescan),
-        ];
-        self.dispatch_json::<()>("importprivkey", &params).await
-    }
-
     /// Imports funds without rescan. Corresponding address or script must previously be included in wallet. Aimed towards pruned wallets. The end-user is responsible to import additional transactions that subsequently spend the imported outputs or rescan after the point in the blockchain the transaction is included.
     async fn importprunedfunds(&self, _rawtransaction: String, _txoutproof: String) -> Result<(), TransportError> {
         let params = vec![
@@ -1111,34 +1020,6 @@ pub trait BitcoinClientV28: Send + Sync + TransportTrait + TransportExt + RpcDis
             serde_json::json!(_txoutproof),
         ];
         self.dispatch_json::<()>("importprunedfunds", &params).await
-    }
-
-    /// Adds a public key (in hex) that can be watched as if it were in your wallet but cannot be used to spend. Requires a new wallet backup.
-    /// Hint: use importmulti to import more than one public key.
-    /// 
-    /// Note: This call can take over an hour to complete if rescan is true, during that time, other rpc calls
-    /// may report that the imported pubkey exists but related transactions are still missing, leading to temporarily incorrect/bogus balances and unspent outputs until rescan completes.
-    /// The rescan parameter can be set to false if the key was never used to create transactions. If it is set to false,
-    /// but the key was used to create transactions, rescanblockchain needs to be called with the appropriate block range.
-    /// Note: Use "getwalletinfo" to query the scanning progress.
-    /// Note: This command is only compatible with legacy wallets. Use "importdescriptors" with "combo(X)" for descriptor wallets.
-    async fn importpubkey(&self, _pubkey: String, _label: Option<String>, _rescan: Option<bool>) -> Result<(), TransportError> {
-        let params = vec![
-            serde_json::json!(_pubkey),
-            serde_json::json!(_label),
-            serde_json::json!(_rescan),
-        ];
-        self.dispatch_json::<()>("importpubkey", &params).await
-    }
-
-    /// Imports keys from a wallet dump file (see dumpwallet). Requires a new wallet backup to include imported keys.
-    /// Note: Blockchain and Mempool will be rescanned after a successful import. Use "getwalletinfo" to query the scanning progress.
-    /// Note: This command is only compatible with legacy wallets.
-    async fn importwallet(&self, _filename: String) -> Result<(), TransportError> {
-        let params = vec![
-            serde_json::json!(_filename),
-        ];
-        self.dispatch_json::<()>("importwallet", &params).await
     }
 
     /// Permanently marks a block as invalid, as if it violated a consensus rule.
@@ -1158,7 +1039,9 @@ pub trait BitcoinClientV28: Send + Sync + TransportTrait + TransportExt + RpcDis
         self.dispatch_json::<JoinpsbtsResponse>("joinpsbts", &params).await
     }
 
-    /// Fills the keypool.
+    /// Refills each descriptor keypool in the wallet up to the specified number of new keys.
+    /// By default, descriptor wallets have 4 active ranged descriptors ("legacy", "p2sh-segwit", "bech32", "bech32m"), each with 1000 entries.
+    /// 
     /// Requires wallet passphrase to be set with walletpassphrase call if wallet is encrypted.
     async fn keypoolrefill(&self, _newsize: Option<u64>) -> Result<(), TransportError> {
         let params = vec![
@@ -1185,7 +1068,7 @@ pub trait BitcoinClientV28: Send + Sync + TransportTrait + TransportExt + RpcDis
         self.dispatch_json::<ListbannedResponse>("listbanned", &params).await
     }
 
-    /// List descriptors imported into a descriptor-enabled wallet.
+    /// List all descriptors present in a wallet.
     async fn listdescriptors(&self, _private: Option<bool>) -> Result<ListdescriptorsResponse, TransportError> {
         let params = vec![
             serde_json::json!(_private),
@@ -1375,22 +1258,8 @@ pub trait BitcoinClientV28: Send + Sync + TransportTrait + TransportExt + RpcDis
         self.dispatch_json::<()>("mockscheduler", &params).await
     }
 
-    /// Entirely clears and refills the keypool.
-    /// WARNING: On non-HD wallets, this will require a new backup immediately, to include the new keys.
-    /// When restoring a backup of an HD wallet created before the newkeypool command is run, funds received to
-    /// new addresses may not appear automatically. They have not been lost, but the wallet may not find them.
-    /// This can be fixed by running the newkeypool command on the backup and then rescanning, so the wallet
-    /// re-generates the required keys.
-    /// Requires wallet passphrase to be set with walletpassphrase call if wallet is encrypted.
-    async fn newkeypool(&self) -> Result<(), TransportError> {
-        let params = vec![
-
-        ];
-        self.dispatch_json::<()>("newkeypool", &params).await
-    }
-
     /// Requests that a ping be sent to all other nodes, to measure ping time.
-    /// Results provided in getpeerinfo, pingtime and pingwait fields are decimal seconds.
+    /// Results are provided in getpeerinfo.
     /// Ping command is handled in queue with all other commands, so it measures processing backlog, not just network ping.
     async fn ping(&self) -> Result<(), TransportError> {
         let params = vec![
@@ -1421,7 +1290,8 @@ pub trait BitcoinClientV28: Send + Sync + TransportTrait + TransportExt + RpcDis
         self.dispatch_json::<PrioritisetransactionResponse>("prioritisetransaction", &params).await
     }
 
-
+    /// Attempts to delete block and undo data up to a specified height or timestamp, if eligible for pruning.
+    /// Requires `-prune` to be enabled at startup. While pruned data may be re-fetched in some cases (e.g., via `getblockfrompeer`), local deletion is irreversible.
     async fn pruneblockchain(&self, _height: u64) -> Result<PruneblockchainResponse, TransportError> {
         let params = vec![
             serde_json::json!(_height),
@@ -1429,9 +1299,9 @@ pub trait BitcoinClientV28: Send + Sync + TransportTrait + TransportExt + RpcDis
         self.dispatch_json::<PruneblockchainResponse>("pruneblockchain", &params).await
     }
 
-    /// Bumps the fee of an opt-in-RBF transaction T, replacing it with a new transaction B.
+    /// Bumps the fee of a transaction T, replacing it with a new transaction B.
     /// Returns a PSBT instead of creating and signing a new transaction.
-    /// An opt-in RBF transaction with the given txid must be in the wallet.
+    /// A transaction with the given txid must be in the wallet.
     /// The command will pay the additional fee by reducing change outputs or adding inputs when necessary.
     /// It may add a new change output if one does not already exist.
     /// All inputs in the original transaction will be included in the replacement transaction.
@@ -1469,8 +1339,8 @@ pub trait BitcoinClientV28: Send + Sync + TransportTrait + TransportExt + RpcDis
 
     /// Rescan the local blockchain for wallet related transactions.
     /// Note: Use "getwalletinfo" to query the scanning progress.
-    /// The rescan is significantly faster when used on a descriptor wallet
-    /// and block filters are available (using startup option "-blockfilterindex=1").
+    /// The rescan is significantly faster if block filters are available
+    /// (using startup option "-blockfilterindex=1").
     async fn rescanblockchain(&self, _start_height: Option<u64>, _stop_height: Option<u64>) -> Result<RescanblockchainResponse, TransportError> {
         let params = vec![
             serde_json::json!(_start_height),
@@ -1481,8 +1351,8 @@ pub trait BitcoinClientV28: Send + Sync + TransportTrait + TransportExt + RpcDis
 
     /// Restores and loads a wallet from backup.
     /// 
-    /// The rescan is significantly faster if a descriptor wallet is restored
-    /// and block filters are available (using startup option "-blockfilterindex=1").
+    /// The rescan is significantly faster if block filters are available
+    /// (using startup option "-blockfilterindex=1").
     async fn restorewallet(&self, _wallet_name: String, _backup_file: String, _load_on_startup: Option<bool>) -> Result<RestorewalletResponse, TransportError> {
         let params = vec![
             serde_json::json!(_wallet_name),
@@ -1537,6 +1407,14 @@ pub trait BitcoinClientV28: Send + Sync + TransportTrait + TransportExt + RpcDis
             serde_json::json!(_scanobjects),
         ];
         self.dispatch_json::<ScantxoutsetResponse>("scantxoutset", &params).await
+    }
+
+    /// Return RPC command JSON Schema descriptions.
+    async fn schema(&self) -> Result<SchemaResponse, TransportError> {
+        let params = vec![
+
+        ];
+        self.dispatch_json::<SchemaResponse>("schema", &params).await
     }
 
     /// EXPERIMENTAL warning: this call may be changed in future releases.
@@ -1647,20 +1525,6 @@ pub trait BitcoinClientV28: Send + Sync + TransportTrait + TransportExt + RpcDis
         self.dispatch_json::<()>("setban", &params).await
     }
 
-    /// Set or generate a new HD wallet seed. Non-HD wallets will not be upgraded to being a HD wallet. Wallets that are already
-    /// HD will have a new HD seed set so that new keys added to the keypool will be derived from this new seed.
-    /// 
-    /// Note that you will need to MAKE A NEW BACKUP of your wallet after setting the HD wallet seed.
-    /// Requires wallet passphrase to be set with walletpassphrase call if wallet is encrypted.
-    /// Note: This command is only compatible with legacy wallets.
-    async fn sethdseed(&self, _newkeypool: Option<bool>, _seed: Option<String>) -> Result<(), TransportError> {
-        let params = vec![
-            serde_json::json!(_newkeypool),
-            serde_json::json!(_seed),
-        ];
-        self.dispatch_json::<()>("sethdseed", &params).await
-    }
-
     /// Sets the label associated with the given address.
     async fn setlabel(&self, _address: String, _label: String) -> Result<(), TransportError> {
         let params = vec![
@@ -1686,7 +1550,7 @@ pub trait BitcoinClientV28: Send + Sync + TransportTrait + TransportExt + RpcDis
         self.dispatch_json::<SetnetworkactiveResponse>("setnetworkactive", &params).await
     }
 
-    /// Set the transaction fee rate in BTC/kvB for this wallet. Overrides the global -paytxfee command line parameter.
+    /// (DEPRECATED) Set the transaction fee rate in BTC/kvB for this wallet. Overrides the global -paytxfee command line parameter.
     /// Can be deactivated by passing 0 as the fee. In that case automatic fee selection will be used by default.
     async fn settxfee(&self, _amount: bitcoin::Amount) -> Result<SettxfeeResponse, TransportError> {
         let params = vec![
@@ -1827,23 +1691,14 @@ pub trait BitcoinClientV28: Send + Sync + TransportTrait + TransportExt + RpcDis
         self.dispatch_json::<TestmempoolacceptResponse>("testmempoolaccept", &params).await
     }
 
-    /// Unloads the wallet referenced by the request endpoint, otherwise unloads the wallet specified in the argument.
-    /// Specifying the wallet name on a wallet endpoint is invalid.
+    /// Unloads the wallet referenced by the request endpoint or the wallet_name argument.
+    /// If both are specified, they must be identical.
     async fn unloadwallet(&self, _wallet_name: Option<String>, _load_on_startup: Option<bool>) -> Result<UnloadwalletResponse, TransportError> {
         let params = vec![
             serde_json::json!(_wallet_name),
             serde_json::json!(_load_on_startup),
         ];
         self.dispatch_json::<UnloadwalletResponse>("unloadwallet", &params).await
-    }
-
-    /// Upgrade the wallet. Upgrades to the latest version if no version number is specified.
-    /// New keys may be generated and a new wallet backup will need to be made.
-    async fn upgradewallet(&self, _version: Option<u32>) -> Result<UpgradewalletResponse, TransportError> {
-        let params = vec![
-            serde_json::json!(_version),
-        ];
-        self.dispatch_json::<UpgradewalletResponse>("upgradewallet", &params).await
     }
 
     /// Returns the total uptime of the server.
@@ -1931,9 +1786,10 @@ pub trait BitcoinClientV28: Send + Sync + TransportTrait + TransportExt + RpcDis
     /// Returns the current block on timeout or exit.
     /// 
     /// Make sure to use no RPC timeout (bitcoin-cli -rpcclienttimeout=0)
-    async fn waitfornewblock(&self, _timeout: Option<u64>) -> Result<WaitfornewblockResponse, TransportError> {
+    async fn waitfornewblock(&self, _timeout: Option<u64>, _current_tip: Option<String>) -> Result<WaitfornewblockResponse, TransportError> {
         let params = vec![
             serde_json::json!(_timeout),
+            serde_json::json!(_current_tip),
         ];
         self.dispatch_json::<WaitfornewblockResponse>("waitfornewblock", &params).await
     }
@@ -2049,7 +1905,7 @@ impl<T: TransportTrait + TransportExt + ?Sized> WalletTransportExt for T {}
 
 // Provide default implementation for any type that implements TransportTrait + TransportExt
 #[async_trait]
-impl<T: TransportTrait + TransportExt + Send + Sync> BitcoinClientV28 for T {
+impl<T: TransportTrait + TransportExt + Send + Sync> BitcoinClientV29 for T {
     /// Mark in-wallet transaction <txid> as abandoned
     /// This will mark this transaction and all its in-wallet descendants as abandoned which will allow
     /// for their inputs to be respent.  It can be used to replace "stuck" or evicted transactions.
@@ -2062,7 +1918,7 @@ impl<T: TransportTrait + TransportExt + Send + Sync> BitcoinClientV28 for T {
         self.dispatch_json::<()>("abandontransaction", &params).await
     }
 
-    /// Stops current wallet rescan triggered by an RPC call, e.g. by an importprivkey call.
+    /// Stops current wallet rescan triggered by an RPC call, e.g. by a rescanblockchain call.
     /// Note: Use "getwalletinfo" to query the scanning progress.
     async fn abortrescan(&self) -> Result<AbortrescanResponse, TransportError> {
         let params = vec![
@@ -2079,22 +1935,6 @@ impl<T: TransportTrait + TransportExt + Send + Sync> BitcoinClientV28 for T {
             serde_json::json!(_v2transport),
         ];
         self.dispatch_json::<AddconnectionResponse>("addconnection", &params).await
-    }
-
-    /// Add an nrequired-to-sign multisignature address to the wallet. Requires a new wallet backup.
-    /// Each key is a Bitcoin address or hex-encoded public key.
-    /// This functionality is only intended for use with non-watchonly addresses.
-    /// See `importaddress` for watchonly p2sh address support.
-    /// If 'label' is specified, assign address to that label.
-    /// Note: This command is only compatible with legacy wallets.
-    async fn addmultisigaddress(&self, _nrequired: u32, _keys: Vec<String>, _label: Option<String>, _address_type: Option<String>) -> Result<AddmultisigaddressResponse, TransportError> {
-        let params = vec![
-            serde_json::json!(_nrequired),
-            serde_json::json!(_keys),
-            serde_json::json!(_label),
-            serde_json::json!(_address_type),
-        ];
-        self.dispatch_json::<AddmultisigaddressResponse>("addmultisigaddress", &params).await
     }
 
     /// Attempts to add or remove a node from the addnode list.
@@ -2129,14 +1969,6 @@ impl<T: TransportTrait + TransportExt + Send + Sync> BitcoinClientV28 for T {
         self.dispatch_json::<AnalyzepsbtResponse>("analyzepsbt", &params).await
     }
 
-    /// Return JSON description of RPC API.
-    async fn api(&self) -> Result<ApiResponse, TransportError> {
-        let params = vec![
-
-        ];
-        self.dispatch_json::<ApiResponse>("api", &params).await
-    }
-
     /// Safely copies the current wallet file to the specified destination, which can either be a directory or a path with a filename.
     async fn backupwallet(&self, _destination: String) -> Result<(), TransportError> {
         let params = vec![
@@ -2145,8 +1977,8 @@ impl<T: TransportTrait + TransportExt + Send + Sync> BitcoinClientV28 for T {
         self.dispatch_json::<()>("backupwallet", &params).await
     }
 
-    /// Bumps the fee of an opt-in-RBF transaction T, replacing it with a new transaction B.
-    /// An opt-in RBF transaction with the given txid must be in the wallet.
+    /// Bumps the fee of a transaction T, replacing it with a new transaction B.
+    /// A transaction with the given txid must be in the wallet.
     /// The command will pay the additional fee by reducing change outputs or adding inputs when necessary.
     /// It may add a new change output if one does not already exist.
     /// All inputs in the original transaction will be included in the replacement transaction.
@@ -2203,7 +2035,7 @@ impl<T: TransportTrait + TransportExt + Send + Sync> BitcoinClientV28 for T {
         self.dispatch_json::<ConverttopsbtResponse>("converttopsbt", &params).await
     }
 
-    /// Creates a multi-signature address with n signature of m keys required.
+    /// Creates a multi-signature address with n signatures of m keys required.
     /// It returns a json object with the address and redeemScript.
     async fn createmultisig(&self, _nrequired: u32, _keys: Vec<String>, _address_type: Option<String>) -> Result<CreatemultisigResponse, TransportError> {
         let params = vec![
@@ -2216,6 +2048,8 @@ impl<T: TransportTrait + TransportExt + Send + Sync> BitcoinClientV28 for T {
 
     /// Creates a transaction in the Partially Signed Transaction format.
     /// Implements the Creator role.
+    /// Note that the transaction's inputs are not signed, and
+    /// it is not stored in the wallet or transmitted to the network.
     async fn createpsbt(&self, _inputs: Vec<serde_json::Value>, _outputs: Vec<serde_json::Value>, _locktime: Option<u32>, _replaceable: Option<bool>) -> Result<CreatepsbtResponse, TransportError> {
         let params = vec![
             serde_json::json!(_inputs),
@@ -2336,19 +2170,9 @@ impl<T: TransportTrait + TransportExt + Send + Sync> BitcoinClientV28 for T {
         self.dispatch_json::<()>("disconnectnode", &params).await
     }
 
-    /// Reveals the private key corresponding to 'address'.
-    /// Then the importprivkey can be used with this output
-    /// Note: This command is only compatible with legacy wallets.
-    async fn dumpprivkey(&self, _address: String) -> Result<DumpprivkeyResponse, TransportError> {
-        let params = vec![
-            serde_json::json!(_address),
-        ];
-        self.dispatch_json::<DumpprivkeyResponse>("dumpprivkey", &params).await
-    }
-
     /// Write the serialized UTXO set to a file. This can be used in loadtxoutset afterwards if this snapshot height is supported in the chainparams as well.
     /// 
-    /// Unless the the "latest" type is requested, the node will roll back to the requested height and network activity will be suspended during this process. Because of this it is discouraged to interact with the node in any other way during the execution of this call to avoid inconsistent results and race conditions, particularly RPCs that interact with blockstorage.
+    /// Unless the "latest" type is requested, the node will roll back to the requested height and network activity will be suspended during this process. Because of this it is discouraged to interact with the node in any other way during the execution of this call to avoid inconsistent results and race conditions, particularly RPCs that interact with blockstorage.
     /// 
     /// This call may take several minutes. Make sure to use no RPC timeout (bitcoin-cli -rpcclienttimeout=0)
     async fn dumptxoutset(&self, _path: String, r#_type: Option<String>, _options: Option<serde_json::Value>) -> Result<DumptxoutsetResponse, TransportError> {
@@ -2358,18 +2182,6 @@ impl<T: TransportTrait + TransportExt + Send + Sync> BitcoinClientV28 for T {
             serde_json::json!(_options),
         ];
         self.dispatch_json::<DumptxoutsetResponse>("dumptxoutset", &params).await
-    }
-
-    /// Dumps all wallet keys in a human-readable format to a server-side file. This does not allow overwriting existing files.
-    /// Imported scripts are included in the dumpfile, but corresponding BIP173 addresses, etc. may not be added automatically by importwallet.
-    /// Note that if your wallet contains keys which are not derived from your HD seed (e.g. imported keys), these are not covered by
-    /// only backing up the seed itself, and must be backed up too (e.g. ensure you back up the whole dumpfile).
-    /// Note: This command is only compatible with legacy wallets.
-    async fn dumpwallet(&self, _filename: String) -> Result<DumpwalletResponse, TransportError> {
-        let params = vec![
-            serde_json::json!(_filename),
-        ];
-        self.dispatch_json::<DumpwalletResponse>("dumpwallet", &params).await
     }
 
     /// Simply echo back the input arguments. This command is for testing.
@@ -2425,7 +2237,7 @@ impl<T: TransportTrait + TransportExt + Send + Sync> BitcoinClientV28 for T {
 
     /// Encrypts the wallet with 'passphrase'. This is for first time encryption.
     /// After this, any calls that interact with private keys such as sending or signing
-    /// will require the passphrase to be set prior the making these calls.
+    /// will require the passphrase to be set prior to making these calls.
     /// Use the walletpassphrase call for this, and then walletlock call.
     /// If the wallet is already encrypted, use the walletpassphrasechange call.
     /// ** IMPORTANT **
@@ -2497,9 +2309,11 @@ impl<T: TransportTrait + TransportExt + Send + Sync> BitcoinClientV28 for T {
     /// All existing inputs must either have their previous output transaction be in the wallet
     /// or be in the UTXO set. Solving data must be provided for non-wallet inputs.
     /// Note that all inputs selected must be of standard form and P2SH scripts must be
-    /// in the wallet using importaddress or addmultisigaddress (to calculate fees).
+    /// in the wallet using importdescriptors (to calculate fees).
     /// You can see whether this is the case by checking the "solvable" field in the listunspent output.
-    /// Only pay-to-pubkey, multisig, and P2SH versions thereof are currently supported for watch-only
+    /// Note that if specifying an exact fee rate, the resulting transaction may have a higher fee rate
+    /// if the transaction has unconfirmed inputs. This is because the wallet will attempt to make the
+    /// entire package have the given fee rate, not the resulting transaction.
     async fn fundrawtransaction(&self, _hexstring: String, _options: Option<serde_json::Value>, _iswitness: Option<bool>) -> Result<FundrawtransactionResponse, TransportError> {
         let params = vec![
             serde_json::json!(_hexstring),
@@ -2747,6 +2561,17 @@ impl<T: TransportTrait + TransportExt + Send + Sync> BitcoinClientV28 for T {
             serde_json::json!(_blockhash),
         ];
         self.dispatch_json::<GetdeploymentinfoResponse>("getdeploymentinfo", &params).await
+    }
+
+    /// Get spend and receive activity associated with a set of descriptors for a set of blocks. This command pairs well with the `relevant_blocks` output of `scanblocks()`.
+    /// This call may take several minutes. If you encounter timeouts, try specifying no RPC timeout (bitcoin-cli -rpcclienttimeout=0)
+    async fn getdescriptoractivity(&self, _blockhashes: Vec<serde_json::Value>, _scanobjects: Vec<serde_json::Value>, _include_mempool: Option<bool>) -> Result<GetdescriptoractivityResponse, TransportError> {
+        let params = vec![
+            serde_json::json!(_blockhashes),
+            serde_json::json!(_scanobjects),
+            serde_json::json!(_include_mempool),
+        ];
+        self.dispatch_json::<GetdescriptoractivityResponse>("getdescriptoractivity", &params).await
     }
 
     /// Analyses a descriptor.
@@ -3037,21 +2862,20 @@ impl<T: TransportTrait + TransportExt + Send + Sync> BitcoinClientV28 for T {
         self.dispatch_json::<GettxspendingprevoutResponse>("gettxspendingprevout", &params).await
     }
 
-    /// DEPRECATED
-    /// Identical to getbalances().mine.untrusted_pending
-    async fn getunconfirmedbalance(&self) -> Result<GetunconfirmedbalanceResponse, TransportError> {
-        let params = vec![
-
-        ];
-        self.dispatch_json::<GetunconfirmedbalanceResponse>("getunconfirmedbalance", &params).await
-    }
-
     /// Returns an object containing various wallet state info.
     async fn getwalletinfo(&self) -> Result<GetwalletinfoResponse, TransportError> {
         let params = vec![
 
         ];
         self.dispatch_json::<GetwalletinfoResponse>("getwalletinfo", &params).await
+    }
+
+    /// Returns information about the active ZeroMQ notifications.
+    async fn getzmqnotifications(&self) -> Result<GetzmqnotificationsResponse, TransportError> {
+        let params = vec![
+
+        ];
+        self.dispatch_json::<GetzmqnotificationsResponse>("getzmqnotifications", &params).await
     }
 
     /// List all commands, or get help for a specified command.
@@ -3062,31 +2886,8 @@ impl<T: TransportTrait + TransportExt + Send + Sync> BitcoinClientV28 for T {
         self.dispatch_json::<HelpResponse>("help", &params).await
     }
 
-    /// Adds an address or script (in hex) that can be watched as if it were in your wallet but cannot be used to spend. Requires a new wallet backup.
-    /// 
-    /// Note: This call can take over an hour to complete if rescan is true, during that time, other rpc calls
-    /// may report that the imported address exists but related transactions are still missing, leading to temporarily incorrect/bogus balances and unspent outputs until rescan completes.
-    /// The rescan parameter can be set to false if the key was never used to create transactions. If it is set to false,
-    /// but the key was used to create transactions, rescanblockchain needs to be called with the appropriate block range.
-    /// If you have the full public key, you should call importpubkey instead of this.
-    /// Hint: use importmulti to import more than one address.
-    /// 
-    /// Note: If you import a non-standard raw script in hex form, outputs sending to it will be treated
-    /// as change, and not show up in many RPCs.
-    /// Note: Use "getwalletinfo" to query the scanning progress.
-    /// Note: This command is only compatible with legacy wallets. Use "importdescriptors" for descriptor wallets.
-    async fn importaddress(&self, _address: String, _label: Option<String>, _rescan: Option<bool>, _p2sh: Option<bool>) -> Result<(), TransportError> {
-        let params = vec![
-            serde_json::json!(_address),
-            serde_json::json!(_label),
-            serde_json::json!(_rescan),
-            serde_json::json!(_p2sh),
-        ];
-        self.dispatch_json::<()>("importaddress", &params).await
-    }
-
     /// Import descriptors. This will trigger a rescan of the blockchain based on the earliest timestamp of all descriptors being imported. Requires a new wallet backup.
-    /// When importing descriptors with multipath key expressions, if the multipath specifier contains exactly two elements, the descriptor produced from the second elements will be imported as an internal descriptor.
+    /// When importing descriptors with multipath key expressions, if the multipath specifier contains exactly two elements, the descriptor produced from the second element will be imported as an internal descriptor.
     /// 
     /// Note: This call can take over an hour to complete if using an early timestamp; during that time, other rpc calls
     /// may report that the imported keys, addresses or scripts exist but related transactions are still missing.
@@ -3108,42 +2909,6 @@ impl<T: TransportTrait + TransportExt + Send + Sync> BitcoinClientV28 for T {
         self.dispatch_json::<ImportmempoolResponse>("importmempool", &params).await
     }
 
-    /// Import addresses/scripts (with private or public keys, redeem script (P2SH)), optionally rescanning the blockchain from the earliest creation time of the imported scripts. Requires a new wallet backup.
-    /// If an address/script is imported without all of the private keys required to spend from that address, it will be watchonly. The 'watchonly' option must be set to true in this case or a warning will be returned.
-    /// Conversely, if all the private keys are provided and the address/script is spendable, the watchonly option must be set to false, or a warning will be returned.
-    /// 
-    /// Note: This call can take over an hour to complete if rescan is true, during that time, other rpc calls
-    /// may report that the imported keys, addresses or scripts exist but related transactions are still missing.
-    /// The rescan parameter can be set to false if the key was never used to create transactions. If it is set to false,
-    /// but the key was used to create transactions, rescanblockchain needs to be called with the appropriate block range.
-    /// Note: Use "getwalletinfo" to query the scanning progress.
-    /// Note: This command is only compatible with legacy wallets. Use "importdescriptors" for descriptor wallets.
-    async fn importmulti(&self, _requests: Vec<serde_json::Value>, _options: Option<serde_json::Value>) -> Result<ImportmultiResponse, TransportError> {
-        let params = vec![
-            serde_json::json!(_requests),
-            serde_json::json!(_options),
-        ];
-        self.dispatch_json::<ImportmultiResponse>("importmulti", &params).await
-    }
-
-    /// Adds a private key (as returned by dumpprivkey) to your wallet. Requires a new wallet backup.
-    /// Hint: use importmulti to import more than one private key.
-    /// 
-    /// Note: This call can take over an hour to complete if rescan is true, during that time, other rpc calls
-    /// may report that the imported key exists but related transactions are still missing, leading to temporarily incorrect/bogus balances and unspent outputs until rescan completes.
-    /// The rescan parameter can be set to false if the key was never used to create transactions. If it is set to false,
-    /// but the key was used to create transactions, rescanblockchain needs to be called with the appropriate block range.
-    /// Note: Use "getwalletinfo" to query the scanning progress.
-    /// Note: This command is only compatible with legacy wallets. Use "importdescriptors" with "combo(X)" for descriptor wallets.
-    async fn importprivkey(&self, _privkey: String, _label: Option<String>, _rescan: Option<bool>) -> Result<(), TransportError> {
-        let params = vec![
-            serde_json::json!(_privkey),
-            serde_json::json!(_label),
-            serde_json::json!(_rescan),
-        ];
-        self.dispatch_json::<()>("importprivkey", &params).await
-    }
-
     /// Imports funds without rescan. Corresponding address or script must previously be included in wallet. Aimed towards pruned wallets. The end-user is responsible to import additional transactions that subsequently spend the imported outputs or rescan after the point in the blockchain the transaction is included.
     async fn importprunedfunds(&self, _rawtransaction: String, _txoutproof: String) -> Result<(), TransportError> {
         let params = vec![
@@ -3151,34 +2916,6 @@ impl<T: TransportTrait + TransportExt + Send + Sync> BitcoinClientV28 for T {
             serde_json::json!(_txoutproof),
         ];
         self.dispatch_json::<()>("importprunedfunds", &params).await
-    }
-
-    /// Adds a public key (in hex) that can be watched as if it were in your wallet but cannot be used to spend. Requires a new wallet backup.
-    /// Hint: use importmulti to import more than one public key.
-    /// 
-    /// Note: This call can take over an hour to complete if rescan is true, during that time, other rpc calls
-    /// may report that the imported pubkey exists but related transactions are still missing, leading to temporarily incorrect/bogus balances and unspent outputs until rescan completes.
-    /// The rescan parameter can be set to false if the key was never used to create transactions. If it is set to false,
-    /// but the key was used to create transactions, rescanblockchain needs to be called with the appropriate block range.
-    /// Note: Use "getwalletinfo" to query the scanning progress.
-    /// Note: This command is only compatible with legacy wallets. Use "importdescriptors" with "combo(X)" for descriptor wallets.
-    async fn importpubkey(&self, _pubkey: String, _label: Option<String>, _rescan: Option<bool>) -> Result<(), TransportError> {
-        let params = vec![
-            serde_json::json!(_pubkey),
-            serde_json::json!(_label),
-            serde_json::json!(_rescan),
-        ];
-        self.dispatch_json::<()>("importpubkey", &params).await
-    }
-
-    /// Imports keys from a wallet dump file (see dumpwallet). Requires a new wallet backup to include imported keys.
-    /// Note: Blockchain and Mempool will be rescanned after a successful import. Use "getwalletinfo" to query the scanning progress.
-    /// Note: This command is only compatible with legacy wallets.
-    async fn importwallet(&self, _filename: String) -> Result<(), TransportError> {
-        let params = vec![
-            serde_json::json!(_filename),
-        ];
-        self.dispatch_json::<()>("importwallet", &params).await
     }
 
     /// Permanently marks a block as invalid, as if it violated a consensus rule.
@@ -3198,7 +2935,9 @@ impl<T: TransportTrait + TransportExt + Send + Sync> BitcoinClientV28 for T {
         self.dispatch_json::<JoinpsbtsResponse>("joinpsbts", &params).await
     }
 
-    /// Fills the keypool.
+    /// Refills each descriptor keypool in the wallet up to the specified number of new keys.
+    /// By default, descriptor wallets have 4 active ranged descriptors ("legacy", "p2sh-segwit", "bech32", "bech32m"), each with 1000 entries.
+    /// 
     /// Requires wallet passphrase to be set with walletpassphrase call if wallet is encrypted.
     async fn keypoolrefill(&self, _newsize: Option<u64>) -> Result<(), TransportError> {
         let params = vec![
@@ -3225,7 +2964,7 @@ impl<T: TransportTrait + TransportExt + Send + Sync> BitcoinClientV28 for T {
         self.dispatch_json::<ListbannedResponse>("listbanned", &params).await
     }
 
-    /// List descriptors imported into a descriptor-enabled wallet.
+    /// List all descriptors present in a wallet.
     async fn listdescriptors(&self, _private: Option<bool>) -> Result<ListdescriptorsResponse, TransportError> {
         let params = vec![
             serde_json::json!(_private),
@@ -3415,22 +3154,8 @@ impl<T: TransportTrait + TransportExt + Send + Sync> BitcoinClientV28 for T {
         self.dispatch_json::<()>("mockscheduler", &params).await
     }
 
-    /// Entirely clears and refills the keypool.
-    /// WARNING: On non-HD wallets, this will require a new backup immediately, to include the new keys.
-    /// When restoring a backup of an HD wallet created before the newkeypool command is run, funds received to
-    /// new addresses may not appear automatically. They have not been lost, but the wallet may not find them.
-    /// This can be fixed by running the newkeypool command on the backup and then rescanning, so the wallet
-    /// re-generates the required keys.
-    /// Requires wallet passphrase to be set with walletpassphrase call if wallet is encrypted.
-    async fn newkeypool(&self) -> Result<(), TransportError> {
-        let params = vec![
-
-        ];
-        self.dispatch_json::<()>("newkeypool", &params).await
-    }
-
     /// Requests that a ping be sent to all other nodes, to measure ping time.
-    /// Results provided in getpeerinfo, pingtime and pingwait fields are decimal seconds.
+    /// Results are provided in getpeerinfo.
     /// Ping command is handled in queue with all other commands, so it measures processing backlog, not just network ping.
     async fn ping(&self) -> Result<(), TransportError> {
         let params = vec![
@@ -3461,7 +3186,8 @@ impl<T: TransportTrait + TransportExt + Send + Sync> BitcoinClientV28 for T {
         self.dispatch_json::<PrioritisetransactionResponse>("prioritisetransaction", &params).await
     }
 
-
+    /// Attempts to delete block and undo data up to a specified height or timestamp, if eligible for pruning.
+    /// Requires `-prune` to be enabled at startup. While pruned data may be re-fetched in some cases (e.g., via `getblockfrompeer`), local deletion is irreversible.
     async fn pruneblockchain(&self, _height: u64) -> Result<PruneblockchainResponse, TransportError> {
         let params = vec![
             serde_json::json!(_height),
@@ -3469,9 +3195,9 @@ impl<T: TransportTrait + TransportExt + Send + Sync> BitcoinClientV28 for T {
         self.dispatch_json::<PruneblockchainResponse>("pruneblockchain", &params).await
     }
 
-    /// Bumps the fee of an opt-in-RBF transaction T, replacing it with a new transaction B.
+    /// Bumps the fee of a transaction T, replacing it with a new transaction B.
     /// Returns a PSBT instead of creating and signing a new transaction.
-    /// An opt-in RBF transaction with the given txid must be in the wallet.
+    /// A transaction with the given txid must be in the wallet.
     /// The command will pay the additional fee by reducing change outputs or adding inputs when necessary.
     /// It may add a new change output if one does not already exist.
     /// All inputs in the original transaction will be included in the replacement transaction.
@@ -3509,8 +3235,8 @@ impl<T: TransportTrait + TransportExt + Send + Sync> BitcoinClientV28 for T {
 
     /// Rescan the local blockchain for wallet related transactions.
     /// Note: Use "getwalletinfo" to query the scanning progress.
-    /// The rescan is significantly faster when used on a descriptor wallet
-    /// and block filters are available (using startup option "-blockfilterindex=1").
+    /// The rescan is significantly faster if block filters are available
+    /// (using startup option "-blockfilterindex=1").
     async fn rescanblockchain(&self, _start_height: Option<u64>, _stop_height: Option<u64>) -> Result<RescanblockchainResponse, TransportError> {
         let params = vec![
             serde_json::json!(_start_height),
@@ -3521,8 +3247,8 @@ impl<T: TransportTrait + TransportExt + Send + Sync> BitcoinClientV28 for T {
 
     /// Restores and loads a wallet from backup.
     /// 
-    /// The rescan is significantly faster if a descriptor wallet is restored
-    /// and block filters are available (using startup option "-blockfilterindex=1").
+    /// The rescan is significantly faster if block filters are available
+    /// (using startup option "-blockfilterindex=1").
     async fn restorewallet(&self, _wallet_name: String, _backup_file: String, _load_on_startup: Option<bool>) -> Result<RestorewalletResponse, TransportError> {
         let params = vec![
             serde_json::json!(_wallet_name),
@@ -3577,6 +3303,14 @@ impl<T: TransportTrait + TransportExt + Send + Sync> BitcoinClientV28 for T {
             serde_json::json!(_scanobjects),
         ];
         self.dispatch_json::<ScantxoutsetResponse>("scantxoutset", &params).await
+    }
+
+    /// Return RPC command JSON Schema descriptions.
+    async fn schema(&self) -> Result<SchemaResponse, TransportError> {
+        let params = vec![
+
+        ];
+        self.dispatch_json::<SchemaResponse>("schema", &params).await
     }
 
     /// EXPERIMENTAL warning: this call may be changed in future releases.
@@ -3687,20 +3421,6 @@ impl<T: TransportTrait + TransportExt + Send + Sync> BitcoinClientV28 for T {
         self.dispatch_json::<()>("setban", &params).await
     }
 
-    /// Set or generate a new HD wallet seed. Non-HD wallets will not be upgraded to being a HD wallet. Wallets that are already
-    /// HD will have a new HD seed set so that new keys added to the keypool will be derived from this new seed.
-    /// 
-    /// Note that you will need to MAKE A NEW BACKUP of your wallet after setting the HD wallet seed.
-    /// Requires wallet passphrase to be set with walletpassphrase call if wallet is encrypted.
-    /// Note: This command is only compatible with legacy wallets.
-    async fn sethdseed(&self, _newkeypool: Option<bool>, _seed: Option<String>) -> Result<(), TransportError> {
-        let params = vec![
-            serde_json::json!(_newkeypool),
-            serde_json::json!(_seed),
-        ];
-        self.dispatch_json::<()>("sethdseed", &params).await
-    }
-
     /// Sets the label associated with the given address.
     async fn setlabel(&self, _address: String, _label: String) -> Result<(), TransportError> {
         let params = vec![
@@ -3726,7 +3446,7 @@ impl<T: TransportTrait + TransportExt + Send + Sync> BitcoinClientV28 for T {
         self.dispatch_json::<SetnetworkactiveResponse>("setnetworkactive", &params).await
     }
 
-    /// Set the transaction fee rate in BTC/kvB for this wallet. Overrides the global -paytxfee command line parameter.
+    /// (DEPRECATED) Set the transaction fee rate in BTC/kvB for this wallet. Overrides the global -paytxfee command line parameter.
     /// Can be deactivated by passing 0 as the fee. In that case automatic fee selection will be used by default.
     async fn settxfee(&self, _amount: bitcoin::Amount) -> Result<SettxfeeResponse, TransportError> {
         let params = vec![
@@ -3867,23 +3587,14 @@ impl<T: TransportTrait + TransportExt + Send + Sync> BitcoinClientV28 for T {
         self.dispatch_json::<TestmempoolacceptResponse>("testmempoolaccept", &params).await
     }
 
-    /// Unloads the wallet referenced by the request endpoint, otherwise unloads the wallet specified in the argument.
-    /// Specifying the wallet name on a wallet endpoint is invalid.
+    /// Unloads the wallet referenced by the request endpoint or the wallet_name argument.
+    /// If both are specified, they must be identical.
     async fn unloadwallet(&self, _wallet_name: Option<String>, _load_on_startup: Option<bool>) -> Result<UnloadwalletResponse, TransportError> {
         let params = vec![
             serde_json::json!(_wallet_name),
             serde_json::json!(_load_on_startup),
         ];
         self.dispatch_json::<UnloadwalletResponse>("unloadwallet", &params).await
-    }
-
-    /// Upgrade the wallet. Upgrades to the latest version if no version number is specified.
-    /// New keys may be generated and a new wallet backup will need to be made.
-    async fn upgradewallet(&self, _version: Option<u32>) -> Result<UpgradewalletResponse, TransportError> {
-        let params = vec![
-            serde_json::json!(_version),
-        ];
-        self.dispatch_json::<UpgradewalletResponse>("upgradewallet", &params).await
     }
 
     /// Returns the total uptime of the server.
@@ -3971,9 +3682,10 @@ impl<T: TransportTrait + TransportExt + Send + Sync> BitcoinClientV28 for T {
     /// Returns the current block on timeout or exit.
     /// 
     /// Make sure to use no RPC timeout (bitcoin-cli -rpcclienttimeout=0)
-    async fn waitfornewblock(&self, _timeout: Option<u64>) -> Result<WaitfornewblockResponse, TransportError> {
+    async fn waitfornewblock(&self, _timeout: Option<u64>, _current_tip: Option<String>) -> Result<WaitfornewblockResponse, TransportError> {
         let params = vec![
             serde_json::json!(_timeout),
+            serde_json::json!(_current_tip),
         ];
         self.dispatch_json::<WaitfornewblockResponse>("waitfornewblock", &params).await
     }

@@ -30,8 +30,9 @@ use transport::{TransportTrait, TransportError};
     /// In addition, the following are available as category names with special meanings:
     /// - \"all\",  \"1\" : represent all logging categories.
 #[derive(Debug, Deserialize, Serialize)]
-#[serde(transparent)]
-pub struct LoggingResponse(pub serde_json::Value);
+pub struct LoggingResponse {
+    pub category: bool,
+}
 
 
 

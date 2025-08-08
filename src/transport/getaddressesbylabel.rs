@@ -16,8 +16,9 @@ use serde_json::{Value, json};
 use transport::{TransportTrait, TransportError};
 /// Returns the list of addresses assigned the specified label.
 #[derive(Debug, Deserialize, Serialize)]
-#[serde(transparent)]
-pub struct GetaddressesbylabelResponse(pub serde_json::Value);
+pub struct GetaddressesbylabelResponse {
+    pub address: serde_json::Value,
+}
 
 
 

@@ -28,6 +28,8 @@ pub struct GetmempoolinfoResponse {
     pub incrementalrelayfee: f64,
     pub unbroadcastcount: u64,
     pub fullrbf: bool,
+    pub permitbaremultisig: bool,
+    pub maxdatacarriersize: u64,
 }
 
 

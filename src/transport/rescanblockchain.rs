@@ -3,8 +3,8 @@
 
 /// Rescan the local blockchain for wallet related transactions.
 /// Note: Use "getwalletinfo" to query the scanning progress.
-/// The rescan is significantly faster when used on a descriptor wallet
-/// and block filters are available (using startup option "-blockfilterindex=1").
+/// The rescan is significantly faster if block filters are available
+/// (using startup option "-blockfilterindex=1").
 
 /// # Example
 /// ```rust
@@ -19,8 +19,8 @@ use serde_json::{Value, json};
 use transport::{TransportTrait, TransportError};
 /// Rescan the local blockchain for wallet related transactions.
     /// Note: Use \"getwalletinfo\" to query the scanning progress.
-    /// The rescan is significantly faster when used on a descriptor wallet
-    /// and block filters are available (using startup option \"-blockfilterindex=1\").
+    /// The rescan is significantly faster if block filters are available
+    /// (using startup option \"-blockfilterindex=1\").
 #[derive(Debug, Deserialize, Serialize)]
 pub struct RescanblockchainResponse {
     pub start_height: u64,

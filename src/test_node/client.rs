@@ -2,7 +2,7 @@ use anyhow::Result;
 use std::sync::Arc;
 use crate::transport::core::{TransportError};
 use crate::transport::{DefaultTransport, RpcClient, BatchBuilder};
-use crate::types::v28_types::*;
+use crate::types::v29_types::*;
 use serde_json::Value;
 
 use crate::node::{BitcoinNodeManager, TestConfig};
@@ -298,7 +298,7 @@ pub fn rpc(&self) -> &RpcClient {
         self.wallet_client.abandontransaction(txid).await
     }
 
-/// Stops current wallet rescan triggered by an RPC call, e.g. by an importprivkey call.
+/// Stops current wallet rescan triggered by an RPC call, e.g. by a rescanblockchain call.
 /// Note: Use "getwalletinfo" to query the scanning progress.
     pub async fn abortrescan(&self) -> Result<AbortrescanResponse, TransportError> {
         self.wallet_client.abortrescan().await
@@ -307,16 +307,6 @@ pub fn rpc(&self) -> &RpcClient {
 /// Open an outbound connection to a specified node. This RPC is for testing only.
     pub async fn addconnection(&self, address: String, connection_type: String, v2transport: bool) -> Result<AddconnectionResponse, TransportError> {
         self.node_client.addconnection(address, connection_type, v2transport).await
-    }
-
-/// Add an nrequired-to-sign multisignature address to the wallet. Requires a new wallet backup.
-/// Each key is a Bitcoin address or hex-encoded public key.
-/// This functionality is only intended for use with non-watchonly addresses.
-/// See ``importaddress`` for watchonly p2sh address support.
-/// If "label" is specified, assign address to that label.
-/// Note: This command is only compatible with legacy wallets.
-    pub async fn addmultisigaddress(&self, nrequired: u32, keys: Vec<String>, label: String, address_type: String) -> Result<AddmultisigaddressResponse, TransportError> {
-        self.wallet_client.addmultisigaddress(nrequired, keys, label, address_type).await
     }
 
 /// Attempts to add or remove a node from the addnode list.
@@ -338,18 +328,13 @@ pub fn rpc(&self) -> &RpcClient {
         self.node_client.analyzepsbt(psbt).await
     }
 
-/// Return JSON description of RPC API.
-    pub async fn api(&self) -> Result<ApiResponse, TransportError> {
-        self.node_client.api().await
-    }
-
 /// Safely copies the current wallet file to the specified destination, which can either be a directory or a path with a filename.
     pub async fn backupwallet(&self, destination: String) -> Result<(), TransportError> {
         self.wallet_client.backupwallet(destination).await
     }
 
-/// Bumps the fee of an opt-in-RBF transaction T, replacing it with a new transaction B.
-/// An opt-in RBF transaction with the given txid must be in the wallet.
+/// Bumps the fee of a transaction T, replacing it with a new transaction B.
+/// A transaction with the given txid must be in the wallet.
 /// The command will pay the additional fee by reducing change outputs or adding inputs when necessary.
 /// It may add a new change output if one does not already exist.
 /// All inputs in the original transaction will be included in the replacement transaction.
@@ -388,7 +373,7 @@ pub fn rpc(&self) -> &RpcClient {
         self.node_client.converttopsbt(hexstring, permitsigdata, iswitness).await
     }
 
-/// Creates a multi-signature address with n signature of m keys required.
+/// Creates a multi-signature address with n signatures of m keys required.
 /// It returns a json object with the address and redeemScript.
     pub async fn createmultisig(&self, nrequired: u32, keys: Vec<String>, address_type: String) -> Result<CreatemultisigResponse, TransportError> {
         self.node_client.createmultisig(nrequired, keys, address_type).await
@@ -396,6 +381,8 @@ pub fn rpc(&self) -> &RpcClient {
 
 /// Creates a transaction in the Partially Signed Transaction format.
 /// Implements the Creator role.
+/// Note that the transaction"s inputs are not signed, and
+/// it is not stored in the wallet or transmitted to the network.
     pub async fn createpsbt(&self, inputs: Vec<serde_json::Value>, outputs: Vec<serde_json::Value>, locktime: u32, replaceable: bool) -> Result<CreatepsbtResponse, TransportError> {
         self.node_client.createpsbt(inputs, outputs, locktime, replaceable).await
     }
@@ -465,29 +452,13 @@ pub fn rpc(&self) -> &RpcClient {
         self.node_client.disconnectnode(address, nodeid).await
     }
 
-/// Reveals the private key corresponding to "address".
-/// Then the importprivkey can be used with this output
-/// Note: This command is only compatible with legacy wallets.
-    pub async fn dumpprivkey(&self, address: String) -> Result<DumpprivkeyResponse, TransportError> {
-        self.wallet_client.dumpprivkey(address).await
-    }
-
 /// Write the serialized UTXO set to a file. This can be used in loadtxoutset afterwards if this snapshot height is supported in the chainparams as well.
 ///
-/// Unless the the "latest" type is requested, the node will roll back to the requested height and network activity will be suspended during this process. Because of this it is discouraged to interact with the node in any other way during the execution of this call to avoid inconsistent results and race conditions, particularly RPCs that interact with blockstorage.
+/// Unless the "latest" type is requested, the node will roll back to the requested height and network activity will be suspended during this process. Because of this it is discouraged to interact with the node in any other way during the execution of this call to avoid inconsistent results and race conditions, particularly RPCs that interact with blockstorage.
 ///
 /// This call may take several minutes. Make sure to use no RPC timeout (bitcoin-cli -rpcclienttimeout=0)
     pub async fn dumptxoutset(&self, path: String, _type: String, options: serde_json::Value) -> Result<DumptxoutsetResponse, TransportError> {
         self.node_client.dumptxoutset(path, _type, options).await
-    }
-
-/// Dumps all wallet keys in a human-readable format to a server-side file. This does not allow overwriting existing files.
-/// Imported scripts are included in the dumpfile, but corresponding BIP173 addresses, etc. may not be added automatically by importwallet.
-/// Note that if your wallet contains keys which are not derived from your HD seed (e.g. imported keys), these are not covered by
-/// only backing up the seed itself, and must be backed up too (e.g. ensure you back up the whole dumpfile).
-/// Note: This command is only compatible with legacy wallets.
-    pub async fn dumpwallet(&self, filename: String) -> Result<DumpwalletResponse, TransportError> {
-        self.wallet_client.dumpwallet(filename).await
     }
 
 /// Simply echo back the input arguments. This command is for testing.
@@ -516,7 +487,7 @@ pub fn rpc(&self) -> &RpcClient {
 
 /// Encrypts the wallet with "passphrase". This is for first time encryption.
 /// After this, any calls that interact with private keys such as sending or signing
-/// will require the passphrase to be set prior the making these calls.
+/// will require the passphrase to be set prior to making these calls.
 /// Use the walletpassphrase call for this, and then walletlock call.
 /// If the wallet is already encrypted, use the walletpassphrasechange call.
 /// ** IMPORTANT **
@@ -570,9 +541,11 @@ pub fn rpc(&self) -> &RpcClient {
 /// All existing inputs must either have their previous output transaction be in the wallet
 /// or be in the UTXO set. Solving data must be provided for non-wallet inputs.
 /// Note that all inputs selected must be of standard form and P2SH scripts must be
-/// in the wallet using importaddress or addmultisigaddress (to calculate fees).
+/// in the wallet using importdescriptors (to calculate fees).
 /// You can see whether this is the case by checking the "solvable" field in the listunspent output.
-/// Only pay-to-pubkey, multisig, and P2SH versions thereof are currently supported for watch-only
+/// Note that if specifying an exact fee rate, the resulting transaction may have a higher fee rate
+/// if the transaction has unconfirmed inputs. This is because the wallet will attempt to make the
+/// entire package have the given fee rate, not the resulting transaction.
     pub async fn fundrawtransaction(&self, hexstring: String, options: serde_json::Value, iswitness: bool) -> Result<FundrawtransactionResponse, TransportError> {
         self.node_client.fundrawtransaction(hexstring, options, iswitness).await
     }
@@ -725,6 +698,12 @@ pub fn rpc(&self) -> &RpcClient {
 /// Returns an object containing various state info regarding deployments of consensus changes.
     pub async fn getdeploymentinfo(&self, blockhash: bitcoin::BlockHash) -> Result<GetdeploymentinfoResponse, TransportError> {
         self.node_client.getdeploymentinfo(blockhash).await
+    }
+
+/// Get spend and receive activity associated with a set of descriptors for a set of blocks. This command pairs well with the ``relevant_blocks`` output of ``scanblocks()``.
+/// This call may take several minutes. If you encounter timeouts, try specifying no RPC timeout (bitcoin-cli -rpcclienttimeout=0)
+    pub async fn getdescriptoractivity(&self, blockhashes: Vec<serde_json::Value>, scanobjects: Vec<serde_json::Value>, include_mempool: bool) -> Result<GetdescriptoractivityResponse, TransportError> {
+        self.node_client.getdescriptoractivity(blockhashes, scanobjects, include_mempool).await
     }
 
 /// Analyses a descriptor.
@@ -906,15 +885,14 @@ pub fn rpc(&self) -> &RpcClient {
         self.node_client.gettxspendingprevout(outputs).await
     }
 
-/// DEPRECATED
-/// Identical to getbalances().mine.untrusted_pending
-    pub async fn getunconfirmedbalance(&self) -> Result<GetunconfirmedbalanceResponse, TransportError> {
-        self.wallet_client.getunconfirmedbalance().await
-    }
-
 /// Returns an object containing various wallet state info.
     pub async fn getwalletinfo(&self) -> Result<GetwalletinfoResponse, TransportError> {
         self.wallet_client.getwalletinfo().await
+    }
+
+/// Returns information about the active ZeroMQ notifications.
+    pub async fn getzmqnotifications(&self) -> Result<GetzmqnotificationsResponse, TransportError> {
+        self.node_client.getzmqnotifications().await
     }
 
 /// List all commands, or get help for a specified command.
@@ -922,25 +900,8 @@ pub fn rpc(&self) -> &RpcClient {
         self.node_client.help(command).await
     }
 
-/// Adds an address or script (in hex) that can be watched as if it were in your wallet but cannot be used to spend. Requires a new wallet backup.
-///
-/// Note: This call can take over an hour to complete if rescan is true, during that time, other rpc calls
-/// may report that the imported address exists but related transactions are still missing, leading to temporarily incorrect/bogus balances and unspent outputs until rescan completes.
-/// The rescan parameter can be set to false if the key was never used to create transactions. If it is set to false,
-/// but the key was used to create transactions, rescanblockchain needs to be called with the appropriate block range.
-/// If you have the full public key, you should call importpubkey instead of this.
-/// Hint: use importmulti to import more than one address.
-///
-/// Note: If you import a non-standard raw script in hex form, outputs sending to it will be treated
-/// as change, and not show up in many RPCs.
-/// Note: Use "getwalletinfo" to query the scanning progress.
-/// Note: This command is only compatible with legacy wallets. Use "importdescriptors" for descriptor wallets.
-    pub async fn importaddress(&self, address: String, label: String, rescan: bool, p2sh: bool) -> Result<(), TransportError> {
-        self.wallet_client.importaddress(address, label, rescan, p2sh).await
-    }
-
 /// Import descriptors. This will trigger a rescan of the blockchain based on the earliest timestamp of all descriptors being imported. Requires a new wallet backup.
-/// When importing descriptors with multipath key expressions, if the multipath specifier contains exactly two elements, the descriptor produced from the second elements will be imported as an internal descriptor.
+/// When importing descriptors with multipath key expressions, if the multipath specifier contains exactly two elements, the descriptor produced from the second element will be imported as an internal descriptor.
 ///
 /// Note: This call can take over an hour to complete if using an early timestamp; during that time, other rpc calls
 /// may report that the imported keys, addresses or scripts exist but related transactions are still missing.
@@ -955,56 +916,9 @@ pub fn rpc(&self) -> &RpcClient {
         self.node_client.importmempool(filepath, options).await
     }
 
-/// Import addresses/scripts (with private or public keys, redeem script (P2SH)), optionally rescanning the blockchain from the earliest creation time of the imported scripts. Requires a new wallet backup.
-/// If an address/script is imported without all of the private keys required to spend from that address, it will be watchonly. The "watchonly" option must be set to true in this case or a warning will be returned.
-/// Conversely, if all the private keys are provided and the address/script is spendable, the watchonly option must be set to false, or a warning will be returned.
-///
-/// Note: This call can take over an hour to complete if rescan is true, during that time, other rpc calls
-/// may report that the imported keys, addresses or scripts exist but related transactions are still missing.
-/// The rescan parameter can be set to false if the key was never used to create transactions. If it is set to false,
-/// but the key was used to create transactions, rescanblockchain needs to be called with the appropriate block range.
-/// Note: Use "getwalletinfo" to query the scanning progress.
-/// Note: This command is only compatible with legacy wallets. Use "importdescriptors" for descriptor wallets.
-    pub async fn importmulti(&self, requests: Vec<serde_json::Value>, options: serde_json::Value) -> Result<ImportmultiResponse, TransportError> {
-        self.wallet_client.importmulti(requests, options).await
-    }
-
-/// Adds a private key (as returned by dumpprivkey) to your wallet. Requires a new wallet backup.
-/// Hint: use importmulti to import more than one private key.
-///
-/// Note: This call can take over an hour to complete if rescan is true, during that time, other rpc calls
-/// may report that the imported key exists but related transactions are still missing, leading to temporarily incorrect/bogus balances and unspent outputs until rescan completes.
-/// The rescan parameter can be set to false if the key was never used to create transactions. If it is set to false,
-/// but the key was used to create transactions, rescanblockchain needs to be called with the appropriate block range.
-/// Note: Use "getwalletinfo" to query the scanning progress.
-/// Note: This command is only compatible with legacy wallets. Use "importdescriptors" with "combo(X)" for descriptor wallets.
-    pub async fn importprivkey(&self, privkey: String, label: String, rescan: bool) -> Result<(), TransportError> {
-        self.wallet_client.importprivkey(privkey, label, rescan).await
-    }
-
 /// Imports funds without rescan. Corresponding address or script must previously be included in wallet. Aimed towards pruned wallets. The end-user is responsible to import additional transactions that subsequently spend the imported outputs or rescan after the point in the blockchain the transaction is included.
     pub async fn importprunedfunds(&self, rawtransaction: String, txoutproof: String) -> Result<(), TransportError> {
         self.wallet_client.importprunedfunds(rawtransaction, txoutproof).await
-    }
-
-/// Adds a public key (in hex) that can be watched as if it were in your wallet but cannot be used to spend. Requires a new wallet backup.
-/// Hint: use importmulti to import more than one public key.
-///
-/// Note: This call can take over an hour to complete if rescan is true, during that time, other rpc calls
-/// may report that the imported pubkey exists but related transactions are still missing, leading to temporarily incorrect/bogus balances and unspent outputs until rescan completes.
-/// The rescan parameter can be set to false if the key was never used to create transactions. If it is set to false,
-/// but the key was used to create transactions, rescanblockchain needs to be called with the appropriate block range.
-/// Note: Use "getwalletinfo" to query the scanning progress.
-/// Note: This command is only compatible with legacy wallets. Use "importdescriptors" with "combo(X)" for descriptor wallets.
-    pub async fn importpubkey(&self, pubkey: String, label: String, rescan: bool) -> Result<(), TransportError> {
-        self.wallet_client.importpubkey(pubkey, label, rescan).await
-    }
-
-/// Imports keys from a wallet dump file (see dumpwallet). Requires a new wallet backup to include imported keys.
-/// Note: Blockchain and Mempool will be rescanned after a successful import. Use "getwalletinfo" to query the scanning progress.
-/// Note: This command is only compatible with legacy wallets.
-    pub async fn importwallet(&self, filename: String) -> Result<(), TransportError> {
-        self.wallet_client.importwallet(filename).await
     }
 
 /// Permanently marks a block as invalid, as if it violated a consensus rule.
@@ -1018,7 +932,9 @@ pub fn rpc(&self) -> &RpcClient {
         self.node_client.joinpsbts(txs).await
     }
 
-/// Fills the keypool.
+/// Refills each descriptor keypool in the wallet up to the specified number of new keys.
+/// By default, descriptor wallets have 4 active ranged descriptors ("legacy", "p2sh-segwit", "bech32", "bech32m"), each with 1000 entries.
+///
 /// Requires wallet passphrase to be set with walletpassphrase call if wallet is encrypted.
     pub async fn keypoolrefill(&self, newsize: u64) -> Result<(), TransportError> {
         self.wallet_client.keypoolrefill(newsize).await
@@ -1036,7 +952,7 @@ pub fn rpc(&self) -> &RpcClient {
         self.node_client.listbanned().await
     }
 
-/// List descriptors imported into a descriptor-enabled wallet.
+/// List all descriptors present in a wallet.
     pub async fn listdescriptors(&self, private: bool) -> Result<ListdescriptorsResponse, TransportError> {
         self.wallet_client.listdescriptors(private).await
     }
@@ -1154,19 +1070,8 @@ pub fn rpc(&self) -> &RpcClient {
         self.node_client.mockscheduler(delta_time).await
     }
 
-/// Entirely clears and refills the keypool.
-/// WARNING: On non-HD wallets, this will require a new backup immediately, to include the new keys.
-/// When restoring a backup of an HD wallet created before the newkeypool command is run, funds received to
-/// new addresses may not appear automatically. They have not been lost, but the wallet may not find them.
-/// This can be fixed by running the newkeypool command on the backup and then rescanning, so the wallet
-/// re-generates the required keys.
-/// Requires wallet passphrase to be set with walletpassphrase call if wallet is encrypted.
-    pub async fn newkeypool(&self) -> Result<(), TransportError> {
-        self.wallet_client.newkeypool().await
-    }
-
 /// Requests that a ping be sent to all other nodes, to measure ping time.
-/// Results provided in getpeerinfo, pingtime and pingwait fields are decimal seconds.
+/// Results are provided in getpeerinfo.
 /// Ping command is handled in queue with all other commands, so it measures processing backlog, not just network ping.
     pub async fn ping(&self) -> Result<(), TransportError> {
         self.node_client.ping().await
@@ -1186,14 +1091,15 @@ pub fn rpc(&self) -> &RpcClient {
         self.node_client.prioritisetransaction(txid, dummy, fee_delta).await
     }
 
-
+/// Attempts to delete block and undo data up to a specified height or timestamp, if eligible for pruning.
+/// Requires ``-prune`` to be enabled at startup. While pruned data may be re-fetched in some cases (e.g., via ``getblockfrompeer``), local deletion is irreversible.
     pub async fn pruneblockchain(&self, height: u64) -> Result<PruneblockchainResponse, TransportError> {
         self.node_client.pruneblockchain(height).await
     }
 
-/// Bumps the fee of an opt-in-RBF transaction T, replacing it with a new transaction B.
+/// Bumps the fee of a transaction T, replacing it with a new transaction B.
 /// Returns a PSBT instead of creating and signing a new transaction.
-/// An opt-in RBF transaction with the given txid must be in the wallet.
+/// A transaction with the given txid must be in the wallet.
 /// The command will pay the additional fee by reducing change outputs or adding inputs when necessary.
 /// It may add a new change output if one does not already exist.
 /// All inputs in the original transaction will be included in the replacement transaction.
@@ -1221,16 +1127,16 @@ pub fn rpc(&self) -> &RpcClient {
 
 /// Rescan the local blockchain for wallet related transactions.
 /// Note: Use "getwalletinfo" to query the scanning progress.
-/// The rescan is significantly faster when used on a descriptor wallet
-/// and block filters are available (using startup option "-blockfilterindex=1").
+/// The rescan is significantly faster if block filters are available
+/// (using startup option "-blockfilterindex=1").
     pub async fn rescanblockchain(&self, start_height: u64, stop_height: u64) -> Result<RescanblockchainResponse, TransportError> {
         self.wallet_client.rescanblockchain(start_height, stop_height).await
     }
 
 /// Restores and loads a wallet from backup.
 ///
-/// The rescan is significantly faster if a descriptor wallet is restored
-/// and block filters are available (using startup option "-blockfilterindex=1").
+/// The rescan is significantly faster if block filters are available
+/// (using startup option "-blockfilterindex=1").
     pub async fn restorewallet(&self, wallet_name: String, backup_file: String, load_on_startup: bool) -> Result<RestorewalletResponse, TransportError> {
         self.wallet_client.restorewallet(wallet_name, backup_file, load_on_startup).await
     }
@@ -1265,6 +1171,11 @@ pub fn rpc(&self) -> &RpcClient {
 /// For more information on output descriptors, see the documentation in the doc/descriptors.md file.
     pub async fn scantxoutset(&self, action: String, scanobjects: Vec<serde_json::Value>) -> Result<ScantxoutsetResponse, TransportError> {
         self.node_client.scantxoutset(action, scanobjects).await
+    }
+
+/// Return RPC command JSON Schema descriptions.
+    pub async fn schema(&self) -> Result<SchemaResponse, TransportError> {
+        self.node_client.schema().await
     }
 
 /// EXPERIMENTAL warning: this call may be changed in future releases.
@@ -1320,16 +1231,6 @@ pub fn rpc(&self) -> &RpcClient {
         self.node_client.setban(subnet, command, bantime, absolute).await
     }
 
-/// Set or generate a new HD wallet seed. Non-HD wallets will not be upgraded to being a HD wallet. Wallets that are already
-/// HD will have a new HD seed set so that new keys added to the keypool will be derived from this new seed.
-///
-/// Note that you will need to MAKE A NEW BACKUP of your wallet after setting the HD wallet seed.
-/// Requires wallet passphrase to be set with walletpassphrase call if wallet is encrypted.
-/// Note: This command is only compatible with legacy wallets.
-    pub async fn sethdseed(&self, newkeypool: bool, seed: String) -> Result<(), TransportError> {
-        self.wallet_client.sethdseed(newkeypool, seed).await
-    }
-
 /// Sets the label associated with the given address.
     pub async fn setlabel(&self, address: String, label: String) -> Result<(), TransportError> {
         self.wallet_client.setlabel(address, label).await
@@ -1345,7 +1246,7 @@ pub fn rpc(&self) -> &RpcClient {
         self.node_client.setnetworkactive(state).await
     }
 
-/// Set the transaction fee rate in BTC/kvB for this wallet. Overrides the global -paytxfee command line parameter.
+/// (DEPRECATED) Set the transaction fee rate in BTC/kvB for this wallet. Overrides the global -paytxfee command line parameter.
 /// Can be deactivated by passing 0 as the fee. In that case automatic fee selection will be used by default.
     pub async fn settxfee(&self, amount: bitcoin::Amount) -> Result<SettxfeeResponse, TransportError> {
         self.wallet_client.settxfee(amount).await
@@ -1434,16 +1335,10 @@ pub fn rpc(&self) -> &RpcClient {
         self.node_client.testmempoolaccept(rawtxs, maxfeerate).await
     }
 
-/// Unloads the wallet referenced by the request endpoint, otherwise unloads the wallet specified in the argument.
-/// Specifying the wallet name on a wallet endpoint is invalid.
+/// Unloads the wallet referenced by the request endpoint or the wallet_name argument.
+/// If both are specified, they must be identical.
     pub async fn unloadwallet(&self, wallet_name: String, load_on_startup: bool) -> Result<UnloadwalletResponse, TransportError> {
         self.wallet_client.unloadwallet(wallet_name, load_on_startup).await
-    }
-
-/// Upgrade the wallet. Upgrades to the latest version if no version number is specified.
-/// New keys may be generated and a new wallet backup will need to be made.
-    pub async fn upgradewallet(&self, version: u32) -> Result<UpgradewalletResponse, TransportError> {
-        self.wallet_client.upgradewallet(version).await
     }
 
 /// Returns the total uptime of the server.
@@ -1501,8 +1396,8 @@ pub fn rpc(&self) -> &RpcClient {
 /// Returns the current block on timeout or exit.
 ///
 /// Make sure to use no RPC timeout (bitcoin-cli -rpcclienttimeout=0)
-    pub async fn waitfornewblock(&self, timeout: u64) -> Result<WaitfornewblockResponse, TransportError> {
-        self.node_client.waitfornewblock(timeout).await
+    pub async fn waitfornewblock(&self, timeout: u64, current_tip: String) -> Result<WaitfornewblockResponse, TransportError> {
+        self.node_client.waitfornewblock(timeout, current_tip).await
     }
 
 /// Creates and funds a transaction in the Partially Signed Transaction format.

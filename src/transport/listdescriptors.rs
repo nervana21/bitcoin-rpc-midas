@@ -1,7 +1,7 @@
 //! This file is auto-generated. Do not edit manually.
 //! Generated for Bitcoin Core version: latest
 
-/// List descriptors imported into a descriptor-enabled wallet.
+/// List all descriptors present in a wallet.
 
 /// # Example
 /// ```rust
@@ -14,7 +14,7 @@
 use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
 use transport::{TransportTrait, TransportError};
-/// List descriptors imported into a descriptor-enabled wallet.
+/// List all descriptors present in a wallet.
 #[derive(Debug, Deserialize, Serialize)]
 pub struct ListdescriptorsResponse {
     pub wallet_name: String,

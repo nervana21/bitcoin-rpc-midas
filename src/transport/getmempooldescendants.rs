@@ -17,6 +17,8 @@ use transport::{TransportTrait, TransportError};
 /// If txid is in the mempool, returns all in-mempool descendants.
 #[derive(Debug, Deserialize, Serialize)]
 pub struct GetmempooldescendantsResponse {
+        #[serde(skip_serializing_if = "Option::is_none")]
+    pub transactionid: Option<serde_json::Value>,
 }
 
 

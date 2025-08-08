@@ -16,8 +16,9 @@ use serde_json::{Value, json};
 use transport::{TransportTrait, TransportError};
 /// Returns a map of all user-created (see prioritisetransaction) fee deltas by txid, and whether the tx is present in mempool.
 #[derive(Debug, Deserialize, Serialize)]
-#[serde(transparent)]
-pub struct GetprioritisedtransactionsResponse(pub serde_json::Value);
+pub struct GetprioritisedtransactionsResponse {
+    pub transactionid: serde_json::Value,
+}
 
 
 

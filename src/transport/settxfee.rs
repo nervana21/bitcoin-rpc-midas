@@ -1,7 +1,7 @@
 //! This file is auto-generated. Do not edit manually.
 //! Generated for Bitcoin Core version: latest
 
-/// Set the transaction fee rate in BTC/kvB for this wallet. Overrides the global -paytxfee command line parameter.
+/// (DEPRECATED) Set the transaction fee rate in BTC/kvB for this wallet. Overrides the global -paytxfee command line parameter.
 /// Can be deactivated by passing 0 as the fee. In that case automatic fee selection will be used by default.
 
 /// # Example
@@ -15,7 +15,7 @@
 use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
 use transport::{TransportTrait, TransportError};
-/// Set the transaction fee rate in BTC/kvB for this wallet. Overrides the global -paytxfee command line parameter.
+/// (DEPRECATED) Set the transaction fee rate in BTC/kvB for this wallet. Overrides the global -paytxfee command line parameter.
     /// Can be deactivated by passing 0 as the fee. In that case automatic fee selection will be used by default.
 #[derive(Debug, Deserialize, Serialize)]
 #[serde(transparent)]

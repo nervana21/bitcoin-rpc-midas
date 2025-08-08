@@ -22,10 +22,15 @@ pub struct GetmininginfoResponse {
     pub currentblockweight: Option<u64>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub currentblocktx: Option<u64>,
+    pub bits: String,
     pub difficulty: f64,
+    pub target: String,
     pub networkhashps: u64,
     pub pooledtx: u64,
     pub chain: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub signet_challenge: Option<String>,
+    pub next: serde_json::Value,
     pub warnings: Vec<serde_json::Value>,
 }
 

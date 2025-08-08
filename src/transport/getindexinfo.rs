@@ -16,8 +16,9 @@ use serde_json::{Value, json};
 use transport::{TransportTrait, TransportError};
 /// Returns the status of one or all available indices currently running in the node.
 #[derive(Debug, Deserialize, Serialize)]
-#[serde(transparent)]
-pub struct GetindexinfoResponse(pub serde_json::Value);
+pub struct GetindexinfoResponse {
+    pub name: serde_json::Value,
+}
 
 
 

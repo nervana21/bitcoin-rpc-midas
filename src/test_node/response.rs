@@ -15,10 +15,6 @@ pub struct AddconnectionResponse(pub serde_json::Value);
 
 #[derive(Debug, Deserialize)]
 #[serde(transparent)]
-pub struct AddmultisigaddressResponse(pub serde_json::Value);
-
-#[derive(Debug, Deserialize)]
-#[serde(transparent)]
 pub struct AddnodeResponse(pub serde_json::Value);
 
 #[derive(Debug, Deserialize)]
@@ -28,10 +24,6 @@ pub struct AddpeeraddressResponse(pub serde_json::Value);
 #[derive(Debug, Deserialize)]
 #[serde(transparent)]
 pub struct AnalyzepsbtResponse(pub serde_json::Value);
-
-#[derive(Debug, Deserialize)]
-#[serde(transparent)]
-pub struct ApiResponse(pub serde_json::Value);
 
 #[derive(Debug, Deserialize)]
 #[serde(transparent)]
@@ -99,15 +91,7 @@ pub struct DisconnectnodeResponse(pub serde_json::Value);
 
 #[derive(Debug, Deserialize)]
 #[serde(transparent)]
-pub struct DumpprivkeyResponse(pub String);
-
-#[derive(Debug, Deserialize)]
-#[serde(transparent)]
 pub struct DumptxoutsetResponse(pub serde_json::Value);
-
-#[derive(Debug, Deserialize)]
-#[serde(transparent)]
-pub struct DumpwalletResponse(pub serde_json::Value);
 
 #[derive(Debug, Deserialize)]
 #[serde(transparent)]
@@ -231,6 +215,10 @@ pub struct GetdeploymentinfoResponse(pub serde_json::Value);
 
 #[derive(Debug, Deserialize)]
 #[serde(transparent)]
+pub struct GetdescriptoractivityResponse(pub serde_json::Value);
+
+#[derive(Debug, Deserialize)]
+#[serde(transparent)]
 pub struct GetdescriptorinfoResponse(pub serde_json::Value);
 
 #[derive(Debug, Deserialize)]
@@ -323,15 +311,11 @@ pub struct GettxspendingprevoutResponse(pub Vec<serde_json::Value>);
 
 #[derive(Debug, Deserialize)]
 #[serde(transparent)]
-pub struct GetunconfirmedbalanceResponse(pub bitcoin::Amount);
-
-#[derive(Debug, Deserialize)]
-#[serde(transparent)]
 pub struct GetwalletinfoResponse(pub serde_json::Value);
 
 #[derive(Debug, Deserialize)]
 #[serde(transparent)]
-pub struct ImportaddressResponse(pub serde_json::Value);
+pub struct GetzmqnotificationsResponse(pub Vec<serde_json::Value>);
 
 #[derive(Debug, Deserialize)]
 #[serde(transparent)]
@@ -343,23 +327,7 @@ pub struct ImportmempoolResponse(pub serde_json::Value);
 
 #[derive(Debug, Deserialize)]
 #[serde(transparent)]
-pub struct ImportmultiResponse(pub Vec<serde_json::Value>);
-
-#[derive(Debug, Deserialize)]
-#[serde(transparent)]
-pub struct ImportprivkeyResponse(pub serde_json::Value);
-
-#[derive(Debug, Deserialize)]
-#[serde(transparent)]
 pub struct ImportprunedfundsResponse(pub serde_json::Value);
-
-#[derive(Debug, Deserialize)]
-#[serde(transparent)]
-pub struct ImportpubkeyResponse(pub serde_json::Value);
-
-#[derive(Debug, Deserialize)]
-#[serde(transparent)]
-pub struct ImportwalletResponse(pub serde_json::Value);
 
 #[derive(Debug, Deserialize)]
 #[serde(transparent)]
@@ -447,10 +415,6 @@ pub struct MockschedulerResponse(pub serde_json::Value);
 
 #[derive(Debug, Deserialize)]
 #[serde(transparent)]
-pub struct NewkeypoolResponse(pub serde_json::Value);
-
-#[derive(Debug, Deserialize)]
-#[serde(transparent)]
 pub struct PingResponse(pub serde_json::Value);
 
 #[derive(Debug, Deserialize)]
@@ -491,6 +455,10 @@ pub struct SavemempoolResponse(pub serde_json::Value);
 
 #[derive(Debug, Deserialize)]
 #[serde(transparent)]
+pub struct SchemaResponse(pub serde_json::Value);
+
+#[derive(Debug, Deserialize)]
+#[serde(transparent)]
 pub struct SendResponse(pub serde_json::Value);
 
 #[derive(Debug, Deserialize)]
@@ -508,10 +476,6 @@ pub struct SendrawtransactionResponse(pub String);
 #[derive(Debug, Deserialize)]
 #[serde(transparent)]
 pub struct SetbanResponse(pub serde_json::Value);
-
-#[derive(Debug, Deserialize)]
-#[serde(transparent)]
-pub struct SethdseedResponse(pub serde_json::Value);
 
 #[derive(Debug, Deserialize)]
 #[serde(transparent)]
@@ -576,10 +540,6 @@ pub struct TestmempoolacceptResponse(pub Vec<serde_json::Value>);
 #[derive(Debug, Deserialize)]
 #[serde(transparent)]
 pub struct UnloadwalletResponse(pub serde_json::Value);
-
-#[derive(Debug, Deserialize)]
-#[serde(transparent)]
-pub struct UpgradewalletResponse(pub serde_json::Value);
 
 #[derive(Debug, Deserialize)]
 #[serde(transparent)]

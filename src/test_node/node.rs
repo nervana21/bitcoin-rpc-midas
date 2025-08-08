@@ -3,7 +3,7 @@ use anyhow::Result;
 use std::sync::Arc;
 use crate::transport::core::{TransportExt, TransportError};
 use crate::transport::{DefaultTransport};
-use crate::types::v28_types::*;
+use crate::types::v29_types::*;
 #[cfg(test)]
 use serde_json::Value;
 
@@ -63,12 +63,6 @@ impl BitcoinNodeClient {
         self.client.call::<AnalyzepsbtResponse>("analyzepsbt", &params).await
     }
 
-/// Return JSON description of RPC API.
-    pub async fn api(&self) -> Result<ApiResponse, TransportError> {
-        // dispatch and deserialize to `ApiResponse`
-        self.client.call::<ApiResponse>("api", &[]).await
-    }
-
 /// Clear all banned IPs.
     pub async fn clearbanned(&self) -> Result<(), TransportError> {
         // dispatch and deserialize to `()`
@@ -105,7 +99,7 @@ impl BitcoinNodeClient {
         self.client.call::<ConverttopsbtResponse>("converttopsbt", &params).await
     }
 
-/// Creates a multi-signature address with n signature of m keys required.
+/// Creates a multi-signature address with n signatures of m keys required.
 /// It returns a json object with the address and redeemScript.
     pub async fn createmultisig(&self, nrequired: u32, keys: Vec<String>, address_type: String) -> Result<CreatemultisigResponse, TransportError> {
         let mut params = Vec::new();
@@ -118,6 +112,8 @@ impl BitcoinNodeClient {
 
 /// Creates a transaction in the Partially Signed Transaction format.
 /// Implements the Creator role.
+/// Note that the transaction"s inputs are not signed, and
+/// it is not stored in the wallet or transmitted to the network.
     pub async fn createpsbt(&self, inputs: Vec<serde_json::Value>, outputs: Vec<serde_json::Value>, locktime: u32, replaceable: bool) -> Result<CreatepsbtResponse, TransportError> {
         let mut params = Vec::new();
         params.push(serde_json::to_value(inputs)?);
@@ -225,7 +221,7 @@ impl BitcoinNodeClient {
 
 /// Write the serialized UTXO set to a file. This can be used in loadtxoutset afterwards if this snapshot height is supported in the chainparams as well.
 ///
-/// Unless the the "latest" type is requested, the node will roll back to the requested height and network activity will be suspended during this process. Because of this it is discouraged to interact with the node in any other way during the execution of this call to avoid inconsistent results and race conditions, particularly RPCs that interact with blockstorage.
+/// Unless the "latest" type is requested, the node will roll back to the requested height and network activity will be suspended during this process. Because of this it is discouraged to interact with the node in any other way during the execution of this call to avoid inconsistent results and race conditions, particularly RPCs that interact with blockstorage.
 ///
 /// This call may take several minutes. Make sure to use no RPC timeout (bitcoin-cli -rpcclienttimeout=0)
     pub async fn dumptxoutset(&self, path: String, _type: String, options: serde_json::Value) -> Result<DumptxoutsetResponse, TransportError> {
@@ -344,9 +340,11 @@ impl BitcoinNodeClient {
 /// All existing inputs must either have their previous output transaction be in the wallet
 /// or be in the UTXO set. Solving data must be provided for non-wallet inputs.
 /// Note that all inputs selected must be of standard form and P2SH scripts must be
-/// in the wallet using importaddress or addmultisigaddress (to calculate fees).
+/// in the wallet using importdescriptors (to calculate fees).
 /// You can see whether this is the case by checking the "solvable" field in the listunspent output.
-/// Only pay-to-pubkey, multisig, and P2SH versions thereof are currently supported for watch-only
+/// Note that if specifying an exact fee rate, the resulting transaction may have a higher fee rate
+/// if the transaction has unconfirmed inputs. This is because the wallet will attempt to make the
+/// entire package have the given fee rate, not the resulting transaction.
     pub async fn fundrawtransaction(&self, hexstring: String, options: serde_json::Value, iswitness: bool) -> Result<FundrawtransactionResponse, TransportError> {
         let mut params = Vec::new();
         params.push(serde_json::to_value(hexstring)?);
@@ -540,6 +538,17 @@ impl BitcoinNodeClient {
         params.push(serde_json::to_value(blockhash)?);
         // dispatch and deserialize to `GetdeploymentinfoResponse`
         self.client.call::<GetdeploymentinfoResponse>("getdeploymentinfo", &params).await
+    }
+
+/// Get spend and receive activity associated with a set of descriptors for a set of blocks. This command pairs well with the ``relevant_blocks`` output of ``scanblocks()``.
+/// This call may take several minutes. If you encounter timeouts, try specifying no RPC timeout (bitcoin-cli -rpcclienttimeout=0)
+    pub async fn getdescriptoractivity(&self, blockhashes: Vec<serde_json::Value>, scanobjects: Vec<serde_json::Value>, include_mempool: bool) -> Result<GetdescriptoractivityResponse, TransportError> {
+        let mut params = Vec::new();
+        params.push(serde_json::to_value(blockhashes)?);
+        params.push(serde_json::to_value(scanobjects)?);
+        params.push(serde_json::to_value(include_mempool)?);
+        // dispatch and deserialize to `GetdescriptoractivityResponse`
+        self.client.call::<GetdescriptoractivityResponse>("getdescriptoractivity", &params).await
     }
 
 /// Analyses a descriptor.
@@ -762,6 +771,12 @@ impl BitcoinNodeClient {
         self.client.call::<GettxspendingprevoutResponse>("gettxspendingprevout", &params).await
     }
 
+/// Returns information about the active ZeroMQ notifications.
+    pub async fn getzmqnotifications(&self) -> Result<GetzmqnotificationsResponse, TransportError> {
+        // dispatch and deserialize to `GetzmqnotificationsResponse`
+        self.client.call::<GetzmqnotificationsResponse>("getzmqnotifications", &[]).await
+    }
+
 /// List all commands, or get help for a specified command.
     pub async fn help(&self, command: String) -> Result<HelpResponse, TransportError> {
         let mut params = Vec::new();
@@ -841,7 +856,7 @@ impl BitcoinNodeClient {
     }
 
 /// Requests that a ping be sent to all other nodes, to measure ping time.
-/// Results provided in getpeerinfo, pingtime and pingwait fields are decimal seconds.
+/// Results are provided in getpeerinfo.
 /// Ping command is handled in queue with all other commands, so it measures processing backlog, not just network ping.
     pub async fn ping(&self) -> Result<(), TransportError> {
         // dispatch and deserialize to `()`
@@ -870,7 +885,8 @@ impl BitcoinNodeClient {
         self.client.call::<PrioritisetransactionResponse>("prioritisetransaction", &params).await
     }
 
-
+/// Attempts to delete block and undo data up to a specified height or timestamp, if eligible for pruning.
+/// Requires ``-prune`` to be enabled at startup. While pruned data may be re-fetched in some cases (e.g., via ``getblockfrompeer``), local deletion is irreversible.
     pub async fn pruneblockchain(&self, height: u64) -> Result<PruneblockchainResponse, TransportError> {
         let mut params = Vec::new();
         params.push(serde_json::to_value(height)?);
@@ -930,6 +946,12 @@ impl BitcoinNodeClient {
         params.push(serde_json::to_value(scanobjects)?);
         // dispatch and deserialize to `ScantxoutsetResponse`
         self.client.call::<ScantxoutsetResponse>("scantxoutset", &params).await
+    }
+
+/// Return RPC command JSON Schema descriptions.
+    pub async fn schema(&self) -> Result<SchemaResponse, TransportError> {
+        // dispatch and deserialize to `SchemaResponse`
+        self.client.call::<SchemaResponse>("schema", &[]).await
     }
 
 /// Send a p2p message to a peer specified by id.
@@ -1161,9 +1183,10 @@ impl BitcoinNodeClient {
 /// Returns the current block on timeout or exit.
 ///
 /// Make sure to use no RPC timeout (bitcoin-cli -rpcclienttimeout=0)
-    pub async fn waitfornewblock(&self, timeout: u64) -> Result<WaitfornewblockResponse, TransportError> {
+    pub async fn waitfornewblock(&self, timeout: u64, current_tip: String) -> Result<WaitfornewblockResponse, TransportError> {
         let mut params = Vec::new();
         params.push(serde_json::to_value(timeout)?);
+        params.push(serde_json::to_value(current_tip)?);
         // dispatch and deserialize to `WaitfornewblockResponse`
         self.client.call::<WaitfornewblockResponse>("waitfornewblock", &params).await
     }

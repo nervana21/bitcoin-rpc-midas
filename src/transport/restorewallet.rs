@@ -2,8 +2,8 @@
 //! Generated for Bitcoin Core version: latest
 
 /// Restores and loads a wallet from backup.
-/// The rescan is significantly faster if a descriptor wallet is restored
-/// and block filters are available (using startup option "-blockfilterindex=1").
+/// The rescan is significantly faster if block filters are available
+/// (using startup option "-blockfilterindex=1").
 
 /// # Example
 /// ```rust
@@ -18,8 +18,8 @@ use serde_json::{Value, json};
 use transport::{TransportTrait, TransportError};
 /// Restores and loads a wallet from backup.
     /// 
-    /// The rescan is significantly faster if a descriptor wallet is restored
-    /// and block filters are available (using startup option \"-blockfilterindex=1\").
+    /// The rescan is significantly faster if block filters are available
+    /// (using startup option \"-blockfilterindex=1\").
 #[derive(Debug, Deserialize, Serialize)]
 pub struct RestorewalletResponse {
     pub name: String,

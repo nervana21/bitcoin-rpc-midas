@@ -18,8 +18,6 @@ use transport::{TransportTrait, TransportError};
 #[derive(Debug, Deserialize, Serialize)]
 pub struct GetbalancesResponse {
     pub mine: serde_json::Value,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub watchonly: Option<serde_json::Value>,
     pub lastprocessedblock: serde_json::Value,
 }
 

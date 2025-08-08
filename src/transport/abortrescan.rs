@@ -1,7 +1,7 @@
 //! This file is auto-generated. Do not edit manually.
 //! Generated for Bitcoin Core version: latest
 
-/// Stops current wallet rescan triggered by an RPC call, e.g. by an importprivkey call.
+/// Stops current wallet rescan triggered by an RPC call, e.g. by a rescanblockchain call.
 /// Note: Use "getwalletinfo" to query the scanning progress.
 
 /// # Example
@@ -15,7 +15,7 @@
 use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
 use transport::{TransportTrait, TransportError};
-/// Stops current wallet rescan triggered by an RPC call, e.g. by an importprivkey call.
+/// Stops current wallet rescan triggered by an RPC call, e.g. by a rescanblockchain call.
     /// Note: Use \"getwalletinfo\" to query the scanning progress.
 #[derive(Debug, Deserialize, Serialize)]
 #[serde(transparent)]

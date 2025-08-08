@@ -10,9 +10,11 @@
 /// All existing inputs must either have their previous output transaction be in the wallet
 /// or be in the UTXO set. Solving data must be provided for non-wallet inputs.
 /// Note that all inputs selected must be of standard form and P2SH scripts must be
-/// in the wallet using importaddress or addmultisigaddress (to calculate fees).
+/// in the wallet using importdescriptors (to calculate fees).
 /// You can see whether this is the case by checking the "solvable" field in the listunspent output.
-/// Only pay-to-pubkey, multisig, and P2SH versions thereof are currently supported for watch-only
+/// Note that if specifying an exact fee rate, the resulting transaction may have a higher fee rate
+/// if the transaction has unconfirmed inputs. This is because the wallet will attempt to make the
+/// entire package have the given fee rate, not the resulting transaction.
 
 /// # Example
 /// ```rust
@@ -34,9 +36,11 @@ use transport::{TransportTrait, TransportError};
     /// All existing inputs must either have their previous output transaction be in the wallet
     /// or be in the UTXO set. Solving data must be provided for non-wallet inputs.
     /// Note that all inputs selected must be of standard form and P2SH scripts must be
-    /// in the wallet using importaddress or addmultisigaddress (to calculate fees).
+    /// in the wallet using importdescriptors (to calculate fees).
     /// You can see whether this is the case by checking the \"solvable\" field in the listunspent output.
-    /// Only pay-to-pubkey, multisig, and P2SH versions thereof are currently supported for watch-only
+    /// Note that if specifying an exact fee rate, the resulting transaction may have a higher fee rate
+    /// if the transaction has unconfirmed inputs. This is because the wallet will attempt to make the
+    /// entire package have the given fee rate, not the resulting transaction.
 #[derive(Debug, Deserialize, Serialize)]
 pub struct FundrawtransactionResponse {
     pub hex: String,

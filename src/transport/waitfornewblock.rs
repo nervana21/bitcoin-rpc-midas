@@ -32,8 +32,8 @@ pub struct WaitfornewblockResponse {
 /// Calls the `waitfornewblock` RPC method.
 ///
 /// Generated transport wrapper for JSON-RPC.
-pub async fn waitfornewblock(transport: &dyn TransportTrait, timeout: serde_json::Value) -> Result<WaitfornewblockResponse, TransportError> {
-    let params = vec![json!(timeout)];
+pub async fn waitfornewblock(transport: &dyn TransportTrait, timeout: serde_json::Value, current_tip: serde_json::Value) -> Result<WaitfornewblockResponse, TransportError> {
+    let params = vec![json!(timeout), json!(current_tip)];
     let raw = transport.send_request("waitfornewblock", &params).await?;
     Ok(serde_json::from_value::<WaitfornewblockResponse>(raw)?)
 }

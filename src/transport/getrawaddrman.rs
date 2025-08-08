@@ -19,8 +19,9 @@ use transport::{TransportTrait, TransportError};
     /// 
     /// Returns information on all address manager entries for the new and tried tables.
 #[derive(Debug, Deserialize, Serialize)]
-#[serde(transparent)]
-pub struct GetrawaddrmanResponse(pub serde_json::Value);
+pub struct GetrawaddrmanResponse {
+    pub table: serde_json::Value,
+}
 
 
 

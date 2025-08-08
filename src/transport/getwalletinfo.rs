@@ -20,20 +20,13 @@ pub struct GetwalletinfoResponse {
     pub walletname: String,
     pub walletversion: u32,
     pub format: String,
-    pub balance: f64,
-    pub unconfirmed_balance: f64,
-    pub immature_balance: f64,
     pub txcount: u64,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub keypoololdest: Option<serde_json::Value>,
     pub keypoolsize: u64,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub keypoolsize_hd_internal: Option<u64>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub unlocked_until: Option<serde_json::Value>,
     pub paytxfee: f64,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub hdseedid: Option<String>,
     pub private_keys_enabled: bool,
     pub avoid_reuse: bool,
     pub scanning: serde_json::Value,
@@ -42,6 +35,7 @@ pub struct GetwalletinfoResponse {
     pub blank: bool,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub birthtime: Option<serde_json::Value>,
+    pub flags: Vec<serde_json::Value>,
     pub lastprocessedblock: serde_json::Value,
 }
 

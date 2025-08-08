@@ -21,10 +21,12 @@ pub struct GetblockchaininfoResponse {
     pub blocks: u64,
     pub headers: u64,
     pub bestblockhash: bitcoin::BlockHash,
+    pub bits: String,
+    pub target: String,
     pub difficulty: f64,
     pub time: serde_json::Value,
     pub mediantime: serde_json::Value,
-    pub verificationprogress: u64,
+    pub verificationprogress: f64,
     pub initialblockdownload: bool,
     pub chainwork: String,
     pub size_on_disk: u64,
@@ -35,6 +37,8 @@ pub struct GetblockchaininfoResponse {
     pub automatic_pruning: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub prune_target_size: Option<u64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub signet_challenge: Option<String>,
     pub warnings: Vec<serde_json::Value>,
 }
 

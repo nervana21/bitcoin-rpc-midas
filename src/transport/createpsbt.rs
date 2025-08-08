@@ -3,6 +3,8 @@
 
 /// Creates a transaction in the Partially Signed Transaction format.
 /// Implements the Creator role.
+/// Note that the transaction's inputs are not signed, and
+/// it is not stored in the wallet or transmitted to the network.
 
 /// # Example
 /// ```rust
@@ -17,6 +19,8 @@ use serde_json::{Value, json};
 use transport::{TransportTrait, TransportError};
 /// Creates a transaction in the Partially Signed Transaction format.
     /// Implements the Creator role.
+    /// Note that the transaction's inputs are not signed, and
+    /// it is not stored in the wallet or transmitted to the network.
 #[derive(Debug, Deserialize, Serialize)]
 #[serde(transparent)]
 pub struct CreatepsbtResponse(pub String);

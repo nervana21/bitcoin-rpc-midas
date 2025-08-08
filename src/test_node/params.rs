@@ -19,20 +19,6 @@ pub struct AddconnectionParams {
     pub v2transport: bool,
 }
 
-/// Add an nrequired-to-sign multisignature address to the wallet. Requires a new wallet backup.
-/// Each key is a Bitcoin address or hex-encoded public key.
-/// This functionality is only intended for use with non-watchonly addresses.
-/// See ``importaddress`` for watchonly p2sh address support.
-/// If "label" is specified, assign address to that label.
-/// Note: This command is only compatible with legacy wallets.
-#[derive(Debug, Serialize)]
-pub struct AddmultisigaddressParams {
-    pub nrequired: u32,
-    pub keys: Vec<String>,
-    pub label: String,
-    pub address_type: String,
-}
-
 /// Attempts to add or remove a node from the addnode list.
 /// Or try a connection to a node once.
 /// Nodes added using addnode (or -connect) are protected from DoS disconnection and are not required to be
@@ -65,8 +51,8 @@ pub struct BackupwalletParams {
     pub destination: String,
 }
 
-/// Bumps the fee of an opt-in-RBF transaction T, replacing it with a new transaction B.
-/// An opt-in RBF transaction with the given txid must be in the wallet.
+/// Bumps the fee of a transaction T, replacing it with a new transaction B.
+/// A transaction with the given txid must be in the wallet.
 /// The command will pay the additional fee by reducing change outputs or adding inputs when necessary.
 /// It may add a new change output if one does not already exist.
 /// All inputs in the original transaction will be included in the replacement transaction.
@@ -107,7 +93,7 @@ pub struct ConverttopsbtParams {
     pub iswitness: bool,
 }
 
-/// Creates a multi-signature address with n signature of m keys required.
+/// Creates a multi-signature address with n signatures of m keys required.
 /// It returns a json object with the address and redeemScript.
 #[derive(Debug, Serialize)]
 pub struct CreatemultisigParams {
@@ -118,6 +104,8 @@ pub struct CreatemultisigParams {
 
 /// Creates a transaction in the Partially Signed Transaction format.
 /// Implements the Creator role.
+/// Note that the transaction"s inputs are not signed, and
+/// it is not stored in the wallet or transmitted to the network.
 #[derive(Debug, Serialize)]
 pub struct CreatepsbtParams {
     pub inputs: Vec<serde_json::Value>,
@@ -218,17 +206,9 @@ pub struct DisconnectnodeParams {
     pub nodeid: u64,
 }
 
-/// Reveals the private key corresponding to "address".
-/// Then the importprivkey can be used with this output
-/// Note: This command is only compatible with legacy wallets.
-#[derive(Debug, Serialize)]
-pub struct DumpprivkeyParams {
-    pub address: String,
-}
-
 /// Write the serialized UTXO set to a file. This can be used in loadtxoutset afterwards if this snapshot height is supported in the chainparams as well.
 ///
-/// Unless the the "latest" type is requested, the node will roll back to the requested height and network activity will be suspended during this process. Because of this it is discouraged to interact with the node in any other way during the execution of this call to avoid inconsistent results and race conditions, particularly RPCs that interact with blockstorage.
+/// Unless the "latest" type is requested, the node will roll back to the requested height and network activity will be suspended during this process. Because of this it is discouraged to interact with the node in any other way during the execution of this call to avoid inconsistent results and race conditions, particularly RPCs that interact with blockstorage.
 ///
 /// This call may take several minutes. Make sure to use no RPC timeout (bitcoin-cli -rpcclienttimeout=0)
 #[derive(Debug, Serialize)]
@@ -236,16 +216,6 @@ pub struct DumptxoutsetParams {
     pub path: String,
     pub _type: String,
     pub options: serde_json::Value,
-}
-
-/// Dumps all wallet keys in a human-readable format to a server-side file. This does not allow overwriting existing files.
-/// Imported scripts are included in the dumpfile, but corresponding BIP173 addresses, etc. may not be added automatically by importwallet.
-/// Note that if your wallet contains keys which are not derived from your HD seed (e.g. imported keys), these are not covered by
-/// only backing up the seed itself, and must be backed up too (e.g. ensure you back up the whole dumpfile).
-/// Note: This command is only compatible with legacy wallets.
-#[derive(Debug, Serialize)]
-pub struct DumpwalletParams {
-    pub filename: String,
 }
 
 /// Simply echo back the input arguments. This command is for testing.
@@ -295,7 +265,7 @@ pub struct EchojsonParams {
 
 /// Encrypts the wallet with "passphrase". This is for first time encryption.
 /// After this, any calls that interact with private keys such as sending or signing
-/// will require the passphrase to be set prior the making these calls.
+/// will require the passphrase to be set prior to making these calls.
 /// Use the walletpassphrase call for this, and then walletlock call.
 /// If the wallet is already encrypted, use the walletpassphrasechange call.
 /// ** IMPORTANT **
@@ -351,9 +321,11 @@ pub struct FinalizepsbtParams {
 /// All existing inputs must either have their previous output transaction be in the wallet
 /// or be in the UTXO set. Solving data must be provided for non-wallet inputs.
 /// Note that all inputs selected must be of standard form and P2SH scripts must be
-/// in the wallet using importaddress or addmultisigaddress (to calculate fees).
+/// in the wallet using importdescriptors (to calculate fees).
 /// You can see whether this is the case by checking the "solvable" field in the listunspent output.
-/// Only pay-to-pubkey, multisig, and P2SH versions thereof are currently supported for watch-only
+/// Note that if specifying an exact fee rate, the resulting transaction may have a higher fee rate
+/// if the transaction has unconfirmed inputs. This is because the wallet will attempt to make the
+/// entire package have the given fee rate, not the resulting transaction.
 #[derive(Debug, Serialize)]
 pub struct FundrawtransactionParams {
     pub hexstring: String,
@@ -494,6 +466,15 @@ pub struct GetchaintxstatsParams {
 #[derive(Debug, Serialize)]
 pub struct GetdeploymentinfoParams {
     pub blockhash: bitcoin::BlockHash,
+}
+
+/// Get spend and receive activity associated with a set of descriptors for a set of blocks. This command pairs well with the ``relevant_blocks`` output of ``scanblocks()``.
+/// This call may take several minutes. If you encounter timeouts, try specifying no RPC timeout (bitcoin-cli -rpcclienttimeout=0)
+#[derive(Debug, Serialize)]
+pub struct GetdescriptoractivityParams {
+    pub blockhashes: Vec<serde_json::Value>,
+    pub scanobjects: Vec<serde_json::Value>,
+    pub include_mempool: bool,
 }
 
 /// Analyses a descriptor.
@@ -673,29 +654,8 @@ pub struct HelpParams {
     pub command: String,
 }
 
-/// Adds an address or script (in hex) that can be watched as if it were in your wallet but cannot be used to spend. Requires a new wallet backup.
-///
-/// Note: This call can take over an hour to complete if rescan is true, during that time, other rpc calls
-/// may report that the imported address exists but related transactions are still missing, leading to temporarily incorrect/bogus balances and unspent outputs until rescan completes.
-/// The rescan parameter can be set to false if the key was never used to create transactions. If it is set to false,
-/// but the key was used to create transactions, rescanblockchain needs to be called with the appropriate block range.
-/// If you have the full public key, you should call importpubkey instead of this.
-/// Hint: use importmulti to import more than one address.
-///
-/// Note: If you import a non-standard raw script in hex form, outputs sending to it will be treated
-/// as change, and not show up in many RPCs.
-/// Note: Use "getwalletinfo" to query the scanning progress.
-/// Note: This command is only compatible with legacy wallets. Use "importdescriptors" for descriptor wallets.
-#[derive(Debug, Serialize)]
-pub struct ImportaddressParams {
-    pub address: String,
-    pub label: String,
-    pub rescan: bool,
-    pub p2sh: bool,
-}
-
 /// Import descriptors. This will trigger a rescan of the blockchain based on the earliest timestamp of all descriptors being imported. Requires a new wallet backup.
-/// When importing descriptors with multipath key expressions, if the multipath specifier contains exactly two elements, the descriptor produced from the second elements will be imported as an internal descriptor.
+/// When importing descriptors with multipath key expressions, if the multipath specifier contains exactly two elements, the descriptor produced from the second element will be imported as an internal descriptor.
 ///
 /// Note: This call can take over an hour to complete if using an early timestamp; during that time, other rpc calls
 /// may report that the imported keys, addresses or scripts exist but related transactions are still missing.
@@ -713,67 +673,11 @@ pub struct ImportmempoolParams {
     pub options: serde_json::Value,
 }
 
-/// Import addresses/scripts (with private or public keys, redeem script (P2SH)), optionally rescanning the blockchain from the earliest creation time of the imported scripts. Requires a new wallet backup.
-/// If an address/script is imported without all of the private keys required to spend from that address, it will be watchonly. The "watchonly" option must be set to true in this case or a warning will be returned.
-/// Conversely, if all the private keys are provided and the address/script is spendable, the watchonly option must be set to false, or a warning will be returned.
-///
-/// Note: This call can take over an hour to complete if rescan is true, during that time, other rpc calls
-/// may report that the imported keys, addresses or scripts exist but related transactions are still missing.
-/// The rescan parameter can be set to false if the key was never used to create transactions. If it is set to false,
-/// but the key was used to create transactions, rescanblockchain needs to be called with the appropriate block range.
-/// Note: Use "getwalletinfo" to query the scanning progress.
-/// Note: This command is only compatible with legacy wallets. Use "importdescriptors" for descriptor wallets.
-#[derive(Debug, Serialize)]
-pub struct ImportmultiParams {
-    pub requests: Vec<serde_json::Value>,
-    pub options: serde_json::Value,
-}
-
-/// Adds a private key (as returned by dumpprivkey) to your wallet. Requires a new wallet backup.
-/// Hint: use importmulti to import more than one private key.
-///
-/// Note: This call can take over an hour to complete if rescan is true, during that time, other rpc calls
-/// may report that the imported key exists but related transactions are still missing, leading to temporarily incorrect/bogus balances and unspent outputs until rescan completes.
-/// The rescan parameter can be set to false if the key was never used to create transactions. If it is set to false,
-/// but the key was used to create transactions, rescanblockchain needs to be called with the appropriate block range.
-/// Note: Use "getwalletinfo" to query the scanning progress.
-/// Note: This command is only compatible with legacy wallets. Use "importdescriptors" with "combo(X)" for descriptor wallets.
-#[derive(Debug, Serialize)]
-pub struct ImportprivkeyParams {
-    pub privkey: String,
-    pub label: String,
-    pub rescan: bool,
-}
-
 /// Imports funds without rescan. Corresponding address or script must previously be included in wallet. Aimed towards pruned wallets. The end-user is responsible to import additional transactions that subsequently spend the imported outputs or rescan after the point in the blockchain the transaction is included.
 #[derive(Debug, Serialize)]
 pub struct ImportprunedfundsParams {
     pub rawtransaction: String,
     pub txoutproof: String,
-}
-
-/// Adds a public key (in hex) that can be watched as if it were in your wallet but cannot be used to spend. Requires a new wallet backup.
-/// Hint: use importmulti to import more than one public key.
-///
-/// Note: This call can take over an hour to complete if rescan is true, during that time, other rpc calls
-/// may report that the imported pubkey exists but related transactions are still missing, leading to temporarily incorrect/bogus balances and unspent outputs until rescan completes.
-/// The rescan parameter can be set to false if the key was never used to create transactions. If it is set to false,
-/// but the key was used to create transactions, rescanblockchain needs to be called with the appropriate block range.
-/// Note: Use "getwalletinfo" to query the scanning progress.
-/// Note: This command is only compatible with legacy wallets. Use "importdescriptors" with "combo(X)" for descriptor wallets.
-#[derive(Debug, Serialize)]
-pub struct ImportpubkeyParams {
-    pub pubkey: String,
-    pub label: String,
-    pub rescan: bool,
-}
-
-/// Imports keys from a wallet dump file (see dumpwallet). Requires a new wallet backup to include imported keys.
-/// Note: Blockchain and Mempool will be rescanned after a successful import. Use "getwalletinfo" to query the scanning progress.
-/// Note: This command is only compatible with legacy wallets.
-#[derive(Debug, Serialize)]
-pub struct ImportwalletParams {
-    pub filename: String,
 }
 
 /// Permanently marks a block as invalid, as if it violated a consensus rule.
@@ -789,14 +693,16 @@ pub struct JoinpsbtsParams {
     pub txs: Vec<serde_json::Value>,
 }
 
-/// Fills the keypool.
+/// Refills each descriptor keypool in the wallet up to the specified number of new keys.
+/// By default, descriptor wallets have 4 active ranged descriptors ("legacy", "p2sh-segwit", "bech32", "bech32m"), each with 1000 entries.
+///
 /// Requires wallet passphrase to be set with walletpassphrase call if wallet is encrypted.
 #[derive(Debug, Serialize)]
 pub struct KeypoolrefillParams {
     pub newsize: u64,
 }
 
-/// List descriptors imported into a descriptor-enabled wallet.
+/// List all descriptors present in a wallet.
 #[derive(Debug, Serialize)]
 pub struct ListdescriptorsParams {
     pub private: bool,
@@ -952,15 +858,16 @@ pub struct PrioritisetransactionParams {
     pub fee_delta: f64,
 }
 
-
+/// Attempts to delete block and undo data up to a specified height or timestamp, if eligible for pruning.
+/// Requires ``-prune`` to be enabled at startup. While pruned data may be re-fetched in some cases (e.g., via ``getblockfrompeer``), local deletion is irreversible.
 #[derive(Debug, Serialize)]
 pub struct PruneblockchainParams {
     pub height: u64,
 }
 
-/// Bumps the fee of an opt-in-RBF transaction T, replacing it with a new transaction B.
+/// Bumps the fee of a transaction T, replacing it with a new transaction B.
 /// Returns a PSBT instead of creating and signing a new transaction.
-/// An opt-in RBF transaction with the given txid must be in the wallet.
+/// A transaction with the given txid must be in the wallet.
 /// The command will pay the additional fee by reducing change outputs or adding inputs when necessary.
 /// It may add a new change output if one does not already exist.
 /// All inputs in the original transaction will be included in the replacement transaction.
@@ -992,8 +899,8 @@ pub struct RemoveprunedfundsParams {
 
 /// Rescan the local blockchain for wallet related transactions.
 /// Note: Use "getwalletinfo" to query the scanning progress.
-/// The rescan is significantly faster when used on a descriptor wallet
-/// and block filters are available (using startup option "-blockfilterindex=1").
+/// The rescan is significantly faster if block filters are available
+/// (using startup option "-blockfilterindex=1").
 #[derive(Debug, Serialize)]
 pub struct RescanblockchainParams {
     pub start_height: u64,
@@ -1002,8 +909,8 @@ pub struct RescanblockchainParams {
 
 /// Restores and loads a wallet from backup.
 ///
-/// The rescan is significantly faster if a descriptor wallet is restored
-/// and block filters are available (using startup option "-blockfilterindex=1").
+/// The rescan is significantly faster if block filters are available
+/// (using startup option "-blockfilterindex=1").
 #[derive(Debug, Serialize)]
 pub struct RestorewalletParams {
     pub wallet_name: String,
@@ -1140,18 +1047,6 @@ pub struct SetbanParams {
     pub absolute: bool,
 }
 
-/// Set or generate a new HD wallet seed. Non-HD wallets will not be upgraded to being a HD wallet. Wallets that are already
-/// HD will have a new HD seed set so that new keys added to the keypool will be derived from this new seed.
-///
-/// Note that you will need to MAKE A NEW BACKUP of your wallet after setting the HD wallet seed.
-/// Requires wallet passphrase to be set with walletpassphrase call if wallet is encrypted.
-/// Note: This command is only compatible with legacy wallets.
-#[derive(Debug, Serialize)]
-pub struct SethdseedParams {
-    pub newkeypool: bool,
-    pub seed: String,
-}
-
 /// Sets the label associated with the given address.
 #[derive(Debug, Serialize)]
 pub struct SetlabelParams {
@@ -1171,7 +1066,7 @@ pub struct SetnetworkactiveParams {
     pub state: bool,
 }
 
-/// Set the transaction fee rate in BTC/kvB for this wallet. Overrides the global -paytxfee command line parameter.
+/// (DEPRECATED) Set the transaction fee rate in BTC/kvB for this wallet. Overrides the global -paytxfee command line parameter.
 /// Can be deactivated by passing 0 as the fee. In that case automatic fee selection will be used by default.
 #[derive(Debug, Serialize)]
 pub struct SettxfeeParams {
@@ -1280,19 +1175,12 @@ pub struct TestmempoolacceptParams {
     pub maxfeerate: f64,
 }
 
-/// Unloads the wallet referenced by the request endpoint, otherwise unloads the wallet specified in the argument.
-/// Specifying the wallet name on a wallet endpoint is invalid.
+/// Unloads the wallet referenced by the request endpoint or the wallet_name argument.
+/// If both are specified, they must be identical.
 #[derive(Debug, Serialize)]
 pub struct UnloadwalletParams {
     pub wallet_name: String,
     pub load_on_startup: bool,
-}
-
-/// Upgrade the wallet. Upgrades to the latest version if no version number is specified.
-/// New keys may be generated and a new wallet backup will need to be made.
-#[derive(Debug, Serialize)]
-pub struct UpgradewalletParams {
-    pub version: u32,
 }
 
 /// Updates all segwit inputs and outputs in a PSBT with data from output descriptors, the UTXO set, txindex, or the mempool.
@@ -1361,6 +1249,7 @@ pub struct WaitforblockheightParams {
 #[derive(Debug, Serialize)]
 pub struct WaitfornewblockParams {
     pub timeout: u64,
+    pub current_tip: String,
 }
 
 /// Creates and funds a transaction in the Partially Signed Transaction format.

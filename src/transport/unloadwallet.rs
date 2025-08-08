@@ -1,8 +1,8 @@
 //! This file is auto-generated. Do not edit manually.
 //! Generated for Bitcoin Core version: latest
 
-/// Unloads the wallet referenced by the request endpoint, otherwise unloads the wallet specified in the argument.
-/// Specifying the wallet name on a wallet endpoint is invalid.
+/// Unloads the wallet referenced by the request endpoint or the wallet_name argument.
+/// If both are specified, they must be identical.
 
 /// # Example
 /// ```rust
@@ -15,8 +15,8 @@
 use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
 use transport::{TransportTrait, TransportError};
-/// Unloads the wallet referenced by the request endpoint, otherwise unloads the wallet specified in the argument.
-    /// Specifying the wallet name on a wallet endpoint is invalid.
+/// Unloads the wallet referenced by the request endpoint or the wallet_name argument.
+    /// If both are specified, they must be identical.
 #[derive(Debug, Deserialize, Serialize)]
 pub struct UnloadwalletResponse {
     #[serde(skip_serializing_if = "Option::is_none")]
