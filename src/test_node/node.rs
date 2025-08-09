@@ -200,22 +200,6 @@ impl BitcoinNodeClient {
             .await
     }
 
-    /// Creates the wallet"s descriptor for the given address type. The address type must be one that the wallet does not already have a descriptor for.
-    /// Requires wallet passphrase to be set with walletpassphrase call if wallet is encrypted.
-    pub async fn createwalletdescriptor(
-        &self,
-        _type: String,
-        options: serde_json::Value,
-    ) -> Result<CreatewalletdescriptorResponse, TransportError> {
-        let mut params = Vec::new();
-        params.push(serde_json::to_value(_type)?);
-        params.push(serde_json::to_value(options)?);
-        // dispatch and deserialize to `CreatewalletdescriptorResponse`
-        self.client
-            .call::<CreatewalletdescriptorResponse>("createwalletdescriptor", &params)
-            .await
-    }
-
     /// Return a JSON object representing the serialized, base64-encoded partially signed Bitcoin transaction.
     pub async fn decodepsbt(&self, psbt: String) -> Result<DecodepsbtResponse, TransportError> {
         let mut params = Vec::new();
@@ -819,19 +803,6 @@ impl BitcoinNodeClient {
         // dispatch and deserialize to `GetdifficultyResponse`
         self.client
             .call::<GetdifficultyResponse>("getdifficulty", &[])
-            .await
-    }
-
-    /// List all BIP 32 HD keys in the wallet and which descriptors use them.
-    pub async fn gethdkeys(
-        &self,
-        options: serde_json::Value,
-    ) -> Result<GethdkeysResponse, TransportError> {
-        let mut params = Vec::new();
-        params.push(serde_json::to_value(options)?);
-        // dispatch and deserialize to `GethdkeysResponse`
-        self.client
-            .call::<GethdkeysResponse>("gethdkeys", &params)
             .await
     }
 

@@ -524,7 +524,7 @@ impl BitcoinTestClient {
         _type: String,
         options: serde_json::Value,
     ) -> Result<CreatewalletdescriptorResponse, TransportError> {
-        self.node_client
+        self.wallet_client
             .createwalletdescriptor(_type, options)
             .await
     }
@@ -1002,7 +1002,7 @@ impl BitcoinTestClient {
         &self,
         options: serde_json::Value,
     ) -> Result<GethdkeysResponse, TransportError> {
-        self.node_client.gethdkeys(options).await
+        self.wallet_client.gethdkeys(options).await
     }
 
     /// Returns the status of one or all available indices currently running in the node.
