@@ -1,6 +1,5 @@
 // codegen/templates/client_trait.rs
 
-use crate::transport::core::wallet_methods::WALLET_METHODS;
 use crate::transport::{TransportError, TransportExt, TransportTrait};
 use crate::types::*;
 use async_trait::async_trait;
@@ -2311,13 +2310,7 @@ pub trait RpcDispatchExt: TransportTrait + TransportExt {
         method: &str,
         params: &[serde_json::Value],
     ) -> impl Future<Output = Result<R, TransportError>> + Send {
-        async move {
-            if WALLET_METHODS.contains(&method) {
-                self.wallet_call(method, params).await
-            } else {
-                self.call(method, params).await
-            }
-        }
+        async move { self.call(method, params).await }
     }
 }
 

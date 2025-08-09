@@ -333,13 +333,13 @@ impl BitcoinTestClient {
     /// It only works on transactions which are not included in a block and are not currently in the mempool.
     /// It has no effect on transactions which are already abandoned.
     pub async fn abandontransaction(&self, txid: bitcoin::Txid) -> Result<(), TransportError> {
-        self.wallet_client.abandontransaction(txid).await
+        self.node_client.abandontransaction(txid).await
     }
 
     /// Stops current wallet rescan triggered by an RPC call, e.g. by a rescanblockchain call.
     /// Note: Use "getwalletinfo" to query the scanning progress.
     pub async fn abortrescan(&self) -> Result<AbortrescanResponse, TransportError> {
-        self.wallet_client.abortrescan().await
+        self.node_client.abortrescan().await
     }
 
     /// Open an outbound connection to a specified node. This RPC is for testing only.
@@ -385,7 +385,7 @@ impl BitcoinTestClient {
 
     /// Safely copies the current wallet file to the specified destination, which can either be a directory or a path with a filename.
     pub async fn backupwallet(&self, destination: String) -> Result<(), TransportError> {
-        self.wallet_client.backupwallet(destination).await
+        self.node_client.backupwallet(destination).await
     }
 
     /// Bumps the fee of a transaction T, replacing it with a new transaction B.
@@ -405,7 +405,7 @@ impl BitcoinTestClient {
         txid: bitcoin::Txid,
         options: serde_json::Value,
     ) -> Result<BumpfeeResponse, TransportError> {
-        self.wallet_client.bumpfee(txid, options).await
+        self.node_client.bumpfee(txid, options).await
     }
 
     /// Clear all banned IPs.
@@ -503,7 +503,7 @@ impl BitcoinTestClient {
         load_on_startup: bool,
         external_signer: bool,
     ) -> Result<CreatewalletResponse, TransportError> {
-        self.wallet_client
+        self.node_client
             .createwallet(
                 wallet_name,
                 disable_private_keys,
@@ -524,7 +524,7 @@ impl BitcoinTestClient {
         _type: String,
         options: serde_json::Value,
     ) -> Result<CreatewalletdescriptorResponse, TransportError> {
-        self.wallet_client
+        self.node_client
             .createwalletdescriptor(_type, options)
             .await
     }
@@ -675,7 +675,7 @@ impl BitcoinTestClient {
         &self,
         passphrase: String,
     ) -> Result<EncryptwalletResponse, TransportError> {
-        self.wallet_client.encryptwallet(passphrase).await
+        self.node_client.encryptwallet(passphrase).await
     }
 
     /// Returns a list of external signers from -signer.
@@ -808,7 +808,7 @@ impl BitcoinTestClient {
         &self,
         label: String,
     ) -> Result<GetaddressesbylabelResponse, TransportError> {
-        self.wallet_client.getaddressesbylabel(label).await
+        self.node_client.getaddressesbylabel(label).await
     }
 
     /// Return information about the given bitcoin address.
@@ -817,7 +817,7 @@ impl BitcoinTestClient {
         &self,
         address: String,
     ) -> Result<GetaddressinfoResponse, TransportError> {
-        self.wallet_client.getaddressinfo(address).await
+        self.node_client.getaddressinfo(address).await
     }
 
     /// Provides information about the node"s address manager by returning the number of addresses in the ``new`` and ``tried`` tables and their sum for all networks.
@@ -835,14 +835,14 @@ impl BitcoinTestClient {
         include_watchonly: bool,
         avoid_reuse: bool,
     ) -> Result<GetbalanceResponse, TransportError> {
-        self.wallet_client
+        self.node_client
             .getbalance(dummy, minconf, include_watchonly, avoid_reuse)
             .await
     }
 
     /// Returns an object with all balances in BTC.
     pub async fn getbalances(&self) -> Result<GetbalancesResponse, TransportError> {
-        self.wallet_client.getbalances().await
+        self.node_client.getbalances().await
     }
 
     /// Returns the hash of the best (tip) block in the most-work fully-validated chain.
@@ -1002,7 +1002,7 @@ impl BitcoinTestClient {
         &self,
         options: serde_json::Value,
     ) -> Result<GethdkeysResponse, TransportError> {
-        self.wallet_client.gethdkeys(options).await
+        self.node_client.gethdkeys(options).await
     }
 
     /// Returns the status of one or all available indices currently running in the node.
@@ -1087,7 +1087,7 @@ impl BitcoinTestClient {
         label: String,
         address_type: String,
     ) -> Result<GetnewaddressResponse, TransportError> {
-        self.wallet_client.getnewaddress(label, address_type).await
+        self.node_client.getnewaddress(label, address_type).await
     }
 
     /// Return known addresses, after filtering for quality and recency.
@@ -1136,7 +1136,7 @@ impl BitcoinTestClient {
         &self,
         address_type: String,
     ) -> Result<GetrawchangeaddressResponse, TransportError> {
-        self.wallet_client.getrawchangeaddress(address_type).await
+        self.node_client.getrawchangeaddress(address_type).await
     }
 
     /// Returns all transaction ids in memory pool as a json array of string transaction ids.
@@ -1180,7 +1180,7 @@ impl BitcoinTestClient {
         minconf: u32,
         include_immature_coinbase: bool,
     ) -> Result<GetreceivedbyaddressResponse, TransportError> {
-        self.wallet_client
+        self.node_client
             .getreceivedbyaddress(address, minconf, include_immature_coinbase)
             .await
     }
@@ -1192,7 +1192,7 @@ impl BitcoinTestClient {
         minconf: u32,
         include_immature_coinbase: bool,
     ) -> Result<GetreceivedbylabelResponse, TransportError> {
-        self.wallet_client
+        self.node_client
             .getreceivedbylabel(label, minconf, include_immature_coinbase)
             .await
     }
@@ -1209,7 +1209,7 @@ impl BitcoinTestClient {
         include_watchonly: bool,
         verbose: bool,
     ) -> Result<GettransactionResponse, TransportError> {
-        self.wallet_client
+        self.node_client
             .gettransaction(txid, include_watchonly, verbose)
             .await
     }
@@ -1261,7 +1261,7 @@ impl BitcoinTestClient {
 
     /// Returns an object containing various wallet state info.
     pub async fn getwalletinfo(&self) -> Result<GetwalletinfoResponse, TransportError> {
-        self.wallet_client.getwalletinfo().await
+        self.node_client.getwalletinfo().await
     }
 
     /// Returns information about the active ZeroMQ notifications.
@@ -1284,7 +1284,7 @@ impl BitcoinTestClient {
         &self,
         requests: Vec<serde_json::Value>,
     ) -> Result<ImportdescriptorsResponse, TransportError> {
-        self.wallet_client.importdescriptors(requests).await
+        self.node_client.importdescriptors(requests).await
     }
 
     /// Import a mempool.dat file and attempt to add its contents to the mempool.
@@ -1303,7 +1303,7 @@ impl BitcoinTestClient {
         rawtransaction: String,
         txoutproof: String,
     ) -> Result<(), TransportError> {
-        self.wallet_client
+        self.node_client
             .importprunedfunds(rawtransaction, txoutproof)
             .await
     }
@@ -1330,7 +1330,7 @@ impl BitcoinTestClient {
     ///
     /// Requires wallet passphrase to be set with walletpassphrase call if wallet is encrypted.
     pub async fn keypoolrefill(&self, newsize: u64) -> Result<(), TransportError> {
-        self.wallet_client.keypoolrefill(newsize).await
+        self.node_client.keypoolrefill(newsize).await
     }
 
     /// Lists groups of addresses which have had their common ownership
@@ -1339,7 +1339,7 @@ impl BitcoinTestClient {
     pub async fn listaddressgroupings(
         &self,
     ) -> Result<ListaddressgroupingsResponse, TransportError> {
-        self.wallet_client.listaddressgroupings().await
+        self.node_client.listaddressgroupings().await
     }
 
     /// List all manually banned IPs/Subnets.
@@ -1352,18 +1352,18 @@ impl BitcoinTestClient {
         &self,
         private: bool,
     ) -> Result<ListdescriptorsResponse, TransportError> {
-        self.wallet_client.listdescriptors(private).await
+        self.node_client.listdescriptors(private).await
     }
 
     /// Returns the list of all labels, or labels that are assigned to addresses with a specific purpose.
     pub async fn listlabels(&self, purpose: String) -> Result<ListlabelsResponse, TransportError> {
-        self.wallet_client.listlabels(purpose).await
+        self.node_client.listlabels(purpose).await
     }
 
     /// Returns list of temporarily unspendable outputs.
     /// See the lockunspent call to lock and unlock transactions for spending.
     pub async fn listlockunspent(&self) -> Result<ListlockunspentResponse, TransportError> {
-        self.wallet_client.listlockunspent().await
+        self.node_client.listlockunspent().await
     }
 
     /// List balances by receiving address.
@@ -1375,7 +1375,7 @@ impl BitcoinTestClient {
         address_filter: String,
         include_immature_coinbase: bool,
     ) -> Result<ListreceivedbyaddressResponse, TransportError> {
-        self.wallet_client
+        self.node_client
             .listreceivedbyaddress(
                 minconf,
                 include_empty,
@@ -1394,7 +1394,7 @@ impl BitcoinTestClient {
         include_watchonly: bool,
         include_immature_coinbase: bool,
     ) -> Result<ListreceivedbylabelResponse, TransportError> {
-        self.wallet_client
+        self.node_client
             .listreceivedbylabel(
                 minconf,
                 include_empty,
@@ -1416,7 +1416,7 @@ impl BitcoinTestClient {
         include_change: bool,
         label: String,
     ) -> Result<ListsinceblockResponse, TransportError> {
-        self.wallet_client
+        self.node_client
             .listsinceblock(
                 blockhash,
                 target_confirmations,
@@ -1438,7 +1438,7 @@ impl BitcoinTestClient {
         skip: u64,
         include_watchonly: bool,
     ) -> Result<ListtransactionsResponse, TransportError> {
-        self.wallet_client
+        self.node_client
             .listtransactions(label, count, skip, include_watchonly)
             .await
     }
@@ -1454,20 +1454,20 @@ impl BitcoinTestClient {
         include_unsafe: bool,
         query_options: serde_json::Value,
     ) -> Result<ListunspentResponse, TransportError> {
-        self.wallet_client
+        self.node_client
             .listunspent(minconf, maxconf, addresses, include_unsafe, query_options)
             .await
     }
 
     /// Returns a list of wallets in the wallet directory.
     pub async fn listwalletdir(&self) -> Result<ListwalletdirResponse, TransportError> {
-        self.wallet_client.listwalletdir().await
+        self.node_client.listwalletdir().await
     }
 
     /// Returns a list of currently loaded wallets.
     /// For full information on the wallet, use "getwalletinfo"
     pub async fn listwallets(&self) -> Result<ListwalletsResponse, TransportError> {
-        self.wallet_client.listwallets().await
+        self.node_client.listwallets().await
     }
 
     /// Load the serialized UTXO set from a file.
@@ -1488,9 +1488,7 @@ impl BitcoinTestClient {
         filename: String,
         load_on_startup: bool,
     ) -> Result<LoadwalletResponse, TransportError> {
-        self.wallet_client
-            .loadwallet(filename, load_on_startup)
-            .await
+        self.node_client.loadwallet(filename, load_on_startup).await
     }
 
     /// Updates list of temporarily unspendable outputs.
@@ -1508,7 +1506,7 @@ impl BitcoinTestClient {
         transactions: Vec<serde_json::Value>,
         persistent: bool,
     ) -> Result<LockunspentResponse, TransportError> {
-        self.wallet_client
+        self.node_client
             .lockunspent(unlock, transactions, persistent)
             .await
     }
@@ -1543,7 +1541,7 @@ impl BitcoinTestClient {
         wallet_name: String,
         passphrase: String,
     ) -> Result<MigratewalletResponse, TransportError> {
-        self.wallet_client
+        self.node_client
             .migratewallet(wallet_name, passphrase)
             .await
     }
@@ -1608,7 +1606,7 @@ impl BitcoinTestClient {
         txid: bitcoin::Txid,
         options: serde_json::Value,
     ) -> Result<PsbtbumpfeeResponse, TransportError> {
-        self.wallet_client.psbtbumpfee(txid, options).await
+        self.node_client.psbtbumpfee(txid, options).await
     }
 
     /// Removes invalidity status of a block, its ancestors and its descendants, reconsider them for activation.
@@ -1622,7 +1620,7 @@ impl BitcoinTestClient {
 
     /// Deletes the specified transaction from the wallet. Meant for use with pruned wallets and as a companion to importprunedfunds. This will affect wallet balances.
     pub async fn removeprunedfunds(&self, txid: bitcoin::Txid) -> Result<(), TransportError> {
-        self.wallet_client.removeprunedfunds(txid).await
+        self.node_client.removeprunedfunds(txid).await
     }
 
     /// Rescan the local blockchain for wallet related transactions.
@@ -1634,7 +1632,7 @@ impl BitcoinTestClient {
         start_height: u64,
         stop_height: u64,
     ) -> Result<RescanblockchainResponse, TransportError> {
-        self.wallet_client
+        self.node_client
             .rescanblockchain(start_height, stop_height)
             .await
     }
@@ -1649,7 +1647,7 @@ impl BitcoinTestClient {
         backup_file: String,
         load_on_startup: bool,
     ) -> Result<RestorewalletResponse, TransportError> {
-        self.wallet_client
+        self.node_client
             .restorewallet(wallet_name, backup_file, load_on_startup)
             .await
     }
@@ -1723,7 +1721,7 @@ impl BitcoinTestClient {
         fee_rate: f64,
         options: serde_json::Value,
     ) -> Result<SendResponse, TransportError> {
-        self.wallet_client
+        self.node_client
             .send(outputs, conf_target, estimate_mode, fee_rate, options)
             .await
     }
@@ -1741,7 +1739,7 @@ impl BitcoinTestClient {
         fee_rate: f64,
         options: serde_json::Value,
     ) -> Result<SendallResponse, TransportError> {
-        self.wallet_client
+        self.node_client
             .sendall(recipients, conf_target, estimate_mode, fee_rate, options)
             .await
     }
@@ -1761,7 +1759,7 @@ impl BitcoinTestClient {
         fee_rate: f64,
         verbose: bool,
     ) -> Result<SendmanyResponse, TransportError> {
-        self.wallet_client
+        self.node_client
             .sendmany(
                 dummy,
                 amounts,
@@ -1825,7 +1823,7 @@ impl BitcoinTestClient {
         fee_rate: f64,
         verbose: bool,
     ) -> Result<SendtoaddressResponse, TransportError> {
-        self.wallet_client
+        self.node_client
             .sendtoaddress(
                 address,
                 amount,
@@ -1857,7 +1855,7 @@ impl BitcoinTestClient {
 
     /// Sets the label associated with the given address.
     pub async fn setlabel(&self, address: String, label: String) -> Result<(), TransportError> {
-        self.wallet_client.setlabel(address, label).await
+        self.node_client.setlabel(address, label).await
     }
 
     /// Set the local time to given timestamp (-regtest only)
@@ -1879,7 +1877,7 @@ impl BitcoinTestClient {
         &self,
         amount: bitcoin::Amount,
     ) -> Result<SettxfeeResponse, TransportError> {
-        self.wallet_client.settxfee(amount).await
+        self.node_client.settxfee(amount).await
     }
 
     /// Change the state of the given wallet flag for a wallet.
@@ -1888,7 +1886,7 @@ impl BitcoinTestClient {
         flag: String,
         value: bool,
     ) -> Result<SetwalletflagResponse, TransportError> {
-        self.wallet_client.setwalletflag(flag, value).await
+        self.node_client.setwalletflag(flag, value).await
     }
 
     /// Sign a message with the private key of an address
@@ -1898,7 +1896,7 @@ impl BitcoinTestClient {
         address: String,
         message: String,
     ) -> Result<SignmessageResponse, TransportError> {
-        self.wallet_client.signmessage(address, message).await
+        self.node_client.signmessage(address, message).await
     }
 
     /// Sign a message with the private key of an address
@@ -1939,7 +1937,7 @@ impl BitcoinTestClient {
         prevtxs: Vec<serde_json::Value>,
         sighashtype: String,
     ) -> Result<SignrawtransactionwithwalletResponse, TransportError> {
-        self.wallet_client
+        self.node_client
             .signrawtransactionwithwallet(hexstring, prevtxs, sighashtype)
             .await
     }
@@ -1950,7 +1948,7 @@ impl BitcoinTestClient {
         rawtxs: Vec<serde_json::Value>,
         options: serde_json::Value,
     ) -> Result<SimulaterawtransactionResponse, TransportError> {
-        self.wallet_client
+        self.node_client
             .simulaterawtransaction(rawtxs, options)
             .await
     }
@@ -2022,7 +2020,7 @@ impl BitcoinTestClient {
         wallet_name: String,
         load_on_startup: bool,
     ) -> Result<UnloadwalletResponse, TransportError> {
-        self.wallet_client
+        self.node_client
             .unloadwallet(wallet_name, load_on_startup)
             .await
     }
@@ -2131,7 +2129,7 @@ impl BitcoinTestClient {
         options: serde_json::Value,
         bip32derivs: bool,
     ) -> Result<WalletcreatefundedpsbtResponse, TransportError> {
-        self.wallet_client
+        self.node_client
             .walletcreatefundedpsbt(inputs, outputs, locktime, options, bip32derivs)
             .await
     }
@@ -2141,14 +2139,14 @@ impl BitcoinTestClient {
         &self,
         address: String,
     ) -> Result<WalletdisplayaddressResponse, TransportError> {
-        self.wallet_client.walletdisplayaddress(address).await
+        self.node_client.walletdisplayaddress(address).await
     }
 
     /// Removes the wallet encryption key from memory, locking the wallet.
     /// After calling this method, you will need to call walletpassphrase again
     /// before being able to call any methods which require the wallet to be unlocked.
     pub async fn walletlock(&self) -> Result<(), TransportError> {
-        self.wallet_client.walletlock().await
+        self.node_client.walletlock().await
     }
 
     /// Stores the wallet decryption key in memory for "timeout" seconds.
@@ -2162,9 +2160,7 @@ impl BitcoinTestClient {
         passphrase: String,
         timeout: u64,
     ) -> Result<(), TransportError> {
-        self.wallet_client
-            .walletpassphrase(passphrase, timeout)
-            .await
+        self.node_client.walletpassphrase(passphrase, timeout).await
     }
 
     /// Changes the wallet passphrase from "oldpassphrase" to "newpassphrase".
@@ -2173,7 +2169,7 @@ impl BitcoinTestClient {
         oldpassphrase: String,
         newpassphrase: String,
     ) -> Result<(), TransportError> {
-        self.wallet_client
+        self.node_client
             .walletpassphrasechange(oldpassphrase, newpassphrase)
             .await
     }
@@ -2189,7 +2185,7 @@ impl BitcoinTestClient {
         bip32derivs: bool,
         finalize: bool,
     ) -> Result<WalletprocesspsbtResponse, TransportError> {
-        self.wallet_client
+        self.node_client
             .walletprocesspsbt(psbt, sign, sighashtype, bip32derivs, finalize)
             .await
     }
