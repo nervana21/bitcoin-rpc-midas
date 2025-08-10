@@ -1,7 +1,3 @@
-pub mod wallet;
-pub use wallet::*;
-pub mod node;
-pub use node::*;
 pub mod client;
 pub use client::*;
 pub mod params;
