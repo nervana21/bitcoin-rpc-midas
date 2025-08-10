@@ -1,5 +1,5 @@
 //! This file is auto-generated. Do not edit manually.
-//! Generated for Bitcoin Core version: latest
+//! Generated for Bitcoin Core version: V29
 
 /// Returns array of unspent transaction outputs
 /// with between minconf and maxconf (inclusive) confirmations.
@@ -7,7 +7,7 @@
 
 /// # Example
 /// ```rust
-/// use bitcoin_rpc_codegen::client::latest::listunspent;
+/// use bitcoin_rpc_codegen::client::V29::listunspent;
 ///
 /// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.listunspent(/* params */).await?;

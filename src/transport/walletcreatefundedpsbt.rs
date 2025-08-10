@@ -1,5 +1,5 @@
 //! This file is auto-generated. Do not edit manually.
-//! Generated for Bitcoin Core version: latest
+//! Generated for Bitcoin Core version: V29
 
 /// Creates and funds a transaction in the Partially Signed Transaction format.
 /// Implements the Creator and Updater roles.
@@ -8,7 +8,7 @@
 
 /// # Example
 /// ```rust
-/// use bitcoin_rpc_codegen::client::latest::walletcreatefundedpsbt;
+/// use bitcoin_rpc_codegen::client::V29::walletcreatefundedpsbt;
 ///
 /// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.walletcreatefundedpsbt(/* params */).await?;

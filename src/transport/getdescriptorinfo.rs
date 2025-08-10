@@ -1,11 +1,11 @@
 //! This file is auto-generated. Do not edit manually.
-//! Generated for Bitcoin Core version: latest
+//! Generated for Bitcoin Core version: V29
 
 /// Analyses a descriptor.
 
 /// # Example
 /// ```rust
-/// use bitcoin_rpc_codegen::client::latest::getdescriptorinfo;
+/// use bitcoin_rpc_codegen::client::V29::getdescriptorinfo;
 ///
 /// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.getdescriptorinfo(/* params */).await?;

@@ -1,5 +1,5 @@
 //! This file is auto-generated. Do not edit manually.
-//! Generated for Bitcoin Core version: latest
+//! Generated for Bitcoin Core version: V29
 
 /// Submit a raw transaction (serialized, hex-encoded) to local node and network.
 /// The transaction will be sent unconditionally to all peers, so using sendrawtransaction
@@ -10,7 +10,7 @@
 
 /// # Example
 /// ```rust
-/// use bitcoin_rpc_codegen::client::latest::sendrawtransaction;
+/// use bitcoin_rpc_codegen::client::V29::sendrawtransaction;
 ///
 /// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.sendrawtransaction(/* params */).await?;

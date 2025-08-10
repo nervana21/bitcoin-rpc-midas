@@ -1,11 +1,11 @@
 //! This file is auto-generated. Do not edit manually.
-//! Generated for Bitcoin Core version: latest
+//! Generated for Bitcoin Core version: V29
 
 /// Decode a hex-encoded script.
 
 /// # Example
 /// ```rust
-/// use bitcoin_rpc_codegen::client::latest::decodescript;
+/// use bitcoin_rpc_codegen::client::V29::decodescript;
 ///
 /// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.decodescript(/* params */).await?;

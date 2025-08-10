@@ -1,5 +1,5 @@
 //! This file is auto-generated. Do not edit manually.
-//! Generated for Bitcoin Core version: latest
+//! Generated for Bitcoin Core version: V29
 
 /// Returns the estimated network hashes per second based on the last n blocks.
 /// Pass in [blocks] to override # of blocks, -1 specifies since last difficulty change.
@@ -7,7 +7,7 @@
 
 /// # Example
 /// ```rust
-/// use bitcoin_rpc_codegen::client::latest::getnetworkhashps;
+/// use bitcoin_rpc_codegen::client::V29::getnetworkhashps;
 ///
 /// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.getnetworkhashps(/* params */).await?;

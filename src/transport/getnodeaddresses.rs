@@ -1,5 +1,5 @@
 //! This file is auto-generated. Do not edit manually.
-//! Generated for Bitcoin Core version: latest
+//! Generated for Bitcoin Core version: V29
 
 /// Return known addresses, after filtering for quality and recency.
 /// These can potentially be used to find new peers in the network.
@@ -7,7 +7,7 @@
 
 /// # Example
 /// ```rust
-/// use bitcoin_rpc_codegen::client::latest::getnodeaddresses;
+/// use bitcoin_rpc_codegen::client::V29::getnodeaddresses;
 ///
 /// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.getnodeaddresses(/* params */).await?;

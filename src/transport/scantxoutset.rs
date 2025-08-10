@@ -1,5 +1,5 @@
 //! This file is auto-generated. Do not edit manually.
-//! Generated for Bitcoin Core version: latest
+//! Generated for Bitcoin Core version: V29
 
 /// Scans the unspent transaction output set for entries that match certain output descriptors.
 /// Examples of output descriptors are:
@@ -20,7 +20,7 @@
 
 /// # Example
 /// ```rust
-/// use bitcoin_rpc_codegen::client::latest::scantxoutset;
+/// use bitcoin_rpc_codegen::client::V29::scantxoutset;
 ///
 /// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.scantxoutset(/* params */).await?;

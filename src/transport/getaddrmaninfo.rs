@@ -1,11 +1,11 @@
 //! This file is auto-generated. Do not edit manually.
-//! Generated for Bitcoin Core version: latest
+//! Generated for Bitcoin Core version: V29
 
 /// Provides information about the node's address manager by returning the number of addresses in the `new` and `tried` tables and their sum for all networks.
 
 /// # Example
 /// ```rust
-/// use bitcoin_rpc_codegen::client::latest::getaddrmaninfo;
+/// use bitcoin_rpc_codegen::client::V29::getaddrmaninfo;
 ///
 /// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.getaddrmaninfo().await?;

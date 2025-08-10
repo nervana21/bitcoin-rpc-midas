@@ -1,12 +1,12 @@
 //! This file is auto-generated. Do not edit manually.
-//! Generated for Bitcoin Core version: latest
+//! Generated for Bitcoin Core version: V29
 
 /// Verifies that a proof points to a transaction in a block, returning the transaction it commits to
 /// and throwing an RPC error if the block is not in our best chain
 
 /// # Example
 /// ```rust
-/// use bitcoin_rpc_codegen::client::latest::verifytxoutproof;
+/// use bitcoin_rpc_codegen::client::V29::verifytxoutproof;
 ///
 /// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.verifytxoutproof(/* params */).await?;

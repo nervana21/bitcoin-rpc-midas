@@ -1,5 +1,5 @@
 //! This file is auto-generated. Do not edit manually.
-//! Generated for Bitcoin Core version: latest
+//! Generated for Bitcoin Core version: V29
 
 /// Removes the wallet encryption key from memory, locking the wallet.
 /// After calling this method, you will need to call walletpassphrase again
@@ -7,7 +7,7 @@
 
 /// # Example
 /// ```rust
-/// use bitcoin_rpc_codegen::client::latest::walletlock;
+/// use bitcoin_rpc_codegen::client::V29::walletlock;
 ///
 /// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.walletlock().await?;

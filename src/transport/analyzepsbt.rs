@@ -1,11 +1,11 @@
 //! This file is auto-generated. Do not edit manually.
-//! Generated for Bitcoin Core version: latest
+//! Generated for Bitcoin Core version: V29
 
 /// Analyzes and provides information about the current status of a PSBT and its inputs
 
 /// # Example
 /// ```rust
-/// use bitcoin_rpc_codegen::client::latest::analyzepsbt;
+/// use bitcoin_rpc_codegen::client::V29::analyzepsbt;
 ///
 /// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.analyzepsbt(/* params */).await?;

@@ -1,5 +1,5 @@
 //! This file is auto-generated. Do not edit manually.
-//! Generated for Bitcoin Core version: latest
+//! Generated for Bitcoin Core version: V29
 
 /// Migrate the wallet to a descriptor wallet.
 /// A new wallet backup will need to be made.
@@ -11,7 +11,7 @@
 
 /// # Example
 /// ```rust
-/// use bitcoin_rpc_codegen::client::latest::migratewallet;
+/// use bitcoin_rpc_codegen::client::V29::migratewallet;
 ///
 /// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.migratewallet(/* params */).await?;

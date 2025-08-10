@@ -1,11 +1,11 @@
 //! This file is auto-generated. Do not edit manually.
-//! Generated for Bitcoin Core version: latest
+//! Generated for Bitcoin Core version: V29
 
 /// Accepts the transaction into mined blocks at a higher (or lower) priority
 
 /// # Example
 /// ```rust
-/// use bitcoin_rpc_codegen::client::latest::prioritisetransaction;
+/// use bitcoin_rpc_codegen::client::V29::prioritisetransaction;
 ///
 /// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.prioritisetransaction(/* params */).await?;

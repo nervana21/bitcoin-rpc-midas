@@ -1,5 +1,5 @@
 //! This file is auto-generated. Do not edit manually.
-//! Generated for Bitcoin Core version: latest
+//! Generated for Bitcoin Core version: V29
 
 /// Rescan the local blockchain for wallet related transactions.
 /// Note: Use "getwalletinfo" to query the scanning progress.
@@ -8,7 +8,7 @@
 
 /// # Example
 /// ```rust
-/// use bitcoin_rpc_codegen::client::latest::rescanblockchain;
+/// use bitcoin_rpc_codegen::client::V29::rescanblockchain;
 ///
 /// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.rescanblockchain(/* params */).await?;

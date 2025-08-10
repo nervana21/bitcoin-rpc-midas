@@ -1,5 +1,5 @@
 //! This file is auto-generated. Do not edit manually.
-//! Generated for Bitcoin Core version: latest
+//! Generated for Bitcoin Core version: V29
 
 /// Send a p2p message to a peer specified by id.
 /// The message type and body must be provided, the message header will be generated.
@@ -7,7 +7,7 @@
 
 /// # Example
 /// ```rust
-/// use bitcoin_rpc_codegen::client::latest::sendmsgtopeer;
+/// use bitcoin_rpc_codegen::client::V29::sendmsgtopeer;
 ///
 /// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.sendmsgtopeer(/* params */).await?;

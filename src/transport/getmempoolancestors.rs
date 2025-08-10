@@ -1,11 +1,11 @@
 //! This file is auto-generated. Do not edit manually.
-//! Generated for Bitcoin Core version: latest
+//! Generated for Bitcoin Core version: V29
 
 /// If txid is in the mempool, returns all in-mempool ancestors.
 
 /// # Example
 /// ```rust
-/// use bitcoin_rpc_codegen::client::latest::getmempoolancestors;
+/// use bitcoin_rpc_codegen::client::V29::getmempoolancestors;
 ///
 /// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.getmempoolancestors(/* params */).await?;

@@ -1,11 +1,11 @@
 //! This file is auto-generated. Do not edit manually.
-//! Generated for Bitcoin Core version: latest
+//! Generated for Bitcoin Core version: V29
 
 /// Bump the scheduler into the future (-regtest only)
 
 /// # Example
 /// ```rust
-/// use bitcoin_rpc_codegen::client::latest::mockscheduler;
+/// use bitcoin_rpc_codegen::client::V29::mockscheduler;
 ///
 /// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.mockscheduler(/* params */).await?;

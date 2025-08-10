@@ -1,12 +1,12 @@
 //! This file is auto-generated. Do not edit manually.
-//! Generated for Bitcoin Core version: latest
+//! Generated for Bitcoin Core version: V29
 
 /// Creates the wallet's descriptor for the given address type. The address type must be one that the wallet does not already have a descriptor for.
 /// Requires wallet passphrase to be set with walletpassphrase call if wallet is encrypted.
 
 /// # Example
 /// ```rust
-/// use bitcoin_rpc_codegen::client::latest::createwalletdescriptor;
+/// use bitcoin_rpc_codegen::client::V29::createwalletdescriptor;
 ///
 /// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.createwalletdescriptor(/* params */).await?;

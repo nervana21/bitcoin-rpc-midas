@@ -1,5 +1,5 @@
 //! This file is auto-generated. Do not edit manually.
-//! Generated for Bitcoin Core version: latest
+//! Generated for Bitcoin Core version: V29
 
 /// Encrypts the wallet with 'passphrase'. This is for first time encryption.
 /// After this, any calls that interact with private keys such as sending or signing
@@ -13,7 +13,7 @@
 
 /// # Example
 /// ```rust
-/// use bitcoin_rpc_codegen::client::latest::encryptwallet;
+/// use bitcoin_rpc_codegen::client::V29::encryptwallet;
 ///
 /// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.encryptwallet(/* params */).await?;

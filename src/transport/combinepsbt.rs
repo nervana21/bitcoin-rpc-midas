@@ -1,12 +1,12 @@
 //! This file is auto-generated. Do not edit manually.
-//! Generated for Bitcoin Core version: latest
+//! Generated for Bitcoin Core version: V29
 
 /// Combine multiple partially signed Bitcoin transactions into one transaction.
 /// Implements the Combiner role.
 
 /// # Example
 /// ```rust
-/// use bitcoin_rpc_codegen::client::latest::combinepsbt;
+/// use bitcoin_rpc_codegen::client::V29::combinepsbt;
 ///
 /// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.combinepsbt(/* params */).await?;

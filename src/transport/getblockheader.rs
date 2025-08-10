@@ -1,12 +1,12 @@
 //! This file is auto-generated. Do not edit manually.
-//! Generated for Bitcoin Core version: latest
+//! Generated for Bitcoin Core version: V29
 
 /// If verbose is false, returns a string that is serialized, hex-encoded data for blockheader 'hash'.
 /// If verbose is true, returns an Object with information about blockheader <hash>.
 
 /// # Example
 /// ```rust
-/// use bitcoin_rpc_codegen::client::latest::getblockheader;
+/// use bitcoin_rpc_codegen::client::V29::getblockheader;
 ///
 /// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.getblockheader(/* params */).await?;

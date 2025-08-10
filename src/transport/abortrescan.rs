@@ -1,12 +1,12 @@
 //! This file is auto-generated. Do not edit manually.
-//! Generated for Bitcoin Core version: latest
+//! Generated for Bitcoin Core version: V29
 
 /// Stops current wallet rescan triggered by an RPC call, e.g. by a rescanblockchain call.
 /// Note: Use "getwalletinfo" to query the scanning progress.
 
 /// # Example
 /// ```rust
-/// use bitcoin_rpc_codegen::client::latest::abortrescan;
+/// use bitcoin_rpc_codegen::client::V29::abortrescan;
 ///
 /// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.abortrescan().await?;

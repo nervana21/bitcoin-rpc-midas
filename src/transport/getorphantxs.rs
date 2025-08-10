@@ -1,12 +1,12 @@
 //! This file is auto-generated. Do not edit manually.
-//! Generated for Bitcoin Core version: latest
+//! Generated for Bitcoin Core version: V29
 
 /// Shows transactions in the tx orphanage.
 /// EXPERIMENTAL warning: this call may be changed in future releases.
 
 /// # Example
 /// ```rust
-/// use bitcoin_rpc_codegen::client::latest::getorphantxs;
+/// use bitcoin_rpc_codegen::client::V29::getorphantxs;
 ///
 /// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.getorphantxs(/* params */).await?;

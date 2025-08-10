@@ -1,5 +1,5 @@
 //! This file is auto-generated. Do not edit manually.
-//! Generated for Bitcoin Core version: latest
+//! Generated for Bitcoin Core version: V29
 
 /// Lists groups of addresses which have had their common ownership
 /// made public by common use as inputs or as the resulting change
@@ -7,7 +7,7 @@
 
 /// # Example
 /// ```rust
-/// use bitcoin_rpc_codegen::client::latest::listaddressgroupings;
+/// use bitcoin_rpc_codegen::client::V29::listaddressgroupings;
 ///
 /// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.listaddressgroupings().await?;

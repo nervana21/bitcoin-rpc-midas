@@ -1,12 +1,12 @@
 //! This file is auto-generated. Do not edit manually.
-//! Generated for Bitcoin Core version: latest
+//! Generated for Bitcoin Core version: V29
 
 /// EXPERIMENTAL warning: this call may be changed in future releases.
 /// Send a transaction.
 
 /// # Example
 /// ```rust
-/// use bitcoin_rpc_codegen::client::latest::send;
+/// use bitcoin_rpc_codegen::client::V29::send;
 ///
 /// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.send(/* params */).await?;

@@ -1,5 +1,5 @@
 //! This file is auto-generated. Do not edit manually.
-//! Generated for Bitcoin Core version: latest
+//! Generated for Bitcoin Core version: V29
 
 /// Treats a block as if it were received before others with the same work.
 /// A later preciousblock call can override the effect of an earlier one.
@@ -7,7 +7,7 @@
 
 /// # Example
 /// ```rust
-/// use bitcoin_rpc_codegen::client::latest::preciousblock;
+/// use bitcoin_rpc_codegen::client::V29::preciousblock;
 ///
 /// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.preciousblock(/* params */).await?;

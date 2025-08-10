@@ -1,11 +1,11 @@
 //! This file is auto-generated. Do not edit manually.
-//! Generated for Bitcoin Core version: latest
+//! Generated for Bitcoin Core version: V29
 
 /// Scans the mempool to find transactions spending any of the given outputs
 
 /// # Example
 /// ```rust
-/// use bitcoin_rpc_codegen::client::latest::gettxspendingprevout;
+/// use bitcoin_rpc_codegen::client::V29::gettxspendingprevout;
 ///
 /// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.gettxspendingprevout(/* params */).await?;

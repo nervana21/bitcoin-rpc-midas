@@ -1,11 +1,11 @@
 //! This file is auto-generated. Do not edit manually.
-//! Generated for Bitcoin Core version: latest
+//! Generated for Bitcoin Core version: V29
 
 /// Request a graceful shutdown of Bitcoin Core.
 
 /// # Example
 /// ```rust
-/// use bitcoin_rpc_codegen::client::latest::stop;
+/// use bitcoin_rpc_codegen::client::V29::stop;
 ///
 /// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.stop(/* params */).await?;

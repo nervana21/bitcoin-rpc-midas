@@ -1,11 +1,11 @@
 //! This file is auto-generated. Do not edit manually.
-//! Generated for Bitcoin Core version: latest
+//! Generated for Bitcoin Core version: V29
 
 /// Sign a message with the private key of an address
 
 /// # Example
 /// ```rust
-/// use bitcoin_rpc_codegen::client::latest::signmessagewithprivkey;
+/// use bitcoin_rpc_codegen::client::V29::signmessagewithprivkey;
 ///
 /// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.signmessagewithprivkey(/* params */).await?;

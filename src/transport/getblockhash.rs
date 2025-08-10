@@ -1,11 +1,11 @@
 //! This file is auto-generated. Do not edit manually.
-//! Generated for Bitcoin Core version: latest
+//! Generated for Bitcoin Core version: V29
 
 /// Returns hash of block in best-block-chain at height provided.
 
 /// # Example
 /// ```rust
-/// use bitcoin_rpc_codegen::client::latest::getblockhash;
+/// use bitcoin_rpc_codegen::client::V29::getblockhash;
 ///
 /// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.getblockhash(/* params */).await?;

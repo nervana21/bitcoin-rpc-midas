@@ -1,11 +1,11 @@
 //! This file is auto-generated. Do not edit manually.
-//! Generated for Bitcoin Core version: latest
+//! Generated for Bitcoin Core version: V29
 
 /// Returns the proof-of-work difficulty as a multiple of the minimum difficulty.
 
 /// # Example
 /// ```rust
-/// use bitcoin_rpc_codegen::client::latest::getdifficulty;
+/// use bitcoin_rpc_codegen::client::V29::getdifficulty;
 ///
 /// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.getdifficulty().await?;

@@ -1,11 +1,11 @@
 //! This file is auto-generated. Do not edit manually.
-//! Generated for Bitcoin Core version: latest
+//! Generated for Bitcoin Core version: V29
 
 /// List received transactions by label.
 
 /// # Example
 /// ```rust
-/// use bitcoin_rpc_codegen::client::latest::listreceivedbylabel;
+/// use bitcoin_rpc_codegen::client::V29::listreceivedbylabel;
 ///
 /// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.listreceivedbylabel(/* params */).await?;

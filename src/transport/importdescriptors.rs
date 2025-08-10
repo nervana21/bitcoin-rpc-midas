@@ -1,5 +1,5 @@
 //! This file is auto-generated. Do not edit manually.
-//! Generated for Bitcoin Core version: latest
+//! Generated for Bitcoin Core version: V29
 
 /// Import descriptors. This will trigger a rescan of the blockchain based on the earliest timestamp of all descriptors being imported. Requires a new wallet backup.
 /// When importing descriptors with multipath key expressions, if the multipath specifier contains exactly two elements, the descriptor produced from the second element will be imported as an internal descriptor.
@@ -9,7 +9,7 @@
 
 /// # Example
 /// ```rust
-/// use bitcoin_rpc_codegen::client::latest::importdescriptors;
+/// use bitcoin_rpc_codegen::client::V29::importdescriptors;
 ///
 /// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.importdescriptors(/* params */).await?;

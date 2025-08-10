@@ -1,11 +1,11 @@
 //! This file is auto-generated. Do not edit manually.
-//! Generated for Bitcoin Core version: latest
+//! Generated for Bitcoin Core version: V29
 
 /// Returns a map of all user-created (see prioritisetransaction) fee deltas by txid, and whether the tx is present in mempool.
 
 /// # Example
 /// ```rust
-/// use bitcoin_rpc_codegen::client::latest::getprioritisedtransactions;
+/// use bitcoin_rpc_codegen::client::V29::getprioritisedtransactions;
 ///
 /// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.getprioritisedtransactions().await?;

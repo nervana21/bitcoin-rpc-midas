@@ -1,5 +1,5 @@
 //! This file is auto-generated. Do not edit manually.
-//! Generated for Bitcoin Core version: latest
+//! Generated for Bitcoin Core version: V29
 
 /// Create a transaction spending the given inputs and creating new outputs.
 /// Outputs can be addresses or data.
@@ -9,7 +9,7 @@
 
 /// # Example
 /// ```rust
-/// use bitcoin_rpc_codegen::client::latest::createrawtransaction;
+/// use bitcoin_rpc_codegen::client::V29::createrawtransaction;
 ///
 /// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.createrawtransaction(/* params */).await?;

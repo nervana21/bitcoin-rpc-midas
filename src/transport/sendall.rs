@@ -1,5 +1,5 @@
 //! This file is auto-generated. Do not edit manually.
-//! Generated for Bitcoin Core version: latest
+//! Generated for Bitcoin Core version: V29
 
 /// EXPERIMENTAL warning: this call may be changed in future releases.
 /// Spend the value of all (or specific) confirmed UTXOs and unconfirmed change in the wallet to one or more recipients.
@@ -8,7 +8,7 @@
 
 /// # Example
 /// ```rust
-/// use bitcoin_rpc_codegen::client::latest::sendall;
+/// use bitcoin_rpc_codegen::client::V29::sendall;
 ///
 /// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.sendall(/* params */).await?;

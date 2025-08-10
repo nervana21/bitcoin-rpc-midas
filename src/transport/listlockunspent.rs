@@ -1,12 +1,12 @@
 //! This file is auto-generated. Do not edit manually.
-//! Generated for Bitcoin Core version: latest
+//! Generated for Bitcoin Core version: V29
 
 /// Returns list of temporarily unspendable outputs.
 /// See the lockunspent call to lock and unlock transactions for spending.
 
 /// # Example
 /// ```rust
-/// use bitcoin_rpc_codegen::client::latest::listlockunspent;
+/// use bitcoin_rpc_codegen::client::V29::listlockunspent;
 ///
 /// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.listlockunspent().await?;

@@ -1,12 +1,12 @@
 //! This file is auto-generated. Do not edit manually.
-//! Generated for Bitcoin Core version: latest
+//! Generated for Bitcoin Core version: V29
 
 /// Removes invalidity status of a block, its ancestors and its descendants, reconsider them for activation.
 /// This can be used to undo the effects of invalidateblock.
 
 /// # Example
 /// ```rust
-/// use bitcoin_rpc_codegen::client::latest::reconsiderblock;
+/// use bitcoin_rpc_codegen::client::V29::reconsiderblock;
 ///
 /// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.reconsiderblock(/* params */).await?;

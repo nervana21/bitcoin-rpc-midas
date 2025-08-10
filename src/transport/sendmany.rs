@@ -1,12 +1,12 @@
 //! This file is auto-generated. Do not edit manually.
-//! Generated for Bitcoin Core version: latest
+//! Generated for Bitcoin Core version: V29
 
 /// Send multiple times. Amounts are double-precision floating point numbers.
 /// Requires wallet passphrase to be set with walletpassphrase call if wallet is encrypted.
 
 /// # Example
 /// ```rust
-/// use bitcoin_rpc_codegen::client::latest::sendmany;
+/// use bitcoin_rpc_codegen::client::V29::sendmany;
 ///
 /// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.sendmany(/* params */).await?;

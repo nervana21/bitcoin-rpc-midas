@@ -1,11 +1,11 @@
 //! This file is auto-generated. Do not edit manually.
-//! Generated for Bitcoin Core version: latest
+//! Generated for Bitcoin Core version: V29
 
 /// Add the address of a potential peer to an address manager table. This RPC is for testing only.
 
 /// # Example
 /// ```rust
-/// use bitcoin_rpc_codegen::client::latest::addpeeraddress;
+/// use bitcoin_rpc_codegen::client::V29::addpeeraddress;
 ///
 /// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.addpeeraddress(/* params */).await?;

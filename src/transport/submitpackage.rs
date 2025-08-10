@@ -1,5 +1,5 @@
 //! This file is auto-generated. Do not edit manually.
-//! Generated for Bitcoin Core version: latest
+//! Generated for Bitcoin Core version: V29
 
 /// Submit a package of raw transactions (serialized, hex-encoded) to local node.
 /// The package will be validated according to consensus and mempool policy rules. If any transaction passes, it will be accepted to mempool.
@@ -8,7 +8,7 @@
 
 /// # Example
 /// ```rust
-/// use bitcoin_rpc_codegen::client::latest::submitpackage;
+/// use bitcoin_rpc_codegen::client::V29::submitpackage;
 ///
 /// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.submitpackage(/* params */).await?;

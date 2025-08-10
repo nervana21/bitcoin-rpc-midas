@@ -1,11 +1,11 @@
 //! This file is auto-generated. Do not edit manually.
-//! Generated for Bitcoin Core version: latest
+//! Generated for Bitcoin Core version: V29
 
 /// Returns the hash of the best (tip) block in the most-work fully-validated chain.
 
 /// # Example
 /// ```rust
-/// use bitcoin_rpc_codegen::client::latest::getbestblockhash;
+/// use bitcoin_rpc_codegen::client::V29::getbestblockhash;
 ///
 /// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.getbestblockhash().await?;

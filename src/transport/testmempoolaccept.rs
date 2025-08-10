@@ -1,5 +1,5 @@
 //! This file is auto-generated. Do not edit manually.
-//! Generated for Bitcoin Core version: latest
+//! Generated for Bitcoin Core version: V29
 
 /// Returns result of mempool acceptance tests indicating if raw transaction(s) (serialized, hex-encoded) would be accepted by mempool.
 /// If multiple transactions are passed in, parents must come before children and package policies apply: the transactions cannot conflict with any mempool transactions or each other.
@@ -10,7 +10,7 @@
 
 /// # Example
 /// ```rust
-/// use bitcoin_rpc_codegen::client::latest::testmempoolaccept;
+/// use bitcoin_rpc_codegen::client::V29::testmempoolaccept;
 ///
 /// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.testmempoolaccept(/* params */).await?;

@@ -1,5 +1,5 @@
 //! This file is auto-generated. Do not edit manually.
-//! Generated for Bitcoin Core version: latest
+//! Generated for Bitcoin Core version: V29
 
 /// Attempts to add or remove a node from the addnode list.
 /// Or try a connection to a node once.
@@ -9,7 +9,7 @@
 
 /// # Example
 /// ```rust
-/// use bitcoin_rpc_codegen::client::latest::addnode;
+/// use bitcoin_rpc_codegen::client::V29::addnode;
 ///
 /// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.addnode(/* params */).await?;

@@ -1,5 +1,5 @@
 //! This file is auto-generated. Do not edit manually.
-//! Generated for Bitcoin Core version: latest
+//! Generated for Bitcoin Core version: V29
 
 /// Bumps the fee of a transaction T, replacing it with a new transaction B.
 /// Returns a PSBT instead of creating and signing a new transaction.
@@ -17,7 +17,7 @@
 
 /// # Example
 /// ```rust
-/// use bitcoin_rpc_codegen::client::latest::psbtbumpfee;
+/// use bitcoin_rpc_codegen::client::V29::psbtbumpfee;
 ///
 /// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.psbtbumpfee(/* params */).await?;

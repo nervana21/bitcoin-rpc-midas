@@ -1,11 +1,11 @@
 //! This file is auto-generated. Do not edit manually.
-//! Generated for Bitcoin Core version: latest
+//! Generated for Bitcoin Core version: V29
 
 /// Clear all banned IPs.
 
 /// # Example
 /// ```rust
-/// use bitcoin_rpc_codegen::client::latest::clearbanned;
+/// use bitcoin_rpc_codegen::client::V29::clearbanned;
 ///
 /// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.clearbanned().await?;

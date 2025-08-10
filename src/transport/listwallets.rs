@@ -1,12 +1,12 @@
 //! This file is auto-generated. Do not edit manually.
-//! Generated for Bitcoin Core version: latest
+//! Generated for Bitcoin Core version: V29
 
 /// Returns a list of currently loaded wallets.
 /// For full information on the wallet, use "getwalletinfo"
 
 /// # Example
 /// ```rust
-/// use bitcoin_rpc_codegen::client::latest::listwallets;
+/// use bitcoin_rpc_codegen::client::V29::listwallets;
 ///
 /// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.listwallets().await?;

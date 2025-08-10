@@ -1,5 +1,5 @@
 //! This file is auto-generated. Do not edit manually.
-//! Generated for Bitcoin Core version: latest
+//! Generated for Bitcoin Core version: V29
 
 /// If the request parameters include a 'mode' key, that is used to explicitly select between the default 'template' request or a 'proposal'.
 /// It returns data needed to construct a block to work on.
@@ -11,7 +11,7 @@
 
 /// # Example
 /// ```rust
-/// use bitcoin_rpc_codegen::client::latest::getblocktemplate;
+/// use bitcoin_rpc_codegen::client::V29::getblocktemplate;
 ///
 /// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.getblocktemplate(/* params */).await?;

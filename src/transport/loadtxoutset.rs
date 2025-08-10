@@ -1,5 +1,5 @@
 //! This file is auto-generated. Do not edit manually.
-//! Generated for Bitcoin Core version: latest
+//! Generated for Bitcoin Core version: V29
 
 /// Load the serialized UTXO set from a file.
 /// Once this snapshot is loaded, its contents will be deserialized into a second chainstate data structure, which is then used to sync to the network's tip. Meanwhile, the original chainstate will complete the initial block download process in the background, eventually validating up to the block that the snapshot is based upon.
@@ -8,7 +8,7 @@
 
 /// # Example
 /// ```rust
-/// use bitcoin_rpc_codegen::client::latest::loadtxoutset;
+/// use bitcoin_rpc_codegen::client::V29::loadtxoutset;
 ///
 /// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.loadtxoutset(/* params */).await?;

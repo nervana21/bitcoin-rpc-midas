@@ -1,5 +1,5 @@
 //! This file is auto-generated. Do not edit manually.
-//! Generated for Bitcoin Core version: latest
+//! Generated for Bitcoin Core version: V29
 
 /// Waits for any new block and returns useful info about it.
 /// Returns the current block on timeout or exit.
@@ -7,7 +7,7 @@
 
 /// # Example
 /// ```rust
-/// use bitcoin_rpc_codegen::client::latest::waitfornewblock;
+/// use bitcoin_rpc_codegen::client::V29::waitfornewblock;
 ///
 /// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.waitfornewblock(/* params */).await?;

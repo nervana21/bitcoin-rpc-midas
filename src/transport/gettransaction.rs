@@ -1,11 +1,11 @@
 //! This file is auto-generated. Do not edit manually.
-//! Generated for Bitcoin Core version: latest
+//! Generated for Bitcoin Core version: V29
 
 /// Get detailed information about in-wallet transaction <txid>
 
 /// # Example
 /// ```rust
-/// use bitcoin_rpc_codegen::client::latest::gettransaction;
+/// use bitcoin_rpc_codegen::client::V29::gettransaction;
 ///
 /// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.gettransaction(/* params */).await?;

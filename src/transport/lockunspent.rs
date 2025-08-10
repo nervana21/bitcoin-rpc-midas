@@ -1,5 +1,5 @@
 //! This file is auto-generated. Do not edit manually.
-//! Generated for Bitcoin Core version: latest
+//! Generated for Bitcoin Core version: V29
 
 /// Updates list of temporarily unspendable outputs.
 /// Temporarily lock (unlock=false) or unlock (unlock=true) specified transaction outputs.
@@ -13,7 +13,7 @@
 
 /// # Example
 /// ```rust
-/// use bitcoin_rpc_codegen::client::latest::lockunspent;
+/// use bitcoin_rpc_codegen::client::V29::lockunspent;
 ///
 /// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.lockunspent(/* params */).await?;

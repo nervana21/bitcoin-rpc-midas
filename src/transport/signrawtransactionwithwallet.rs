@@ -1,5 +1,5 @@
 //! This file is auto-generated. Do not edit manually.
-//! Generated for Bitcoin Core version: latest
+//! Generated for Bitcoin Core version: V29
 
 /// Sign inputs for raw transaction (serialized, hex-encoded).
 /// The second optional argument (may be null) is an array of previous transaction outputs that
@@ -8,7 +8,7 @@
 
 /// # Example
 /// ```rust
-/// use bitcoin_rpc_codegen::client::latest::signrawtransactionwithwallet;
+/// use bitcoin_rpc_codegen::client::V29::signrawtransactionwithwallet;
 ///
 /// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.signrawtransactionwithwallet(/* params */).await?;

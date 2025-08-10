@@ -1,12 +1,12 @@
 //! This file is auto-generated. Do not edit manually.
-//! Generated for Bitcoin Core version: latest
+//! Generated for Bitcoin Core version: V29
 
 /// Returns a new Bitcoin address, for receiving change.
 /// This is for use with raw transactions, NOT normal use.
 
 /// # Example
 /// ```rust
-/// use bitcoin_rpc_codegen::client::latest::getrawchangeaddress;
+/// use bitcoin_rpc_codegen::client::V29::getrawchangeaddress;
 ///
 /// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.getrawchangeaddress(/* params */).await?;

@@ -1,11 +1,11 @@
 //! This file is auto-generated. Do not edit manually.
-//! Generated for Bitcoin Core version: latest
+//! Generated for Bitcoin Core version: V29
 
 /// List all BIP 32 HD keys in the wallet and which descriptors use them.
 
 /// # Example
 /// ```rust
-/// use bitcoin_rpc_codegen::client::latest::gethdkeys;
+/// use bitcoin_rpc_codegen::client::V29::gethdkeys;
 ///
 /// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.gethdkeys(/* params */).await?;

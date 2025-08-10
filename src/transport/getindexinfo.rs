@@ -1,11 +1,11 @@
 //! This file is auto-generated. Do not edit manually.
-//! Generated for Bitcoin Core version: latest
+//! Generated for Bitcoin Core version: V29
 
 /// Returns the status of one or all available indices currently running in the node.
 
 /// # Example
 /// ```rust
-/// use bitcoin_rpc_codegen::client::latest::getindexinfo;
+/// use bitcoin_rpc_codegen::client::V29::getindexinfo;
 ///
 /// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.getindexinfo(/* params */).await?;

@@ -1,11 +1,11 @@
 //! This file is auto-generated. Do not edit manually.
-//! Generated for Bitcoin Core version: latest
+//! Generated for Bitcoin Core version: V29
 
 /// Returns an object containing various wallet state info.
 
 /// # Example
 /// ```rust
-/// use bitcoin_rpc_codegen::client::latest::getwalletinfo;
+/// use bitcoin_rpc_codegen::client::V29::getwalletinfo;
 ///
 /// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.getwalletinfo().await?;

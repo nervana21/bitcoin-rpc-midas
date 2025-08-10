@@ -1,11 +1,11 @@
 //! This file is auto-generated. Do not edit manually.
-//! Generated for Bitcoin Core version: latest
+//! Generated for Bitcoin Core version: V29
 
 /// Deletes the specified transaction from the wallet. Meant for use with pruned wallets and as a companion to importprunedfunds. This will affect wallet balances.
 
 /// # Example
 /// ```rust
-/// use bitcoin_rpc_codegen::client::latest::removeprunedfunds;
+/// use bitcoin_rpc_codegen::client::V29::removeprunedfunds;
 ///
 /// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.removeprunedfunds(/* params */).await?;

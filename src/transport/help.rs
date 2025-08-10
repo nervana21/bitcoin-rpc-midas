@@ -1,11 +1,11 @@
 //! This file is auto-generated. Do not edit manually.
-//! Generated for Bitcoin Core version: latest
+//! Generated for Bitcoin Core version: V29
 
 /// List all commands, or get help for a specified command.
 
 /// # Example
 /// ```rust
-/// use bitcoin_rpc_codegen::client::latest::help;
+/// use bitcoin_rpc_codegen::client::V29::help;
 ///
 /// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.help(/* params */).await?;
