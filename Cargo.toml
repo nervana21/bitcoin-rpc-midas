@@ -2,7 +2,7 @@
 publish = true
 
 name = "bitcoin-rpc-midas"
-version = "0.1.5"
+version = "0.1.6"
 edition = "2021"
 authors = ["Bitcoin RPC Codegen Core Developers"]
 license = "MIT OR Apache-2.0"

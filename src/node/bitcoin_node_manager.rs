@@ -45,8 +45,7 @@ pub struct BitcoinNodeManager {
     state: Arc<RwLock<NodeState>>,
     child: Arc<Mutex<Option<Child>>>,
     pub(crate) rpc_port: u16,
-    rpc_username: String,
-    rpc_password: String,
+    config: TestConfig,
     _datadir: Option<TempDir>,
 }
 
@@ -63,7 +62,9 @@ impl BitcoinNodeManager {
         let rpc_port = if config.rpc_port == 0 {
             // Bind to port 0 to let the OS assign an available port
             let listener = std::net::TcpListener::bind(("127.0.0.1", 0))?;
-            listener.local_addr()?.port()
+            let port = listener.local_addr()?.port();
+            drop(listener); // Explicitly drop the listener to free the port
+            port
         } else {
             config.rpc_port
         };
@@ -72,8 +73,7 @@ impl BitcoinNodeManager {
             state: Arc::new(RwLock::new(NodeState::default())),
             child: Arc::new(Mutex::new(None)),
             rpc_port,
-            rpc_username: config.rpc_username.clone(),
-            rpc_password: config.rpc_password.clone(),
+            config: config.clone(),
             _datadir: Some(datadir),
         })
     }
@@ -92,7 +92,7 @@ impl BitcoinNodeManager {
         let datadir = self._datadir.as_ref().unwrap().path();
         let mut cmd = Command::new("bitcoind");
         cmd.args([
-            "-regtest",
+            &format!("-chain={}", self.config.as_chain_str()),
             "-listen=0",
             &format!("-datadir={}", datadir.display()),
             &format!("-rpcport={}", self.rpc_port),
@@ -101,8 +101,9 @@ impl BitcoinNodeManager {
             "-fallbackfee=0.0002",
             "-server=1",
             "-prune=1",
-            &format!("-rpcuser={}", self.rpc_username),
-            &format!("-rpcpassword={}", self.rpc_password),
+            "-coinstatsindex",
+            &format!("-rpcuser={}", self.config.rpc_username),
+            &format!("-rpcpassword={}", self.config.rpc_password),
         ]);
 
         // Capture both stdout and stderr for better error reporting
@@ -161,7 +162,7 @@ impl BitcoinNodeManager {
             let client = reqwest::Client::new();
             match client
                 .post(format!("http://127.0.0.1:{}/", self.rpc_port))
-                .basic_auth(&self.rpc_username, Some(&self.rpc_password))
+                .basic_auth(&self.config.rpc_username, Some(&self.config.rpc_password))
                 .json(&serde_json::json!({
                     "jsonrpc": "2.0",
                     "method": "getnetworkinfo",

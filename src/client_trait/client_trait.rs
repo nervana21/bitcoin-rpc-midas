@@ -757,7 +757,7 @@ pub trait BitcoinClientV29: Send + Sync + TransportTrait + TransportExt + RpcDis
     /// It won't work for some heights with pruning.
     async fn getblockstats(
         &self,
-        _hash_or_height: u64,
+        _hash_or_height: serde_json::Value,
         _stats: Option<Vec<serde_json::Value>>,
     ) -> Result<GetblockstatsResponse, TransportError> {
         let params = vec![
@@ -1172,7 +1172,7 @@ pub trait BitcoinClientV29: Send + Sync + TransportTrait + TransportExt + RpcDis
     async fn gettxoutsetinfo(
         &self,
         _hash_type: Option<String>,
-        _hash_or_height: Option<u64>,
+        _hash_or_height: Option<serde_json::Value>,
         _use_index: Option<bool>,
     ) -> Result<GettxoutsetinfoResponse, TransportError> {
         let params = vec![
@@ -3087,7 +3087,7 @@ impl<T: TransportTrait + TransportExt + Send + Sync> BitcoinClientV29 for T {
     /// It won't work for some heights with pruning.
     async fn getblockstats(
         &self,
-        _hash_or_height: u64,
+        _hash_or_height: serde_json::Value,
         _stats: Option<Vec<serde_json::Value>>,
     ) -> Result<GetblockstatsResponse, TransportError> {
         let params = vec![
@@ -3502,7 +3502,7 @@ impl<T: TransportTrait + TransportExt + Send + Sync> BitcoinClientV29 for T {
     async fn gettxoutsetinfo(
         &self,
         _hash_type: Option<String>,
-        _hash_or_height: Option<u64>,
+        _hash_or_height: Option<serde_json::Value>,
         _use_index: Option<bool>,
     ) -> Result<GettxoutsetinfoResponse, TransportError> {
         let params = vec![

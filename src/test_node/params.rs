@@ -439,7 +439,7 @@ pub struct GetblockheaderParams {
 /// It won"t work for some heights with pruning.
 #[derive(Debug, Serialize)]
 pub struct GetblockstatsParams {
-    pub hash_or_height: u64,
+    pub hash_or_height: serde_json::Value,
     pub stats: Vec<serde_json::Value>,
 }
 
@@ -638,7 +638,7 @@ pub struct GettxoutproofParams {
 #[derive(Debug, Serialize)]
 pub struct GettxoutsetinfoParams {
     pub hash_type: String,
-    pub hash_or_height: u64,
+    pub hash_or_height: serde_json::Value,
     pub use_index: bool,
 }
 

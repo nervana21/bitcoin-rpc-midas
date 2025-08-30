@@ -15,6 +15,8 @@ pub mod types;
 pub use config::Config;
 pub use client_trait::client_trait::BitcoinClientV29;
 pub use node::BitcoinNodeManager;
+pub use bitcoin::Network;
+pub use node::test_config::TestConfig;
 pub use test_node::client::BitcoinTestClient;
 pub use types::*;
 pub use transport::{

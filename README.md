@@ -13,55 +13,48 @@ Compared to hand-written RPC clients, this toolchain offers:
 - Reduced repetition
 - Fewer versioning issues
 - Increased compile-time checks
-- Simplified local testing with embedded regtest
+- Support for all Bitcoin p2p networks (mainnet, regtest, signet, testnet, and testnet4)
 - Improved isolation from environment and port conflicts
-- Built-in RPC batching to reduce network roundtrips
-
-These features are intended to make Bitcoin Core RPCs easier to integrate, test, and maintain in Rust projects. The intended result is a client that remains aligned with upstream changes and is suitable for production use.
 
 ## Architecture
 
 The crate is organized into focused modules:
 
 - `client_trait/`: Trait definitions for type-safe RPC method calls
-- `node/`: Regtest node management and test configuration
+- `node/`: Multi-network node management and test client support
 - `test_node/`: Integration testing helpers with embedded Bitcoin nodes
 - `transport/`: Async RPC transport with error handling and batching
 - `types/`: Generated type definitions for all RPC responses
 
-## Quick Start
+## Example
 
-```rust
-use anyhow::Result;
-use bitcoin_rpc_midas::*;
-
-#[tokio::main]
-async fn main() -> Result<()> {
-    // Creates and manages a regtest node automatically
-    let client = BitcoinTestClient::new().await?;
-    
-    // Ensure a wallet exists before using wallet functionality
-    let _wallet_name = client.ensure_default_wallet("test_wallet").await?;
-    
-    // Type-safe RPC calls with compile-time guarantees
-    let blockchain_info = client.getblockchaininfo().await?;
-    let wallet_info = client.getwalletinfo().await?;
-    
-    println!("Blockchain: {:#?}", blockchain_info);
-    println!("Wallet: {:#?}", wallet_info);
-    
-    Ok(())
-}
-```
-
-## Installation
-
-Add to your `Cargo.toml`:
+This asynchronous example uses [Tokio](https://tokio.rs) and enables some
+optional features, so your `Cargo.toml` could look like this:
 
 ```toml
 [dependencies]
-bitcoin-rpc-midas = "0.1.5"
+bitcoin-rpc-midas = "0.1.6"
+tokio = { version = "1.0", features = ["full"] }  
 ```
+
+And then the code:
+
+```rust
+use bitcoin_rpc_midas::*;
+
+#[tokio::main]
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let client = BitcoinTestClient::new_with_network(Network::Regtest).await?;
+
+    let blockchain_info = client.getblockchaininfo().await?;
+    println!("Blockchain info:\n{:#?}", blockchain_info);
+
+    Ok(())
+}
+```
+## Requirements
+
+Requires a working `bitcoind` executable.
 
 ## About
 

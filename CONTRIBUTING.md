@@ -81,9 +81,9 @@ The project is organized into several focused crates:
 
 - `rpc_api/`: JSON model of RPC methods and parameters
 - `codegen/`: Emits Rust modules and client implementations
-- `transport/`: Async RPC transport + error handling
-- `node/`: Regtest node management and test client support
-- `pipeline/`: Orchestrates parsing → generation
+- `transport/`: Async RPC transport + error handling with batching support
+- `node/`: Multi-network node management and test client support
+- `config/`: Node and network configuration utilities
 
 ## Guidelines for Pull Requests
 
