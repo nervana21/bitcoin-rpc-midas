@@ -1,11 +1,11 @@
 //! This file is auto-generated. Do not edit manually.
-//! Generated for Bitcoin Core version: V29
+//! Generated from Bitcoin Core v29.1
 
 /// Safely copies the current wallet file to the specified destination, which can either be a directory or a path with a filename.
 
 /// # Example
 /// ```rust
-/// use bitcoin_rpc_codegen::client::V29::backupwallet;
+/// use bitcoin_rpc_codegen::client::v29_1::backupwallet;
 ///
 /// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.backupwallet(/* params */).await?;

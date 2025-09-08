@@ -13,7 +13,7 @@ pub mod types;
 
 // Re-exports for ergonomic access
 pub use config::Config;
-pub use client_trait::client_trait::BitcoinClientV29;
+pub use client_trait::client::BitcoinClientV29_1;
 pub use node::BitcoinNodeManager;
 pub use bitcoin::Network;
 pub use node::test_config::TestConfig;

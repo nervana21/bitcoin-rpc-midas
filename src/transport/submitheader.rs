@@ -1,12 +1,12 @@
 //! This file is auto-generated. Do not edit manually.
-//! Generated for Bitcoin Core version: V29
+//! Generated from Bitcoin Core v29.1
 
 /// Decode the given hexdata as a header and submit it as a candidate chain tip if valid.
 /// Throws when the header is invalid.
 
 /// # Example
 /// ```rust
-/// use bitcoin_rpc_codegen::client::V29::submitheader;
+/// use bitcoin_rpc_codegen::client::v29_1::submitheader;
 ///
 /// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.submitheader(/* params */).await?;

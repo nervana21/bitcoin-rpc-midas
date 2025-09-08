@@ -1,5 +1,5 @@
 //! This file is auto-generated. Do not edit manually.
-//! Generated for Bitcoin Core version: V29
+//! Generated from Bitcoin Core v29.1
 
 /// If the transaction has no inputs, they will be automatically selected to meet its out value.
 /// It will add at most one change output to the outputs.
@@ -18,7 +18,7 @@
 
 /// # Example
 /// ```rust
-/// use bitcoin_rpc_codegen::client::V29::fundrawtransaction;
+/// use bitcoin_rpc_codegen::client::v29_1::fundrawtransaction;
 ///
 /// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.fundrawtransaction(/* params */).await?;

@@ -1,12 +1,12 @@
 //! This file is auto-generated. Do not edit manually.
-//! Generated for Bitcoin Core version: V29
+//! Generated from Bitcoin Core v29.1
 
 /// Compute per block statistics for a given window. All amounts are in satoshis.
 /// It won't work for some heights with pruning.
 
 /// # Example
 /// ```rust
-/// use bitcoin_rpc_codegen::client::V29::getblockstats;
+/// use bitcoin_rpc_codegen::client::v29_1::getblockstats;
 ///
 /// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.getblockstats(/* params */).await?;

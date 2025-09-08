@@ -1,5 +1,5 @@
 //! This file is auto-generated. Do not edit manually.
-//! Generated for Bitcoin Core version: V29
+//! Generated from Bitcoin Core v29.1
 
 /// Get all transactions in blocks since block [blockhash], or all transactions if omitted.
 /// If "blockhash" is no longer a part of the main chain, transactions from the fork point onward are included.
@@ -7,7 +7,7 @@
 
 /// # Example
 /// ```rust
-/// use bitcoin_rpc_codegen::client::V29::listsinceblock;
+/// use bitcoin_rpc_codegen::client::v29_1::listsinceblock;
 ///
 /// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.listsinceblock(/* params */).await?;

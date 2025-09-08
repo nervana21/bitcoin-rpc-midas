@@ -1,11 +1,11 @@
 //! This file is auto-generated. Do not edit manually.
-//! Generated for Bitcoin Core version: V29
+//! Generated from Bitcoin Core v29.1
 
 /// Open an outbound connection to a specified node. This RPC is for testing only.
 
 /// # Example
 /// ```rust
-/// use bitcoin_rpc_codegen::client::V29::addconnection;
+/// use bitcoin_rpc_codegen::client::v29_1::addconnection;
 ///
 /// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.addconnection(/* params */).await?;

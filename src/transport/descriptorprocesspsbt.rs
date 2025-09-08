@@ -1,12 +1,12 @@
 //! This file is auto-generated. Do not edit manually.
-//! Generated for Bitcoin Core version: V29
+//! Generated from Bitcoin Core v29.1
 
 /// Update all segwit inputs in a PSBT with information from output descriptors, the UTXO set or the mempool.
 /// Then, sign the inputs we are able to with information from the output descriptors.
 
 /// # Example
 /// ```rust
-/// use bitcoin_rpc_codegen::client::V29::descriptorprocesspsbt;
+/// use bitcoin_rpc_codegen::client::v29_1::descriptorprocesspsbt;
 ///
 /// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.descriptorprocesspsbt(/* params */).await?;

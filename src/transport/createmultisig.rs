@@ -1,12 +1,12 @@
 //! This file is auto-generated. Do not edit manually.
-//! Generated for Bitcoin Core version: V29
+//! Generated from Bitcoin Core v29.1
 
 /// Creates a multi-signature address with n signatures of m keys required.
 /// It returns a json object with the address and redeemScript.
 
 /// # Example
 /// ```rust
-/// use bitcoin_rpc_codegen::client::V29::createmultisig;
+/// use bitcoin_rpc_codegen::client::v29_1::createmultisig;
 ///
 /// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.createmultisig(/* params */).await?;

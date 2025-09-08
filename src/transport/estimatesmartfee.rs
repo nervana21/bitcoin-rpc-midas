@@ -1,5 +1,5 @@
 //! This file is auto-generated. Do not edit manually.
-//! Generated for Bitcoin Core version: V29
+//! Generated from Bitcoin Core v29.1
 
 /// Estimates the approximate fee per kilobyte needed for a transaction to begin
 /// confirmation within conf_target blocks if possible and return the number of blocks
@@ -8,7 +8,7 @@
 
 /// # Example
 /// ```rust
-/// use bitcoin_rpc_codegen::client::V29::estimatesmartfee;
+/// use bitcoin_rpc_codegen::client::v29_1::estimatesmartfee;
 ///
 /// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.estimatesmartfee(/* params */).await?;

@@ -1,5 +1,5 @@
 //! This file is auto-generated. Do not edit manually.
-//! Generated for Bitcoin Core version: V29
+//! Generated from Bitcoin Core v29.1
 
 /// Creates and funds a transaction in the Partially Signed Transaction format.
 /// Implements the Creator and Updater roles.
@@ -8,7 +8,7 @@
 
 /// # Example
 /// ```rust
-/// use bitcoin_rpc_codegen::client::V29::walletcreatefundedpsbt;
+/// use bitcoin_rpc_codegen::client::v29_1::walletcreatefundedpsbt;
 ///
 /// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.walletcreatefundedpsbt(/* params */).await?;
@@ -37,6 +37,7 @@ pub async fn walletcreatefundedpsbt(
     locktime: serde_json::Value,
     options: serde_json::Value,
     bip32derivs: serde_json::Value,
+    version: serde_json::Value,
 ) -> Result<WalletcreatefundedpsbtResponse, TransportError> {
     let params = vec![
         json!(inputs),
@@ -44,6 +45,7 @@ pub async fn walletcreatefundedpsbt(
         json!(locktime),
         json!(options),
         json!(bip32derivs),
+        json!(version),
     ];
     let raw = transport
         .send_request("walletcreatefundedpsbt", &params)

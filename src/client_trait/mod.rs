@@ -1,2 +1,2 @@
-pub mod client_trait;
-pub use client_trait::*;
+pub mod client;
+pub use client::*;

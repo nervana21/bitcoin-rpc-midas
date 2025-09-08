@@ -1,12 +1,12 @@
 //! This file is auto-generated. Do not edit manually.
-//! Generated for Bitcoin Core version: V29
+//! Generated from Bitcoin Core v29.1
 
 /// Echo back the input argument, passing it through a spawned process in a multiprocess build.
 /// This command is for testing.
 
 /// # Example
 /// ```rust
-/// use bitcoin_rpc_codegen::client::V29::echoipc;
+/// use bitcoin_rpc_codegen::client::v29_1::echoipc;
 ///
 /// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.echoipc(/* params */).await?;

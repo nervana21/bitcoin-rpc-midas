@@ -830,6 +830,7 @@ pub struct GetmininginfoResponse {
     pub target: String,
     pub networkhashps: u64,
     pub pooledtx: u64,
+    pub blockmintxfee: f64,
     pub chain: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub signet_challenge: Option<String>,

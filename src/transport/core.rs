@@ -166,19 +166,19 @@ impl TransportTrait for DefaultTransport {
                         if let Some(error) = json.get("error") {
                             return Err(TransportError::Rpc(error.to_string()));
                         }
-                        return Ok(json
+                        return json
                             .get("result")
                             .cloned()
-                            .ok_or_else(|| TransportError::Rpc("No result field".to_string()))?);
+                            .ok_or_else(|| TransportError::Rpc("No result field".to_string()));
                     } else {
                         return Err(TransportError::Rpc(error.to_string()));
                     }
                 }
 
-                return Ok(json
+                return json
                     .get("result")
                     .cloned()
-                    .ok_or_else(|| TransportError::Rpc("No result field".to_string()))?);
+                    .ok_or_else(|| TransportError::Rpc("No result field".to_string()));
             }
 
             // No wallet configured → base URL
@@ -203,10 +203,9 @@ impl TransportTrait for DefaultTransport {
             if let Some(error) = json.get("error") {
                 return Err(TransportError::Rpc(error.to_string()));
             }
-            Ok(json
-                .get("result")
+            json.get("result")
                 .cloned()
-                .ok_or_else(|| TransportError::Rpc("No result field".to_string()))?)
+                .ok_or_else(|| TransportError::Rpc("No result field".to_string()))
         })
     }
 

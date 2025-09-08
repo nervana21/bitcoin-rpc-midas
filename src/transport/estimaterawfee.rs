@@ -1,5 +1,5 @@
 //! This file is auto-generated. Do not edit manually.
-//! Generated for Bitcoin Core version: V29
+//! Generated from Bitcoin Core v29.1
 
 /// WARNING: This interface is unstable and may disappear or change!
 /// WARNING: This is an advanced API call that is tightly coupled to the specific
@@ -11,7 +11,7 @@
 
 /// # Example
 /// ```rust
-/// use bitcoin_rpc_codegen::client::V29::estimaterawfee;
+/// use bitcoin_rpc_codegen::client::v29_1::estimaterawfee;
 ///
 /// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.estimaterawfee(/* params */).await?;

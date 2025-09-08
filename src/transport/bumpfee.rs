@@ -1,5 +1,5 @@
 //! This file is auto-generated. Do not edit manually.
-//! Generated for Bitcoin Core version: V29
+//! Generated from Bitcoin Core v29.1
 
 /// Bumps the fee of a transaction T, replacing it with a new transaction B.
 /// A transaction with the given txid must be in the wallet.
@@ -16,7 +16,7 @@
 
 /// # Example
 /// ```rust
-/// use bitcoin_rpc_codegen::client::V29::bumpfee;
+/// use bitcoin_rpc_codegen::client::v29_1::bumpfee;
 ///
 /// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.bumpfee(/* params */).await?;

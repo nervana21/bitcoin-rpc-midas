@@ -1,12 +1,12 @@
 //! This file is auto-generated. Do not edit manually.
-//! Generated for Bitcoin Core version: V29
+//! Generated from Bitcoin Core v29.1
 
 /// Returns information about the given added node, or all added nodes
 /// (note that onetry addnodes are not listed here)
 
 /// # Example
 /// ```rust
-/// use bitcoin_rpc_codegen::client::V29::getaddednodeinfo;
+/// use bitcoin_rpc_codegen::client::v29_1::getaddednodeinfo;
 ///
 /// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.getaddednodeinfo(/* params */).await?;

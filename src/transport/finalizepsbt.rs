@@ -1,5 +1,5 @@
 //! This file is auto-generated. Do not edit manually.
-//! Generated for Bitcoin Core version: V29
+//! Generated from Bitcoin Core v29.1
 
 /// Finalize the inputs of a PSBT. If the transaction is fully signed, it will produce a
 /// network serialized transaction which can be broadcast with sendrawtransaction. Otherwise a PSBT will be
@@ -8,7 +8,7 @@
 
 /// # Example
 /// ```rust
-/// use bitcoin_rpc_codegen::client::V29::finalizepsbt;
+/// use bitcoin_rpc_codegen::client::v29_1::finalizepsbt;
 ///
 /// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.finalizepsbt(/* params */).await?;

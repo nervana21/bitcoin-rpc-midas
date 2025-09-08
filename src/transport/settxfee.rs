@@ -1,12 +1,12 @@
 //! This file is auto-generated. Do not edit manually.
-//! Generated for Bitcoin Core version: V29
+//! Generated from Bitcoin Core v29.1
 
 /// (DEPRECATED) Set the transaction fee rate in BTC/kvB for this wallet. Overrides the global -paytxfee command line parameter.
 /// Can be deactivated by passing 0 as the fee. In that case automatic fee selection will be used by default.
 
 /// # Example
 /// ```rust
-/// use bitcoin_rpc_codegen::client::V29::settxfee;
+/// use bitcoin_rpc_codegen::client::v29_1::settxfee;
 ///
 /// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.settxfee(/* params */).await?;

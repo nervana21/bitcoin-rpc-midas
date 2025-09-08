@@ -1,5 +1,5 @@
 //! This file is auto-generated. Do not edit manually.
-//! Generated for Bitcoin Core version: V29
+//! Generated from Bitcoin Core v29.1
 
 /// Immediately disconnects from the specified peer node.
 /// Strictly one out of 'address' and 'nodeid' can be provided to identify the node.
@@ -7,7 +7,7 @@
 
 /// # Example
 /// ```rust
-/// use bitcoin_rpc_codegen::client::V29::disconnectnode;
+/// use bitcoin_rpc_codegen::client::v29_1::disconnectnode;
 ///
 /// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.disconnectnode(/* params */).await?;

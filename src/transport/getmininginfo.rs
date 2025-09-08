@@ -1,11 +1,11 @@
 //! This file is auto-generated. Do not edit manually.
-//! Generated for Bitcoin Core version: V29
+//! Generated from Bitcoin Core v29.1
 
 /// Returns a json object containing mining-related information.
 
 /// # Example
 /// ```rust
-/// use bitcoin_rpc_codegen::client::V29::getmininginfo;
+/// use bitcoin_rpc_codegen::client::v29_1::getmininginfo;
 ///
 /// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.getmininginfo().await?;
@@ -26,6 +26,7 @@ pub struct GetmininginfoResponse {
     pub target: String,
     pub networkhashps: u64,
     pub pooledtx: u64,
+    pub blockmintxfee: f64,
     pub chain: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub signet_challenge: Option<String>,

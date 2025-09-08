@@ -304,6 +304,7 @@ impl BatchBuilder {
         outputs: Value,
         locktime: Value,
         replaceable: Value,
+        version: Value,
     ) -> Self {
         self.calls.push((
             "createpsbt",
@@ -312,6 +313,7 @@ impl BatchBuilder {
                 json!(outputs),
                 json!(locktime),
                 json!(replaceable),
+                json!(version),
             ],
         ));
         self
@@ -324,6 +326,7 @@ impl BatchBuilder {
         outputs: Value,
         locktime: Value,
         replaceable: Value,
+        version: Value,
     ) -> Self {
         self.calls.push((
             "createrawtransaction",
@@ -332,6 +335,7 @@ impl BatchBuilder {
                 json!(outputs),
                 json!(locktime),
                 json!(replaceable),
+                json!(version),
             ],
         ));
         self
@@ -1371,6 +1375,7 @@ impl BatchBuilder {
         estimate_mode: Value,
         fee_rate: Value,
         options: Value,
+        version: Value,
     ) -> Self {
         self.calls.push((
             "send",
@@ -1380,6 +1385,7 @@ impl BatchBuilder {
                 json!(estimate_mode),
                 json!(fee_rate),
                 json!(options),
+                json!(version),
             ],
         ));
         self
@@ -1733,6 +1739,7 @@ impl BatchBuilder {
         locktime: Value,
         options: Value,
         bip32derivs: Value,
+        version: Value,
     ) -> Self {
         self.calls.push((
             "walletcreatefundedpsbt",
@@ -1742,6 +1749,7 @@ impl BatchBuilder {
                 json!(locktime),
                 json!(options),
                 json!(bip32derivs),
+                json!(version),
             ],
         ));
         self
@@ -1803,7 +1811,7 @@ impl BatchBuilder {
         let BatchBuilder { tx, calls } = self;
         // queue all calls into the transport
         for (method, params) in &calls {
-            let _ = tx.send_request(method, params);
+            std::mem::drop(tx.send_request(method, params));
         }
         let raw_results = tx
             .end_batch()

@@ -1,12 +1,12 @@
 //! This file is auto-generated. Do not edit manually.
-//! Generated for Bitcoin Core version: V29
+//! Generated from Bitcoin Core v29.1
 
 /// Unloads the wallet referenced by the request endpoint or the wallet_name argument.
 /// If both are specified, they must be identical.
 
 /// # Example
 /// ```rust
-/// use bitcoin_rpc_codegen::client::V29::unloadwallet;
+/// use bitcoin_rpc_codegen::client::v29_1::unloadwallet;
 ///
 /// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.unloadwallet(/* params */).await?;

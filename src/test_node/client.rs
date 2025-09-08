@@ -1,6 +1,6 @@
 use crate::transport::core::{TransportError, TransportExt};
 use crate::transport::{BatchBuilder, DefaultTransport, RpcClient};
-use crate::types::v29_types::*;
+use crate::types::v29_1_types::*;
 use anyhow::Result;
 use serde_json::Value;
 use std::sync::Arc;
@@ -106,7 +106,7 @@ impl BitcoinTestClient {
     /// use bitcoin_rpc_midas::test_node::client::BitcoinTestClient;
     ///
     /// async fn example() -> Result<(), Box<dyn std::error::Error>> {
-    ///     let mut client = BitcoinTestClient::new().await?;
+    ///     let client = BitcoinTestClient::new().await?;
     ///     Ok(())
     /// }
     /// ```
@@ -123,14 +123,16 @@ impl BitcoinTestClient {
     /// use bitcoin::Network;
     ///
     /// async fn example() -> Result<(), Box<dyn std::error::Error>> {
-    ///     let mut client = BitcoinTestClient::new_with_network(Network::Bitcoin).await?;
+    ///     let client = BitcoinTestClient::new_with_network(Network::Bitcoin).await?;
     ///     Ok(())
     /// }
     /// ```
     pub async fn new_with_network(network: Network) -> Result<Self, TransportError> {
         tracing::debug!("BitcoinTestClient::new_with_network({:?}) called", network);
-        let mut config = TestConfig::default();
-        config.network = network;
+        let config = TestConfig {
+            network,
+            ..Default::default()
+        };
         let node_manager = BitcoinNodeManager::new_with_config(&config)?;
         Self::new_with_manager(node_manager).await
     }
@@ -145,7 +147,7 @@ impl BitcoinTestClient {
     /// async fn example() -> Result<(), Box<dyn std::error::Error>> {
     ///     let config = TestConfig::default();
     ///     let node_manager = BitcoinNodeManager::new_with_config(&config)?;
-    ///     let mut client = BitcoinTestClient::new_with_manager(node_manager).await?;
+    ///     let client = BitcoinTestClient::new_with_manager(node_manager).await?;
     ///     Ok(())
     /// }
     /// ```
@@ -161,7 +163,7 @@ impl BitcoinTestClient {
         // Wait for node to be ready for RPC
         tracing::debug!("Creating transport with port {}", node_manager.rpc_port());
         let transport = Arc::new(DefaultTransport::new(
-            &format!("http://127.0.0.1:{}", node_manager.rpc_port()),
+            format!("http://127.0.0.1:{}", node_manager.rpc_port()),
             Some(("rpcuser".to_string(), "rpcpassword".to_string())),
         ));
 
@@ -260,7 +262,7 @@ impl BitcoinTestClient {
                 // Update transport to use wallet endpoint
                 let _new_transport = Arc::new(
                     DefaultTransport::new(
-                        &format!(
+                        format!(
                             "http://127.0.0.1:{}",
                             self.node_manager.as_ref().unwrap().rpc_port()
                         ),
@@ -526,12 +528,14 @@ impl BitcoinTestClient {
         outputs: Vec<serde_json::Value>,
         locktime: u32,
         replaceable: bool,
+        version: u32,
     ) -> Result<CreatepsbtResponse, TransportError> {
         let mut params = Vec::new();
         params.push(serde_json::to_value(inputs)?);
         params.push(serde_json::to_value(outputs)?);
         params.push(serde_json::to_value(locktime)?);
         params.push(serde_json::to_value(replaceable)?);
+        params.push(serde_json::to_value(version)?);
         self.transport.call("createpsbt", &params).await
     }
 
@@ -546,12 +550,14 @@ impl BitcoinTestClient {
         outputs: Vec<serde_json::Value>,
         locktime: u32,
         replaceable: bool,
+        version: u32,
     ) -> Result<CreaterawtransactionResponse, TransportError> {
         let mut params = Vec::new();
         params.push(serde_json::to_value(inputs)?);
         params.push(serde_json::to_value(outputs)?);
         params.push(serde_json::to_value(locktime)?);
         params.push(serde_json::to_value(replaceable)?);
+        params.push(serde_json::to_value(version)?);
         self.transport.call("createrawtransaction", &params).await
     }
 
@@ -1970,6 +1976,7 @@ impl BitcoinTestClient {
         estimate_mode: String,
         fee_rate: f64,
         options: serde_json::Value,
+        version: u32,
     ) -> Result<SendResponse, TransportError> {
         let mut params = Vec::new();
         params.push(serde_json::to_value(outputs)?);
@@ -1977,6 +1984,7 @@ impl BitcoinTestClient {
         params.push(serde_json::to_value(estimate_mode)?);
         params.push(serde_json::to_value(fee_rate)?);
         params.push(serde_json::to_value(options)?);
+        params.push(serde_json::to_value(version)?);
         self.transport.call("send", &params).await
     }
 
@@ -2453,6 +2461,7 @@ impl BitcoinTestClient {
         locktime: u32,
         options: serde_json::Value,
         bip32derivs: bool,
+        version: u32,
     ) -> Result<WalletcreatefundedpsbtResponse, TransportError> {
         let mut params = Vec::new();
         params.push(serde_json::to_value(inputs)?);
@@ -2460,6 +2469,7 @@ impl BitcoinTestClient {
         params.push(serde_json::to_value(locktime)?);
         params.push(serde_json::to_value(options)?);
         params.push(serde_json::to_value(bip32derivs)?);
+        params.push(serde_json::to_value(version)?);
         self.transport.call("walletcreatefundedpsbt", &params).await
     }
 
@@ -2538,7 +2548,6 @@ impl BitcoinTestClient {
     /// - conf_target: The confirmation target in blocks
     /// - estimate_mode: The fee estimate mode ("economical" or "conservative")
     /// ```
-
     pub async fn send_to_address_with_conf_target(
         &self,
         address: String,

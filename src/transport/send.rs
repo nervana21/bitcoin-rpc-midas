@@ -1,12 +1,12 @@
 //! This file is auto-generated. Do not edit manually.
-//! Generated for Bitcoin Core version: V29
+//! Generated from Bitcoin Core v29.1
 
 /// EXPERIMENTAL warning: this call may be changed in future releases.
 /// Send a transaction.
 
 /// # Example
 /// ```rust
-/// use bitcoin_rpc_codegen::client::V29::send;
+/// use bitcoin_rpc_codegen::client::v29_1::send;
 ///
 /// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.send(/* params */).await?;
@@ -38,6 +38,7 @@ pub async fn send(
     estimate_mode: serde_json::Value,
     fee_rate: serde_json::Value,
     options: serde_json::Value,
+    version: serde_json::Value,
 ) -> Result<SendResponse, TransportError> {
     let params = vec![
         json!(outputs),
@@ -45,6 +46,7 @@ pub async fn send(
         json!(estimate_mode),
         json!(fee_rate),
         json!(options),
+        json!(version),
     ];
     let raw = transport.send_request("send", &params).await?;
     Ok(serde_json::from_value::<SendResponse>(raw)?)

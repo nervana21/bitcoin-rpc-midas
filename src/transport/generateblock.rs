@@ -1,11 +1,11 @@
 //! This file is auto-generated. Do not edit manually.
-//! Generated for Bitcoin Core version: V29
+//! Generated from Bitcoin Core v29.1
 
 /// Mine a set of ordered transactions to a specified address or descriptor and return the block hash.
 
 /// # Example
 /// ```rust
-/// use bitcoin_rpc_codegen::client::V29::generateblock;
+/// use bitcoin_rpc_codegen::client::v29_1::generateblock;
 ///
 /// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.generateblock(/* params */).await?;

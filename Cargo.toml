@@ -2,11 +2,11 @@
 publish = true
 
 name = "bitcoin-rpc-midas"
-version = "0.1.6"
+version = "29.1.0"
 edition = "2021"
 authors = ["Bitcoin RPC Codegen Core Developers"]
 license = "MIT OR Apache-2.0"
-description = "Generated Bitcoin Core v29 RPC client."
+description = "Generated Bitcoin Core RPC client v29.1.0."
 readme = "README.md"
 keywords = ["bitcoin", "rpc", "codegen", "integration-testing"]
 categories = ["cryptography::cryptocurrencies", "development-tools::testing"]

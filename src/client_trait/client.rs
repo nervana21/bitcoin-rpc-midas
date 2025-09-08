@@ -6,9 +6,9 @@ use async_trait::async_trait;
 use serde::de::DeserializeOwned;
 use std::future::Future;
 
-#[doc = r#"A versioned client trait for Bitcoin Core V29"#]
+#[doc = r#"A versioned client trait for Bitcoin Core v29.1"#]
 #[async_trait]
-pub trait BitcoinClientV29: Send + Sync + TransportTrait + TransportExt + RpcDispatchExt {
+pub trait BitcoinClientV29_1: Send + Sync + TransportTrait + TransportExt + RpcDispatchExt {
     /// Mark in-wallet transaction <txid> as abandoned
     /// This will mark this transaction and all its in-wallet descendants as abandoned which will allow
     /// for their inputs to be respent.  It can be used to replace "stuck" or evicted transactions.
@@ -187,12 +187,14 @@ pub trait BitcoinClientV29: Send + Sync + TransportTrait + TransportExt + RpcDis
         _outputs: Vec<serde_json::Value>,
         _locktime: Option<u32>,
         _replaceable: Option<bool>,
+        _version: Option<u32>,
     ) -> Result<CreatepsbtResponse, TransportError> {
         let params = vec![
             serde_json::json!(_inputs),
             serde_json::json!(_outputs),
             serde_json::json!(_locktime),
             serde_json::json!(_replaceable),
+            serde_json::json!(_version),
         ];
         self.dispatch_json::<CreatepsbtResponse>("createpsbt", &params)
             .await
@@ -209,12 +211,14 @@ pub trait BitcoinClientV29: Send + Sync + TransportTrait + TransportExt + RpcDis
         _outputs: Vec<serde_json::Value>,
         _locktime: Option<u32>,
         _replaceable: Option<bool>,
+        _version: Option<u32>,
     ) -> Result<CreaterawtransactionResponse, TransportError> {
         let params = vec![
             serde_json::json!(_inputs),
             serde_json::json!(_outputs),
             serde_json::json!(_locktime),
             serde_json::json!(_replaceable),
+            serde_json::json!(_version),
         ];
         self.dispatch_json::<CreaterawtransactionResponse>("createrawtransaction", &params)
             .await
@@ -1731,6 +1735,7 @@ pub trait BitcoinClientV29: Send + Sync + TransportTrait + TransportExt + RpcDis
         _estimate_mode: Option<String>,
         _fee_rate: Option<f64>,
         _options: Option<serde_json::Value>,
+        _version: Option<u32>,
     ) -> Result<SendResponse, TransportError> {
         let params = vec![
             serde_json::json!(_outputs),
@@ -1738,6 +1743,7 @@ pub trait BitcoinClientV29: Send + Sync + TransportTrait + TransportExt + RpcDis
             serde_json::json!(_estimate_mode),
             serde_json::json!(_fee_rate),
             serde_json::json!(_options),
+            serde_json::json!(_version),
         ];
         self.dispatch_json::<SendResponse>("send", &params).await
     }
@@ -2220,6 +2226,7 @@ pub trait BitcoinClientV29: Send + Sync + TransportTrait + TransportExt + RpcDis
         _locktime: Option<u32>,
         _options: Option<serde_json::Value>,
         _bip32derivs: Option<bool>,
+        _version: Option<u32>,
     ) -> Result<WalletcreatefundedpsbtResponse, TransportError> {
         let params = vec![
             serde_json::json!(_inputs),
@@ -2227,6 +2234,7 @@ pub trait BitcoinClientV29: Send + Sync + TransportTrait + TransportExt + RpcDis
             serde_json::json!(_locktime),
             serde_json::json!(_options),
             serde_json::json!(_bip32derivs),
+            serde_json::json!(_version),
         ];
         self.dispatch_json::<WalletcreatefundedpsbtResponse>("walletcreatefundedpsbt", &params)
             .await
@@ -2338,7 +2346,7 @@ impl<T: TransportTrait + TransportExt + ?Sized> WalletTransportExt for T {}
 
 // Provide default implementation for any type that implements TransportTrait + TransportExt
 #[async_trait]
-impl<T: TransportTrait + TransportExt + Send + Sync> BitcoinClientV29 for T {
+impl<T: TransportTrait + TransportExt + Send + Sync> BitcoinClientV29_1 for T {
     /// Mark in-wallet transaction <txid> as abandoned
     /// This will mark this transaction and all its in-wallet descendants as abandoned which will allow
     /// for their inputs to be respent.  It can be used to replace "stuck" or evicted transactions.
@@ -2517,12 +2525,14 @@ impl<T: TransportTrait + TransportExt + Send + Sync> BitcoinClientV29 for T {
         _outputs: Vec<serde_json::Value>,
         _locktime: Option<u32>,
         _replaceable: Option<bool>,
+        _version: Option<u32>,
     ) -> Result<CreatepsbtResponse, TransportError> {
         let params = vec![
             serde_json::json!(_inputs),
             serde_json::json!(_outputs),
             serde_json::json!(_locktime),
             serde_json::json!(_replaceable),
+            serde_json::json!(_version),
         ];
         self.dispatch_json::<CreatepsbtResponse>("createpsbt", &params)
             .await
@@ -2539,12 +2549,14 @@ impl<T: TransportTrait + TransportExt + Send + Sync> BitcoinClientV29 for T {
         _outputs: Vec<serde_json::Value>,
         _locktime: Option<u32>,
         _replaceable: Option<bool>,
+        _version: Option<u32>,
     ) -> Result<CreaterawtransactionResponse, TransportError> {
         let params = vec![
             serde_json::json!(_inputs),
             serde_json::json!(_outputs),
             serde_json::json!(_locktime),
             serde_json::json!(_replaceable),
+            serde_json::json!(_version),
         ];
         self.dispatch_json::<CreaterawtransactionResponse>("createrawtransaction", &params)
             .await
@@ -4061,6 +4073,7 @@ impl<T: TransportTrait + TransportExt + Send + Sync> BitcoinClientV29 for T {
         _estimate_mode: Option<String>,
         _fee_rate: Option<f64>,
         _options: Option<serde_json::Value>,
+        _version: Option<u32>,
     ) -> Result<SendResponse, TransportError> {
         let params = vec![
             serde_json::json!(_outputs),
@@ -4068,6 +4081,7 @@ impl<T: TransportTrait + TransportExt + Send + Sync> BitcoinClientV29 for T {
             serde_json::json!(_estimate_mode),
             serde_json::json!(_fee_rate),
             serde_json::json!(_options),
+            serde_json::json!(_version),
         ];
         self.dispatch_json::<SendResponse>("send", &params).await
     }
@@ -4550,6 +4564,7 @@ impl<T: TransportTrait + TransportExt + Send + Sync> BitcoinClientV29 for T {
         _locktime: Option<u32>,
         _options: Option<serde_json::Value>,
         _bip32derivs: Option<bool>,
+        _version: Option<u32>,
     ) -> Result<WalletcreatefundedpsbtResponse, TransportError> {
         let params = vec![
             serde_json::json!(_inputs),
@@ -4557,6 +4572,7 @@ impl<T: TransportTrait + TransportExt + Send + Sync> BitcoinClientV29 for T {
             serde_json::json!(_locktime),
             serde_json::json!(_options),
             serde_json::json!(_bip32derivs),
+            serde_json::json!(_version),
         ];
         self.dispatch_json::<WalletcreatefundedpsbtResponse>("walletcreatefundedpsbt", &params)
             .await

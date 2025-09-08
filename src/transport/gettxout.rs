@@ -1,11 +1,11 @@
 //! This file is auto-generated. Do not edit manually.
-//! Generated for Bitcoin Core version: V29
+//! Generated from Bitcoin Core v29.1
 
 /// Returns details about an unspent transaction output.
 
 /// # Example
 /// ```rust
-/// use bitcoin_rpc_codegen::client::V29::gettxout;
+/// use bitcoin_rpc_codegen::client::v29_1::gettxout;
 ///
 /// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.gettxout(/* params */).await?;

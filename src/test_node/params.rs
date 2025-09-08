@@ -112,6 +112,7 @@ pub struct CreatepsbtParams {
     pub outputs: Vec<serde_json::Value>,
     pub locktime: u32,
     pub replaceable: bool,
+    pub version: u32,
 }
 
 /// Create a transaction spending the given inputs and creating new outputs.
@@ -125,6 +126,7 @@ pub struct CreaterawtransactionParams {
     pub outputs: Vec<serde_json::Value>,
     pub locktime: u32,
     pub replaceable: bool,
+    pub version: u32,
 }
 
 /// Creates and loads a new wallet.
@@ -963,6 +965,7 @@ pub struct SendParams {
     pub estimate_mode: String,
     pub fee_rate: f64,
     pub options: serde_json::Value,
+    pub version: u32,
 }
 
 /// EXPERIMENTAL warning: this call may be changed in future releases.
@@ -1263,6 +1266,7 @@ pub struct WalletcreatefundedpsbtParams {
     pub locktime: u32,
     pub options: serde_json::Value,
     pub bip32derivs: bool,
+    pub version: u32,
 }
 
 /// Display address on an external signer for verification.

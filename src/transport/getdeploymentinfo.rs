@@ -1,11 +1,11 @@
 //! This file is auto-generated. Do not edit manually.
-//! Generated for Bitcoin Core version: V29
+//! Generated from Bitcoin Core v29.1
 
 /// Returns an object containing various state info regarding deployments of consensus changes.
 
 /// # Example
 /// ```rust
-/// use bitcoin_rpc_codegen::client::V29::getdeploymentinfo;
+/// use bitcoin_rpc_codegen::client::v29_1::getdeploymentinfo;
 ///
 /// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.getdeploymentinfo(/* params */).await?;

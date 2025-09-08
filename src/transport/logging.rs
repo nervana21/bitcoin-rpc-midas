@@ -1,5 +1,5 @@
 //! This file is auto-generated. Do not edit manually.
-//! Generated for Bitcoin Core version: V29
+//! Generated from Bitcoin Core v29.1
 
 /// Gets and sets the logging configuration.
 /// When called without an argument, returns the list of categories with status that are currently being debug logged or not.
@@ -12,7 +12,7 @@
 
 /// # Example
 /// ```rust
-/// use bitcoin_rpc_codegen::client::V29::logging;
+/// use bitcoin_rpc_codegen::client::v29_1::logging;
 ///
 /// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.logging(/* params */).await?;

@@ -1,5 +1,5 @@
 //! This file is auto-generated. Do not edit manually.
-//! Generated for Bitcoin Core version: V29
+//! Generated from Bitcoin Core v29.1
 
 /// Mark in-wallet transaction <txid> as abandoned
 /// This will mark this transaction and all its in-wallet descendants as abandoned which will allow
@@ -9,7 +9,7 @@
 
 /// # Example
 /// ```rust
-/// use bitcoin_rpc_codegen::client::V29::abandontransaction;
+/// use bitcoin_rpc_codegen::client::v29_1::abandontransaction;
 ///
 /// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.abandontransaction(/* params */).await?;

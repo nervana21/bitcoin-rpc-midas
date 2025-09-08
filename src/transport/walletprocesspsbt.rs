@@ -1,5 +1,5 @@
 //! This file is auto-generated. Do not edit manually.
-//! Generated for Bitcoin Core version: V29
+//! Generated from Bitcoin Core v29.1
 
 /// Update a PSBT with input information from our wallet and then sign inputs
 /// that we can sign for.
@@ -7,7 +7,7 @@
 
 /// # Example
 /// ```rust
-/// use bitcoin_rpc_codegen::client::V29::walletprocesspsbt;
+/// use bitcoin_rpc_codegen::client::v29_1::walletprocesspsbt;
 ///
 /// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.walletprocesspsbt(/* params */).await?;

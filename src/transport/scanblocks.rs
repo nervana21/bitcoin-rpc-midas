@@ -1,12 +1,12 @@
 //! This file is auto-generated. Do not edit manually.
-//! Generated for Bitcoin Core version: V29
+//! Generated from Bitcoin Core v29.1
 
 /// Return relevant blockhashes for given descriptors (requires blockfilterindex).
 /// This call may take several minutes. Make sure to use no RPC timeout (bitcoin-cli -rpcclienttimeout=0)
 
 /// # Example
 /// ```rust
-/// use bitcoin_rpc_codegen::client::V29::scanblocks;
+/// use bitcoin_rpc_codegen::client::v29_1::scanblocks;
 ///
 /// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.scanblocks(/* params */).await?;

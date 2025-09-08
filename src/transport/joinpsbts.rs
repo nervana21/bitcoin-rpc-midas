@@ -1,12 +1,12 @@
 //! This file is auto-generated. Do not edit manually.
-//! Generated for Bitcoin Core version: V29
+//! Generated from Bitcoin Core v29.1
 
 /// Joins multiple distinct PSBTs with different inputs and outputs into one PSBT with inputs and outputs from all of the PSBTs
 /// No input in any of the PSBTs can be in more than one of the PSBTs.
 
 /// # Example
 /// ```rust
-/// use bitcoin_rpc_codegen::client::V29::joinpsbts;
+/// use bitcoin_rpc_codegen::client::v29_1::joinpsbts;
 ///
 /// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.joinpsbts(/* params */).await?;

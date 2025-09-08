@@ -1,12 +1,12 @@
 //! This file is auto-generated. Do not edit manually.
-//! Generated for Bitcoin Core version: V29
+//! Generated from Bitcoin Core v29.1
 
 /// Returns statistics about the unspent transaction output set.
 /// Note this call may take some time if you are not using coinstatsindex.
 
 /// # Example
 /// ```rust
-/// use bitcoin_rpc_codegen::client::V29::gettxoutsetinfo;
+/// use bitcoin_rpc_codegen::client::v29_1::gettxoutsetinfo;
 ///
 /// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.gettxoutsetinfo(/* params */).await?;

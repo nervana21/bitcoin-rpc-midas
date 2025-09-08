@@ -1,5 +1,5 @@
 //! This file is auto-generated. Do not edit manually.
-//! Generated for Bitcoin Core version: V29
+//! Generated from Bitcoin Core v29.1
 
 /// If verbosity is 0, returns a string that is serialized, hex-encoded data for block 'hash'.
 /// If verbosity is 1, returns an Object with information about block <hash>.
@@ -8,7 +8,7 @@
 
 /// # Example
 /// ```rust
-/// use bitcoin_rpc_codegen::client::V29::getblock;
+/// use bitcoin_rpc_codegen::client::v29_1::getblock;
 ///
 /// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.getblock(/* params */).await?;

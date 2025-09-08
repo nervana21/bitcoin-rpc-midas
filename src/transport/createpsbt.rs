@@ -1,5 +1,5 @@
 //! This file is auto-generated. Do not edit manually.
-//! Generated for Bitcoin Core version: V29
+//! Generated from Bitcoin Core v29.1
 
 /// Creates a transaction in the Partially Signed Transaction format.
 /// Implements the Creator role.
@@ -8,7 +8,7 @@
 
 /// # Example
 /// ```rust
-/// use bitcoin_rpc_codegen::client::V29::createpsbt;
+/// use bitcoin_rpc_codegen::client::v29_1::createpsbt;
 ///
 /// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.createpsbt(/* params */).await?;
@@ -33,12 +33,14 @@ pub async fn createpsbt(
     outputs: serde_json::Value,
     locktime: serde_json::Value,
     replaceable: serde_json::Value,
+    version: serde_json::Value,
 ) -> Result<CreatepsbtResponse, TransportError> {
     let params = vec![
         json!(inputs),
         json!(outputs),
         json!(locktime),
         json!(replaceable),
+        json!(version),
     ];
     let raw = transport.send_request("createpsbt", &params).await?;
     Ok(serde_json::from_value::<CreatepsbtResponse>(raw)?)

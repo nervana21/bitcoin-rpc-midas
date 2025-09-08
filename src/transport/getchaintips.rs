@@ -1,11 +1,11 @@
 //! This file is auto-generated. Do not edit manually.
-//! Generated for Bitcoin Core version: V29
+//! Generated from Bitcoin Core v29.1
 
 /// Return information about all known tips in the block tree, including the main chain as well as orphaned branches.
 
 /// # Example
 /// ```rust
-/// use bitcoin_rpc_codegen::client::V29::getchaintips;
+/// use bitcoin_rpc_codegen::client::v29_1::getchaintips;
 ///
 /// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.getchaintips().await?;

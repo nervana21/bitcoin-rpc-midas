@@ -1,12 +1,12 @@
 //! This file is auto-generated. Do not edit manually.
-//! Generated for Bitcoin Core version: V29
+//! Generated from Bitcoin Core v29.1
 
 /// Sign a message with the private key of an address
 /// Requires wallet passphrase to be set with walletpassphrase call if wallet is encrypted.
 
 /// # Example
 /// ```rust
-/// use bitcoin_rpc_codegen::client::V29::signmessage;
+/// use bitcoin_rpc_codegen::client::v29_1::signmessage;
 ///
 /// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.signmessage(/* params */).await?;

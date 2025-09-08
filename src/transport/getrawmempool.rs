@@ -1,12 +1,12 @@
 //! This file is auto-generated. Do not edit manually.
-//! Generated for Bitcoin Core version: V29
+//! Generated from Bitcoin Core v29.1
 
 /// Returns all transaction ids in memory pool as a json array of string transaction ids.
 /// Hint: use getmempoolentry to fetch a specific transaction from the mempool.
 
 /// # Example
 /// ```rust
-/// use bitcoin_rpc_codegen::client::V29::getrawmempool;
+/// use bitcoin_rpc_codegen::client::v29_1::getrawmempool;
 ///
 /// let client = Client::new("http://127.0.0.1:18443", auth);
 /// let result = client.getrawmempool(/* params */).await?;
