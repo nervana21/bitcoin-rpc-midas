@@ -1,6 +1,8 @@
 //! This file is auto-generated. Do not edit manually.
 //! Generated from Bitcoin Core v29.1
 
+use serde::{Deserialize, Serialize};
+use serde_json::json;
 /// Bumps the fee of a transaction T, replacing it with a new transaction B.
 /// Returns a PSBT instead of creating and signing a new transaction.
 /// A transaction with the given txid must be in the wallet.
@@ -15,16 +17,38 @@
 /// returned by getnetworkinfo) to enter the node's mempool.
 /// * WARNING: before version 0.21, fee_rate was in BTC/kvB. As of 0.21, fee_rate is in sat/vB. *
 
-/// # Example
+/// # Example: High-Level Client Usage (Recommended)
 /// ```rust
-/// use bitcoin_rpc_codegen::client::v29_1::psbtbumpfee;
+/// use bitcoin_rpc_midas::*;
 ///
-/// let client = Client::new("http://127.0.0.1:18443", auth);
+/// async fn example() -> Result<(), Box<dyn std::error::Error>> {
+/// let client = BitcoinTestClient::new().await?;
 /// let result = client.psbtbumpfee(/* params */).await?;
+/// # Ok(())
+/// # }
 /// ```
-use serde::{Deserialize, Serialize};
-use serde_json::{json, Value};
-use transport::{TransportError, TransportTrait};
+
+/// # Example: Advanced - Direct Transport Function Usage
+/// This approach is for advanced users who need direct control over the transport layer.
+/// Most users should prefer the high-level client approach above.
+/// ```rust
+/// use bitcoin_rpc_midas::transport::psbtbumpfee;
+/// use bitcoin_rpc_midas::transport::{TransportTrait, DefaultTransport};
+///
+/// async fn example() -> Result<(), Box<dyn std::error::Error>> {
+/// let transport = DefaultTransport::new(
+///     "http://127.0.0.1:18443".to_string(),
+///     Some(("rpcuser".to_string(), "rpcpassword".to_string()))
+/// );
+/// let result = psbtbumpfee(&transport, /* params */).await?;
+/// # Ok(())
+/// # }
+/// ```
+
+#[allow(unused_imports)]
+use serde_json::Value;
+
+use crate::transport::{TransportError, TransportTrait};
 /// Bumps the fee of a transaction T, replacing it with a new transaction B.
 /// Returns a PSBT instead of creating and signing a new transaction.
 /// A transaction with the given txid must be in the wallet.

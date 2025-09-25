@@ -1,70 +1,20 @@
-use crate::transport::core::{TransportError, TransportExt};
-use crate::transport::{BatchBuilder, DefaultTransport, RpcClient};
-use crate::types::v29_1_types::*;
-use anyhow::Result;
-use serde_json::Value;
 use std::sync::Arc;
 
-use crate::node::{BitcoinNodeManager, TestConfig};
+use anyhow::Result;
+use bitcoin::{Amount, Network};
+use serde_json::Value;
 
-use bitcoin::Amount;
-use bitcoin::Network;
-/// Trait for managing a Bitcoin node's lifecycle
-pub trait NodeManager: Send + Sync + std::fmt::Debug + std::any::Any {
-    fn start(
-        &mut self,
-    ) -> std::pin::Pin<Box<dyn std::future::Future<Output = Result<(), TransportError>> + Send + '_>>;
-    fn stop(
-        &mut self,
-    ) -> std::pin::Pin<Box<dyn std::future::Future<Output = Result<(), TransportError>> + Send + '_>>;
-    fn rpc_port(&self) -> u16;
-    fn as_any(&self) -> &dyn std::any::Any;
-}
-
+use crate::node::{BitcoinNodeManager, NodeManager as NodeManagerTrait};
+use crate::responses::v29_1_responses::*;
+use crate::test_config::TestConfig;
+use crate::transport::core::{TransportError, TransportExt};
+use crate::transport::{BatchBuilder, DefaultTransport, RpcClient};
 #[derive(Debug)]
 pub struct BitcoinTestClient {
     transport: Arc<DefaultTransport>,
-    node_manager: Option<Box<dyn NodeManager>>,
+    node_manager: Option<Box<dyn NodeManagerTrait>>,
     /// A thin RPC wrapper around the transport, with batching built in
     rpc: RpcClient,
-}
-
-impl NodeManager for BitcoinNodeManager {
-    fn start(
-        &mut self,
-    ) -> std::pin::Pin<Box<dyn std::future::Future<Output = Result<(), TransportError>> + Send + '_>>
-    {
-        tracing::debug!("NodeManager::start called on BitcoinNodeManager");
-        Box::pin(async move {
-            tracing::debug!("Inside NodeManager::start async block");
-            let result = self.start_internal().await;
-            tracing::debug!("NodeManager::start result: {:?}", result);
-            result.map_err(|e| TransportError::Rpc(e.to_string()))
-        })
-    }
-
-    fn stop(
-        &mut self,
-    ) -> std::pin::Pin<Box<dyn std::future::Future<Output = Result<(), TransportError>> + Send + '_>>
-    {
-        tracing::debug!("NodeManager::stop called on BitcoinNodeManager");
-        Box::pin(async move {
-            tracing::debug!("Inside NodeManager::stop async block");
-            let result = self.stop_internal().await;
-            tracing::debug!("NodeManager::stop result: {:?}", result);
-            result.map_err(|e| TransportError::Rpc(e.to_string()))
-        })
-    }
-
-    fn rpc_port(&self) -> u16 {
-        tracing::debug!("NodeManager::rpc_port called on BitcoinNodeManager");
-        self.rpc_port
-    }
-
-    fn as_any(&self) -> &dyn std::any::Any {
-        tracing::debug!("NodeManager::as_any called on BitcoinNodeManager");
-        self
-    }
 }
 
 /// Options for creating or loading a Bitcoin Core wallet
@@ -129,10 +79,7 @@ impl BitcoinTestClient {
     /// ```
     pub async fn new_with_network(network: Network) -> Result<Self, TransportError> {
         tracing::debug!("BitcoinTestClient::new_with_network({:?}) called", network);
-        let config = TestConfig {
-            network,
-            ..Default::default()
-        };
+        let config = TestConfig { network, ..Default::default() };
         let node_manager = BitcoinNodeManager::new_with_config(&config)?;
         Self::new_with_manager(node_manager).await
     }
@@ -142,7 +89,8 @@ impl BitcoinTestClient {
     /// The node manager must implement the `NodeManager` trait.
     /// ```no_run
     /// use bitcoin_rpc_midas::test_node::client::BitcoinTestClient;
-    /// use bitcoin_rpc_midas::node::{BitcoinNodeManager, TestConfig};
+    /// use bitcoin_rpc_midas::node::BitcoinNodeManager;
+    /// use bitcoin_rpc_midas::test_config::TestConfig;
     ///
     /// async fn example() -> Result<(), Box<dyn std::error::Error>> {
     ///     let config = TestConfig::default();
@@ -151,8 +99,8 @@ impl BitcoinTestClient {
     ///     Ok(())
     /// }
     /// ```
-    pub async fn new_with_manager<M: NodeManager + 'static>(
-        mut node_manager: M,
+    pub async fn new_with_manager<M: NodeManagerTrait + 'static>(
+        node_manager: M,
     ) -> Result<Self, TransportError> {
         tracing::debug!("BitcoinTestClient::new_with_manager called");
         // Start the node
@@ -180,10 +128,7 @@ impl BitcoinTestClient {
         let mut retries = 0;
 
         loop {
-            match transport
-                .call::<serde_json::Value>("getblockchaininfo", &[])
-                .await
-            {
+            match transport.call::<serde_json::Value>("getblockchaininfo", &[]).await {
                 Ok(_) => break,
                 Err(TransportError::Rpc(e)) => {
                     // Check if the error matches any known initialization state
@@ -209,11 +154,7 @@ impl BitcoinTestClient {
             tracing::debug!("Node initialization completed after {} attempts", retries);
         }
 
-        Ok(Self {
-            transport,
-            node_manager: Some(Box::new(node_manager)),
-            rpc,
-        })
+        Ok(Self { transport, node_manager: Some(Box::new(node_manager)), rpc })
     }
 
     /// Ensures a wallet exists using the given options.
@@ -246,11 +187,7 @@ impl BitcoinTestClient {
         params.push(serde_json::to_value(opts.load_on_startup)?);
         params.push(serde_json::to_value(opts.external_signer)?);
 
-        match self
-            .transport
-            .call::<CreatewalletResponse>("createwallet", &params)
-            .await
-        {
+        match self.transport.call::<CreatewalletResponse>("createwallet", &params).await {
             Ok(_) => Ok(wallet_name),
             Err(TransportError::Rpc(err)) if err.contains("\"code\":-4") => {
                 // Try loading instead
@@ -285,8 +222,7 @@ impl BitcoinTestClient {
         &mut self,
         name: impl Into<String>,
     ) -> Result<String, TransportError> {
-        self.ensure_wallet_with_options(name, WalletOptions::default().with_descriptors())
-            .await
+        self.ensure_wallet_with_options(name, WalletOptions::default().with_descriptors()).await
     }
 
     /// Helper method to mine blocks to a new address
@@ -299,14 +235,10 @@ impl BitcoinTestClient {
         let _wallet_name = self.ensure_default_wallet("test_wallet").await?;
 
         tracing::debug!("Getting new address");
-        let address = self
-            .getnewaddress("".to_string(), "bech32m".to_string())
-            .await?;
+        let address = self.getnewaddress("".to_string(), "bech32m".to_string()).await?;
         tracing::debug!("Generated address: {:?}", address);
         tracing::debug!("Generating blocks");
-        let blocks = self
-            .generatetoaddress(num_blocks, address.0.clone(), maxtries)
-            .await?;
+        let blocks = self.generatetoaddress(num_blocks, address.0.clone(), maxtries).await?;
         tracing::debug!("Generated blocks: {:?}", blocks);
         Ok((address.0, serde_json::to_value(blocks)?))
     }
@@ -346,19 +278,13 @@ impl BitcoinTestClient {
 
     /// Returns a reference to the node manager if one exists.
     /// This can be used to access node configuration and control the node lifecycle.
-    pub fn node_manager(&self) -> Option<&dyn NodeManager> {
-        self.node_manager.as_deref()
-    }
+    pub fn node_manager(&self) -> Option<&dyn NodeManagerTrait> { self.node_manager.as_deref() }
 
     /// Give callers the full RPC client (incl. `.batch()`)
-    pub fn rpc(&self) -> &RpcClient {
-        &self.rpc
-    }
+    pub fn rpc(&self) -> &RpcClient { &self.rpc }
 
     /// Begin a JSON-RPC batch against this test node
-    pub fn batch(&self) -> BatchBuilder {
-        self.rpc.batch()
-    }
+    pub fn batch(&self) -> BatchBuilder { self.rpc.batch() }
 
     /// Mark in-wallet transaction <txid> as abandoned
     /// This will mark this transaction and all its in-wallet descendants as abandoned which will allow
@@ -2214,9 +2140,7 @@ impl BitcoinTestClient {
         params.push(serde_json::to_value(privkeys)?);
         params.push(serde_json::to_value(prevtxs)?);
         params.push(serde_json::to_value(sighashtype)?);
-        self.transport
-            .call("signrawtransactionwithkey", &params)
-            .await
+        self.transport.call("signrawtransactionwithkey", &params).await
     }
 
     /// Sign inputs for raw transaction (serialized, hex-encoded).
@@ -2233,9 +2157,7 @@ impl BitcoinTestClient {
         params.push(serde_json::to_value(hexstring)?);
         params.push(serde_json::to_value(prevtxs)?);
         params.push(serde_json::to_value(sighashtype)?);
-        self.transport
-            .call("signrawtransactionwithwallet", &params)
-            .await
+        self.transport.call("signrawtransactionwithwallet", &params).await
     }
 
     /// Calculate the balance change resulting in the signing and broadcasting of the given transaction(s).
@@ -2297,9 +2219,7 @@ impl BitcoinTestClient {
 
     /// Waits for the validation interface queue to catch up on everything that was there when we entered this function.
     pub async fn syncwithvalidationinterfacequeue(&self) -> Result<(), TransportError> {
-        self.transport
-            .call("syncwithvalidationinterfacequeue", &[])
-            .await
+        self.transport.call("syncwithvalidationinterfacequeue", &[]).await
     }
 
     /// Returns result of mempool acceptance tests indicating if raw transaction(s) (serialized, hex-encoded) would be accepted by mempool.
@@ -2599,7 +2519,5 @@ impl BitcoinTestClient {
 }
 
 impl Drop for BitcoinTestClient {
-    fn drop(&mut self) {
-        let _ = self.node_manager.take();
-    }
+    fn drop(&mut self) { let _ = self.node_manager.take(); }
 }

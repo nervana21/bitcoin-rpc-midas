@@ -1,21 +1,45 @@
 //! This file is auto-generated. Do not edit manually.
 //! Generated from Bitcoin Core v29.1
 
+use serde::{Deserialize, Serialize};
+use serde_json::json;
 /// Creates and funds a transaction in the Partially Signed Transaction format.
 /// Implements the Creator and Updater roles.
 /// All existing inputs must either have their previous output transaction be in the wallet
 /// or be in the UTXO set. Solving data must be provided for non-wallet inputs.
 
-/// # Example
+/// # Example: High-Level Client Usage (Recommended)
 /// ```rust
-/// use bitcoin_rpc_codegen::client::v29_1::walletcreatefundedpsbt;
+/// use bitcoin_rpc_midas::*;
 ///
-/// let client = Client::new("http://127.0.0.1:18443", auth);
+/// async fn example() -> Result<(), Box<dyn std::error::Error>> {
+/// let client = BitcoinTestClient::new().await?;
 /// let result = client.walletcreatefundedpsbt(/* params */).await?;
+/// # Ok(())
+/// # }
 /// ```
-use serde::{Deserialize, Serialize};
-use serde_json::{json, Value};
-use transport::{TransportError, TransportTrait};
+
+/// # Example: Advanced - Direct Transport Function Usage
+/// This approach is for advanced users who need direct control over the transport layer.
+/// Most users should prefer the high-level client approach above.
+/// ```rust
+/// use bitcoin_rpc_midas::transport::walletcreatefundedpsbt;
+/// use bitcoin_rpc_midas::transport::{TransportTrait, DefaultTransport};
+///
+/// async fn example() -> Result<(), Box<dyn std::error::Error>> {
+/// let transport = DefaultTransport::new(
+///     "http://127.0.0.1:18443".to_string(),
+///     Some(("rpcuser".to_string(), "rpcpassword".to_string()))
+/// );
+/// let result = walletcreatefundedpsbt(&transport, /* params */).await?;
+/// # Ok(())
+/// # }
+/// ```
+
+#[allow(unused_imports)]
+use serde_json::Value;
+
+use crate::transport::{TransportError, TransportTrait};
 /// Creates and funds a transaction in the Partially Signed Transaction format.
 /// Implements the Creator and Updater roles.
 /// All existing inputs must either have their previous output transaction be in the wallet
@@ -47,10 +71,6 @@ pub async fn walletcreatefundedpsbt(
         json!(bip32derivs),
         json!(version),
     ];
-    let raw = transport
-        .send_request("walletcreatefundedpsbt", &params)
-        .await?;
-    Ok(serde_json::from_value::<WalletcreatefundedpsbtResponse>(
-        raw,
-    )?)
+    let raw = transport.send_request("walletcreatefundedpsbt", &params).await?;
+    Ok(serde_json::from_value::<WalletcreatefundedpsbtResponse>(raw)?)
 }

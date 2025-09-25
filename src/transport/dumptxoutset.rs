@@ -1,20 +1,44 @@
 //! This file is auto-generated. Do not edit manually.
 //! Generated from Bitcoin Core v29.1
 
+use serde::{Deserialize, Serialize};
+use serde_json::json;
 /// Write the serialized UTXO set to a file. This can be used in loadtxoutset afterwards if this snapshot height is supported in the chainparams as well.
 /// Unless the "latest" type is requested, the node will roll back to the requested height and network activity will be suspended during this process. Because of this it is discouraged to interact with the node in any other way during the execution of this call to avoid inconsistent results and race conditions, particularly RPCs that interact with blockstorage.
 /// This call may take several minutes. Make sure to use no RPC timeout (bitcoin-cli -rpcclienttimeout=0)
 
-/// # Example
+/// # Example: High-Level Client Usage (Recommended)
 /// ```rust
-/// use bitcoin_rpc_codegen::client::v29_1::dumptxoutset;
+/// use bitcoin_rpc_midas::*;
 ///
-/// let client = Client::new("http://127.0.0.1:18443", auth);
+/// async fn example() -> Result<(), Box<dyn std::error::Error>> {
+/// let client = BitcoinTestClient::new().await?;
 /// let result = client.dumptxoutset(/* params */).await?;
+/// # Ok(())
+/// # }
 /// ```
-use serde::{Deserialize, Serialize};
-use serde_json::{json, Value};
-use transport::{TransportError, TransportTrait};
+
+/// # Example: Advanced - Direct Transport Function Usage
+/// This approach is for advanced users who need direct control over the transport layer.
+/// Most users should prefer the high-level client approach above.
+/// ```rust
+/// use bitcoin_rpc_midas::transport::dumptxoutset;
+/// use bitcoin_rpc_midas::transport::{TransportTrait, DefaultTransport};
+///
+/// async fn example() -> Result<(), Box<dyn std::error::Error>> {
+/// let transport = DefaultTransport::new(
+///     "http://127.0.0.1:18443".to_string(),
+///     Some(("rpcuser".to_string(), "rpcpassword".to_string()))
+/// );
+/// let result = dumptxoutset(&transport, /* params */).await?;
+/// # Ok(())
+/// # }
+/// ```
+
+#[allow(unused_imports)]
+use serde_json::Value;
+
+use crate::transport::{TransportError, TransportTrait};
 /// Write the serialized UTXO set to a file. This can be used in loadtxoutset afterwards if this snapshot height is supported in the chainparams as well.
 ///
 /// Unless the \"latest\" type is requested, the node will roll back to the requested height and network activity will be suspended during this process. Because of this it is discouraged to interact with the node in any other way during the execution of this call to avoid inconsistent results and race conditions, particularly RPCs that interact with blockstorage.

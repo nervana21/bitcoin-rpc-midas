@@ -1,6 +1,8 @@
 //! This file is auto-generated. Do not edit manually.
 //! Generated from Bitcoin Core v29.1
 
+use serde::{Deserialize, Serialize};
+use serde_json::json;
 /// Scans the unspent transaction output set for entries that match certain output descriptors.
 /// Examples of output descriptors are:
 /// addr(<address>)                      Outputs whose output script corresponds to the specified address (does not include P2PK)
@@ -18,16 +20,38 @@
 /// In the latter case, a range needs to be specified by below if different from 1000.
 /// For more information on output descriptors, see the documentation in the doc/descriptors.md file.
 
-/// # Example
+/// # Example: High-Level Client Usage (Recommended)
 /// ```rust
-/// use bitcoin_rpc_codegen::client::v29_1::scantxoutset;
+/// use bitcoin_rpc_midas::*;
 ///
-/// let client = Client::new("http://127.0.0.1:18443", auth);
+/// async fn example() -> Result<(), Box<dyn std::error::Error>> {
+/// let client = BitcoinTestClient::new().await?;
 /// let result = client.scantxoutset(/* params */).await?;
+/// # Ok(())
+/// # }
 /// ```
-use serde::{Deserialize, Serialize};
-use serde_json::{json, Value};
-use transport::{TransportError, TransportTrait};
+
+/// # Example: Advanced - Direct Transport Function Usage
+/// This approach is for advanced users who need direct control over the transport layer.
+/// Most users should prefer the high-level client approach above.
+/// ```rust
+/// use bitcoin_rpc_midas::transport::scantxoutset;
+/// use bitcoin_rpc_midas::transport::{TransportTrait, DefaultTransport};
+///
+/// async fn example() -> Result<(), Box<dyn std::error::Error>> {
+/// let transport = DefaultTransport::new(
+///     "http://127.0.0.1:18443".to_string(),
+///     Some(("rpcuser".to_string(), "rpcpassword".to_string()))
+/// );
+/// let result = scantxoutset(&transport, /* params */).await?;
+/// # Ok(())
+/// # }
+/// ```
+
+#[allow(unused_imports)]
+use serde_json::Value;
+
+use crate::transport::{TransportError, TransportTrait};
 /// Scans the unspent transaction output set for entries that match certain output descriptors.
 /// Examples of output descriptors are:
 /// addr(<address>)                      Outputs whose output script corresponds to the specified address (does not include P2PK)
@@ -46,21 +70,18 @@ use transport::{TransportError, TransportTrait};
 /// In the latter case, a range needs to be specified by below if different from 1000.
 /// For more information on output descriptors, see the documentation in the doc/descriptors.md file.
 #[derive(Debug, Deserialize, Serialize)]
-pub struct ScantxoutsetResponse {
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub success: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub txouts: Option<u64>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub height: Option<u64>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub bestblock: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub unspents: Option<Vec<serde_json::Value>>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub total_amount: Option<f64>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub progress: Option<u64>,
+#[serde(untagged)]
+pub enum ScantxoutsetResponse {
+    Started {
+        success: bool,
+        txouts: u64,
+        height: u64,
+        bestblock: String,
+        unspents: Vec<serde_json::Value>,
+        total_amount: f64,
+    },
+    Aborted(bool),
+    Status(serde_json::Value),
 }
 
 /// Calls the `scantxoutset` RPC method.

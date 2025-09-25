@@ -82,6 +82,7 @@ pub struct ConverttopsbtResponse(pub String);
 #[derive(Debug, Deserialize, Serialize)]
 pub struct CreatemultisigResponse {
     pub address: String,
+    #[serde(rename = "redeemScript")]
     pub redeem_script: String,
     pub descriptor: String,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -153,6 +154,7 @@ pub struct DecoderawtransactionResponse {
 pub struct DecodescriptResponse {
     pub asm: String,
     pub desc: String,
+    #[serde(rename = "type")]
     pub r#type: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub address: Option<String>,
@@ -174,7 +176,11 @@ pub struct DecodescriptResponse {
 /// or more path elements separated by \"/\", where \"h\" represents a hardened child key.
 /// For more information on output descriptors, see the documentation in the doc/descriptors.md file.
 #[derive(Debug, Deserialize, Serialize)]
-pub struct DeriveaddressesResponse {}
+#[serde(untagged)]
+pub enum DeriveaddressesResponse {
+    Variant1(Vec<String>),
+    Variant2(Vec<Vec<String>>),
+}
 
 /// Update all segwit inputs in a PSBT with information from output descriptors, the UTXO set or the mempool.
 /// Then, sign the inputs we are able to with information from the output descriptors.
@@ -345,7 +351,8 @@ pub struct GetaddressesbylabelResponse {
 #[derive(Debug, Deserialize, Serialize)]
 pub struct GetaddressinfoResponse {
     pub address: String,
-    pub script_pub_key: String,
+    #[serde(rename = "scriptPubKey")]
+    pub script_pubkey: String,
     pub ismine: bool,
     pub iswatchonly: bool,
     pub solvable: bool,
@@ -416,49 +423,43 @@ pub struct GetbestblockhashResponse(pub bitcoin::BlockHash);
 /// If verbosity is 2, returns an Object with information about block <hash> and information about each transaction.
 /// If verbosity is 3, returns an Object with information about block <hash> and information about each transaction, including prevout information for inputs (only for unpruned blocks in the current best chain).
 #[derive(Debug, Deserialize, Serialize)]
-pub struct GetblockResponse {
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub hash: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub confirmations: Option<u64>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub size: Option<u64>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub strippedsize: Option<u64>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub weight: Option<u64>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub height: Option<u64>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub version: Option<u32>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub version_hex: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub merkleroot: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub tx: Option<Vec<serde_json::Value>>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub time: Option<serde_json::Value>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub mediantime: Option<serde_json::Value>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub nonce: Option<u64>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub bits: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub target: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub difficulty: Option<f64>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub chainwork: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub n_tx: Option<u64>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub previousblockhash: Option<bitcoin::BlockHash>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub nextblockhash: Option<bitcoin::BlockHash>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub field_0: Option<serde_json::Value>,
+#[serde(untagged)]
+pub enum GetblockResponse {
+    Raw(String),
+    Verbose {
+        hash: String,
+        confirmations: u64,
+        size: u64,
+        strippedsize: u64,
+        weight: u64,
+        height: u64,
+        version: u32,
+        #[serde(rename = "versionHex")]
+        version_hex: String,
+        merkleroot: String,
+        tx: Vec<serde_json::Value>,
+        time: serde_json::Value,
+        mediantime: serde_json::Value,
+        nonce: u64,
+        bits: String,
+        target: String,
+        difficulty: f64,
+        chainwork: String,
+        #[serde(rename = "nTx")]
+        n_tx: u64,
+        #[serde(skip_serializing_if = "Option::is_none")]
+        previousblockhash: Option<bitcoin::BlockHash>,
+        #[serde(skip_serializing_if = "Option::is_none")]
+        nextblockhash: Option<bitcoin::BlockHash>,
+    },
+    Detailed {
+        field_0: serde_json::Value,
+        tx: Vec<serde_json::Value>,
+    },
+    Full {
+        field_0: serde_json::Value,
+        tx: Vec<serde_json::Value>,
+    },
 }
 
 /// Returns an object containing various state info regarding blockchain processing.
@@ -524,39 +525,31 @@ pub struct GetblockhashResponse(pub bitcoin::BlockHash);
 /// If verbose is false, returns a string that is serialized, hex-encoded data for blockheader 'hash'.
 /// If verbose is true, returns an Object with information about blockheader <hash>.
 #[derive(Debug, Deserialize, Serialize)]
-pub struct GetblockheaderResponse {
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub hash: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub confirmations: Option<u64>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub height: Option<u64>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub version: Option<u32>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub version_hex: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub merkleroot: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub time: Option<serde_json::Value>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub mediantime: Option<serde_json::Value>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub nonce: Option<u64>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub bits: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub target: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub difficulty: Option<f64>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub chainwork: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub n_tx: Option<u64>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub previousblockhash: Option<bitcoin::BlockHash>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub nextblockhash: Option<bitcoin::BlockHash>,
+#[serde(untagged)]
+pub enum GetblockheaderResponse {
+    Verbose {
+        hash: String,
+        confirmations: u64,
+        height: u64,
+        version: u32,
+        #[serde(rename = "versionHex")]
+        version_hex: String,
+        merkleroot: String,
+        time: serde_json::Value,
+        mediantime: serde_json::Value,
+        nonce: u64,
+        bits: String,
+        target: String,
+        difficulty: f64,
+        chainwork: String,
+        #[serde(rename = "nTx")]
+        n_tx: u64,
+        #[serde(skip_serializing_if = "Option::is_none")]
+        previousblockhash: Option<bitcoin::BlockHash>,
+        #[serde(skip_serializing_if = "Option::is_none")]
+        nextblockhash: Option<bitcoin::BlockHash>,
+    },
+    Variant2(String),
 }
 
 /// Compute per block statistics for a given window. All amounts are in satoshis.
@@ -635,51 +628,36 @@ pub struct GetblockstatsResponse {
 /// https://github.com/bitcoin/bips/blob/master/bip-0009.mediawiki#getblocktemplate_changes
 /// https://github.com/bitcoin/bips/blob/master/bip-0145.mediawiki
 #[derive(Debug, Deserialize, Serialize)]
-pub struct GetblocktemplateResponse {
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub version: Option<u32>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub rules: Option<Vec<serde_json::Value>>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub vbavailable: Option<serde_json::Value>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub capabilities: Option<Vec<serde_json::Value>>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub vbrequired: Option<u64>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub previousblockhash: Option<bitcoin::BlockHash>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub transactions: Option<Vec<serde_json::Value>>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub coinbaseaux: Option<serde_json::Value>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub coinbasevalue: Option<u64>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub longpollid: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub target: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub mintime: Option<serde_json::Value>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub mutable: Option<Vec<serde_json::Value>>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub noncerange: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub sigoplimit: Option<u64>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub sizelimit: Option<u64>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub weightlimit: Option<u64>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub curtime: Option<serde_json::Value>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub bits: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub height: Option<u64>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub signet_challenge: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub default_witness_commitment: Option<String>,
+#[serde(untagged)]
+pub enum GetblocktemplateResponse {
+    Accepted(String),
+    Variant3 {
+        version: u32,
+        rules: Vec<serde_json::Value>,
+        vbavailable: serde_json::Value,
+        capabilities: Vec<serde_json::Value>,
+        vbrequired: u64,
+        previousblockhash: bitcoin::BlockHash,
+        transactions: Vec<serde_json::Value>,
+        coinbaseaux: serde_json::Value,
+        coinbasevalue: u64,
+        longpollid: String,
+        target: String,
+        mintime: serde_json::Value,
+        mutable: Vec<serde_json::Value>,
+        noncerange: String,
+        sigoplimit: u64,
+        sizelimit: u64,
+        #[serde(skip_serializing_if = "Option::is_none")]
+        weightlimit: Option<u64>,
+        curtime: serde_json::Value,
+        bits: String,
+        height: u64,
+        #[serde(skip_serializing_if = "Option::is_none")]
+        signet_challenge: Option<String>,
+        #[serde(skip_serializing_if = "Option::is_none")]
+        default_witness_commitment: Option<String>,
+    },
 }
 
 /// Return information about chainstates.
@@ -761,23 +739,26 @@ pub struct GetindexinfoResponse {
 
 /// Returns an object containing information about memory usage.
 #[derive(Debug, Deserialize, Serialize)]
-pub struct GetmemoryinfoResponse {
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub locked: Option<serde_json::Value>,
+#[serde(untagged)]
+pub enum GetmemoryinfoResponse {
+    Variant1(serde_json::Value),
+    Variant2(String),
 }
 
 /// If txid is in the mempool, returns all in-mempool ancestors.
 #[derive(Debug, Deserialize, Serialize)]
-pub struct GetmempoolancestorsResponse {
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub transactionid: Option<serde_json::Value>,
+#[serde(untagged)]
+pub enum GetmempoolancestorsResponse {
+    Raw(Vec<String>),
+    Verbose(serde_json::Value),
 }
 
 /// If txid is in the mempool, returns all in-mempool descendants.
 #[derive(Debug, Deserialize, Serialize)]
-pub struct GetmempooldescendantsResponse {
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub transactionid: Option<serde_json::Value>,
+#[serde(untagged)]
+pub enum GetmempooldescendantsResponse {
+    Raw(Vec<String>),
+    Verbose(serde_json::Value),
 }
 
 /// Returns mempool data for given transaction
@@ -894,7 +875,12 @@ pub struct GetnodeaddressesResponse(pub Vec<serde_json::Value>);
 ///
 /// EXPERIMENTAL warning: this call may be changed in future releases.
 #[derive(Debug, Deserialize, Serialize)]
-pub struct GetorphantxsResponse {}
+#[serde(untagged)]
+pub enum GetorphantxsResponse {
+    Variant1(Vec<bitcoin::Txid>),
+    Variant2(Vec<serde_json::Value>),
+    Variant3(Vec<serde_json::Value>),
+}
 
 /// Returns data about each connected network peer as a json array of objects.
 #[derive(Debug, Deserialize, Serialize)]
@@ -925,13 +911,11 @@ pub struct GetrawchangeaddressResponse(pub String);
 ///
 /// Hint: use getmempoolentry to fetch a specific transaction from the mempool.
 #[derive(Debug, Deserialize, Serialize)]
-pub struct GetrawmempoolResponse {
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub transactionid: Option<serde_json::Value>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub txids: Option<Vec<bitcoin::Txid>>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub mempool_sequence: Option<u64>,
+#[serde(untagged)]
+pub enum GetrawmempoolResponse {
+    Raw(Vec<String>),
+    Verbose(serde_json::Value),
+    RawWithSequence { txids: Vec<bitcoin::Txid>, mempool_sequence: u64 },
 }
 
 /// By default, this call only returns a transaction if it is in the mempool. If -txindex is enabled
@@ -945,41 +929,37 @@ pub struct GetrawmempoolResponse {
 /// If verbosity is 1, returns a JSON Object with information about the transaction.
 /// If verbosity is 2, returns a JSON Object with information about the transaction, including fee and prevout information.
 #[derive(Debug, Deserialize, Serialize)]
-pub struct GetrawtransactionResponse {
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub in_active_chain: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub blockhash: Option<bitcoin::BlockHash>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub confirmations: Option<u64>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub blocktime: Option<serde_json::Value>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub time: Option<u64>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub hex: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub txid: Option<bitcoin::Txid>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub hash: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub size: Option<u64>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub vsize: Option<u64>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub weight: Option<u64>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub version: Option<u32>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub locktime: Option<serde_json::Value>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub vin: Option<Vec<serde_json::Value>>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub vout: Option<Vec<serde_json::Value>>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub field_0: Option<serde_json::Value>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub fee: Option<f64>,
+#[serde(untagged)]
+pub enum GetrawtransactionResponse {
+    Raw(String),
+    Verbose {
+        #[serde(skip_serializing_if = "Option::is_none")]
+        in_active_chain: Option<bool>,
+        #[serde(skip_serializing_if = "Option::is_none")]
+        blockhash: Option<bitcoin::BlockHash>,
+        #[serde(skip_serializing_if = "Option::is_none")]
+        confirmations: Option<u64>,
+        #[serde(skip_serializing_if = "Option::is_none")]
+        blocktime: Option<serde_json::Value>,
+        #[serde(skip_serializing_if = "Option::is_none")]
+        time: Option<u64>,
+        hex: String,
+        txid: bitcoin::Txid,
+        hash: String,
+        size: u64,
+        vsize: u64,
+        weight: u64,
+        version: u32,
+        locktime: serde_json::Value,
+        vin: Vec<serde_json::Value>,
+        vout: Vec<serde_json::Value>,
+    },
+    Detailed {
+        field_0: serde_json::Value,
+        #[serde(skip_serializing_if = "Option::is_none")]
+        fee: Option<f64>,
+        vin: Vec<serde_json::Value>,
+    },
 }
 
 /// Returns the total amount received by the given address in transactions with at least minconf confirmations.
@@ -1044,8 +1024,17 @@ pub struct GettransactionResponse {
 
 /// Returns details about an unspent transaction output.
 #[derive(Debug, Deserialize, Serialize)]
-#[serde(transparent)]
-pub struct GettxoutResponse(pub serde_json::Value);
+#[serde(untagged)]
+pub enum GettxoutResponse {
+    Variant2 {
+        bestblock: String,
+        confirmations: u64,
+        value: f64,
+        #[serde(rename = "scriptPubKey")]
+        script_pubkey: serde_json::Value,
+        coinbase: bool,
+    },
+}
 
 /// Returns a hex-encoded proof that \"txid\" was included in a block.
 ///
@@ -1349,19 +1338,19 @@ pub struct SavemempoolResponse {
 /// Return relevant blockhashes for given descriptors (requires blockfilterindex).
 /// This call may take several minutes. Make sure to use no RPC timeout (bitcoin-cli -rpcclienttimeout=0)
 #[derive(Debug, Deserialize, Serialize)]
-pub struct ScanblocksResponse {
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub from_height: Option<u64>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub to_height: Option<u64>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub relevant_blocks: Option<Vec<serde_json::Value>>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub completed: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub progress: Option<u64>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub current_height: Option<u64>,
+#[serde(untagged)]
+pub enum ScanblocksResponse {
+    Started {
+        from_height: u64,
+        to_height: u64,
+        relevant_blocks: Vec<serde_json::Value>,
+        completed: bool,
+    },
+    Status {
+        progress: u64,
+        current_height: u64,
+    },
+    Aborted(bool),
 }
 
 /// Scans the unspent transaction output set for entries that match certain output descriptors.
@@ -1382,21 +1371,18 @@ pub struct ScanblocksResponse {
 /// In the latter case, a range needs to be specified by below if different from 1000.
 /// For more information on output descriptors, see the documentation in the doc/descriptors.md file.
 #[derive(Debug, Deserialize, Serialize)]
-pub struct ScantxoutsetResponse {
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub success: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub txouts: Option<u64>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub height: Option<u64>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub bestblock: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub unspents: Option<Vec<serde_json::Value>>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub total_amount: Option<f64>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub progress: Option<u64>,
+#[serde(untagged)]
+pub enum ScantxoutsetResponse {
+    Started {
+        success: bool,
+        txouts: u64,
+        height: u64,
+        bestblock: String,
+        unspents: Vec<serde_json::Value>,
+        total_amount: f64,
+    },
+    Aborted(bool),
+    Status(serde_json::Value),
 }
 
 /// Return RPC command JSON Schema descriptions.
@@ -1437,11 +1423,10 @@ pub struct SendallResponse {
 /// Send multiple times. Amounts are double-precision floating point numbers.
 /// Requires wallet passphrase to be set with walletpassphrase call if wallet is encrypted.
 #[derive(Debug, Deserialize, Serialize)]
-pub struct SendmanyResponse {
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub txid: Option<bitcoin::Txid>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub fee_reason: Option<String>,
+#[serde(untagged)]
+pub enum SendmanyResponse {
+    Variant1(bitcoin::Txid),
+    Variant2 { txid: bitcoin::Txid, fee_reason: String },
 }
 
 /// Send a p2p message to a peer specified by id.
@@ -1467,11 +1452,10 @@ pub struct SendrawtransactionResponse(pub String);
 /// Send an amount to a given address.
 /// Requires wallet passphrase to be set with walletpassphrase call if wallet is encrypted.
 #[derive(Debug, Deserialize, Serialize)]
-pub struct SendtoaddressResponse {
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub txid: Option<bitcoin::Txid>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub fee_reason: Option<String>,
+#[serde(untagged)]
+pub enum SendtoaddressResponse {
+    Variant1(bitcoin::Txid),
+    Variant2 { txid: bitcoin::Txid, fee_reason: String },
 }
 
 /// Disable/enable all p2p network activity.
@@ -1544,8 +1528,10 @@ pub struct StopResponse(pub String);
 /// Attempts to submit new block to network.
 /// See https://en.bitcoin.it/wiki/BIP_0022 for full specification.
 #[derive(Debug, Deserialize, Serialize)]
-#[serde(transparent)]
-pub struct SubmitblockResponse(pub serde_json::Value);
+#[serde(untagged)]
+pub enum SubmitblockResponse {
+    Variant2(String),
+}
 
 /// Submit a package of raw transactions (serialized, hex-encoded) to local node.
 /// The package will be validated according to consensus and mempool policy rules. If any transaction passes, it will be accepted to mempool.
@@ -1598,8 +1584,9 @@ pub struct ValidateaddressResponse {
     pub isvalid: bool,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub address: Option<String>,
+    #[serde(rename = "scriptPubKey")]
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub script_pub_key: Option<String>,
+    pub script_pubkey: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub isscript: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]

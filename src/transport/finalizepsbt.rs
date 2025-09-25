@@ -1,21 +1,45 @@
 //! This file is auto-generated. Do not edit manually.
 //! Generated from Bitcoin Core v29.1
 
+use serde::{Deserialize, Serialize};
+use serde_json::json;
 /// Finalize the inputs of a PSBT. If the transaction is fully signed, it will produce a
 /// network serialized transaction which can be broadcast with sendrawtransaction. Otherwise a PSBT will be
 /// created which has the final_scriptSig and final_scriptWitness fields filled for inputs that are complete.
 /// Implements the Finalizer and Extractor roles.
 
-/// # Example
+/// # Example: High-Level Client Usage (Recommended)
 /// ```rust
-/// use bitcoin_rpc_codegen::client::v29_1::finalizepsbt;
+/// use bitcoin_rpc_midas::*;
 ///
-/// let client = Client::new("http://127.0.0.1:18443", auth);
+/// async fn example() -> Result<(), Box<dyn std::error::Error>> {
+/// let client = BitcoinTestClient::new().await?;
 /// let result = client.finalizepsbt(/* params */).await?;
+/// # Ok(())
+/// # }
 /// ```
-use serde::{Deserialize, Serialize};
-use serde_json::{json, Value};
-use transport::{TransportError, TransportTrait};
+
+/// # Example: Advanced - Direct Transport Function Usage
+/// This approach is for advanced users who need direct control over the transport layer.
+/// Most users should prefer the high-level client approach above.
+/// ```rust
+/// use bitcoin_rpc_midas::transport::finalizepsbt;
+/// use bitcoin_rpc_midas::transport::{TransportTrait, DefaultTransport};
+///
+/// async fn example() -> Result<(), Box<dyn std::error::Error>> {
+/// let transport = DefaultTransport::new(
+///     "http://127.0.0.1:18443".to_string(),
+///     Some(("rpcuser".to_string(), "rpcpassword".to_string()))
+/// );
+/// let result = finalizepsbt(&transport, /* params */).await?;
+/// # Ok(())
+/// # }
+/// ```
+
+#[allow(unused_imports)]
+use serde_json::Value;
+
+use crate::transport::{TransportError, TransportTrait};
 /// Finalize the inputs of a PSBT. If the transaction is fully signed, it will produce a
 /// network serialized transaction which can be broadcast with sendrawtransaction. Otherwise a PSBT will be
 /// created which has the final_scriptSig and final_scriptWitness fields filled for inputs that are complete.

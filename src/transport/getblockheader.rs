@@ -1,55 +1,71 @@
 //! This file is auto-generated. Do not edit manually.
 //! Generated from Bitcoin Core v29.1
 
+use serde::{Deserialize, Serialize};
+use serde_json::json;
 /// If verbose is false, returns a string that is serialized, hex-encoded data for blockheader 'hash'.
 /// If verbose is true, returns an Object with information about blockheader <hash>.
 
-/// # Example
+/// # Example: High-Level Client Usage (Recommended)
 /// ```rust
-/// use bitcoin_rpc_codegen::client::v29_1::getblockheader;
+/// use bitcoin_rpc_midas::*;
 ///
-/// let client = Client::new("http://127.0.0.1:18443", auth);
+/// async fn example() -> Result<(), Box<dyn std::error::Error>> {
+/// let client = BitcoinTestClient::new().await?;
 /// let result = client.getblockheader(/* params */).await?;
+/// # Ok(())
+/// # }
 /// ```
-use serde::{Deserialize, Serialize};
-use serde_json::{json, Value};
-use transport::{TransportError, TransportTrait};
+
+/// # Example: Advanced - Direct Transport Function Usage
+/// This approach is for advanced users who need direct control over the transport layer.
+/// Most users should prefer the high-level client approach above.
+/// ```rust
+/// use bitcoin_rpc_midas::transport::getblockheader;
+/// use bitcoin_rpc_midas::transport::{TransportTrait, DefaultTransport};
+///
+/// async fn example() -> Result<(), Box<dyn std::error::Error>> {
+/// let transport = DefaultTransport::new(
+///     "http://127.0.0.1:18443".to_string(),
+///     Some(("rpcuser".to_string(), "rpcpassword".to_string()))
+/// );
+/// let result = getblockheader(&transport, /* params */).await?;
+/// # Ok(())
+/// # }
+/// ```
+
+#[allow(unused_imports)]
+use serde_json::Value;
+
+use crate::transport::{TransportError, TransportTrait};
 /// If verbose is false, returns a string that is serialized, hex-encoded data for blockheader 'hash'.
 /// If verbose is true, returns an Object with information about blockheader <hash>.
 #[derive(Debug, Deserialize, Serialize)]
-pub struct GetblockheaderResponse {
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub hash: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub confirmations: Option<u64>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub height: Option<u64>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub version: Option<u32>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub version_hex: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub merkleroot: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub time: Option<serde_json::Value>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub mediantime: Option<serde_json::Value>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub nonce: Option<u64>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub bits: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub target: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub difficulty: Option<f64>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub chainwork: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub n_tx: Option<u64>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub previousblockhash: Option<bitcoin::BlockHash>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub nextblockhash: Option<bitcoin::BlockHash>,
+#[serde(untagged)]
+pub enum GetblockheaderResponse {
+    Verbose {
+        hash: String,
+        confirmations: u64,
+        height: u64,
+        version: u32,
+        #[serde(rename = "versionHex")]
+        version_hex: String,
+        merkleroot: String,
+        time: serde_json::Value,
+        mediantime: serde_json::Value,
+        nonce: u64,
+        bits: String,
+        target: String,
+        difficulty: f64,
+        chainwork: String,
+        #[serde(rename = "nTx")]
+        n_tx: u64,
+        #[serde(skip_serializing_if = "Option::is_none")]
+        previousblockhash: Option<bitcoin::BlockHash>,
+        #[serde(skip_serializing_if = "Option::is_none")]
+        nextblockhash: Option<bitcoin::BlockHash>,
+    },
+    Variant2(String),
 }
 
 /// Calls the `getblockheader` RPC method.

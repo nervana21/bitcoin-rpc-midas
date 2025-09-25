@@ -1,8 +1,10 @@
-use crate::transport::{BatchTransport, TransportError, TransportTrait};
-use crate::types::*;
+use std::sync::Arc;
+
 use serde::Deserialize;
 use serde_json::{json, Value};
-use std::sync::Arc;
+
+use crate::responses::*;
+use crate::transport::{BatchTransport, TransportError, TransportTrait};
 /// Typed results for a JSON-RPC batch
 #[derive(Debug, Deserialize)]
 pub struct BatchResults {
@@ -187,10 +189,7 @@ impl BatchBuilder {
     pub fn new(inner: Arc<dyn TransportTrait>) -> Self {
         let tx = BatchTransport::new(inner);
         tx.begin_batch();
-        BatchBuilder {
-            tx,
-            calls: Vec::new(),
-        }
+        BatchBuilder { tx, calls: Vec::new() }
     }
 
     /// Queue a `abandontransaction` RPC call
@@ -221,19 +220,13 @@ impl BatchBuilder {
 
     /// Queue a `addnode` RPC call
     pub fn addnode(mut self, node: Value, command: Value, v2transport: Value) -> Self {
-        self.calls.push((
-            "addnode",
-            vec![json!(node), json!(command), json!(v2transport)],
-        ));
+        self.calls.push(("addnode", vec![json!(node), json!(command), json!(v2transport)]));
         self
     }
 
     /// Queue a `addpeeraddress` RPC call
     pub fn addpeeraddress(mut self, address: Value, port: Value, tried: Value) -> Self {
-        self.calls.push((
-            "addpeeraddress",
-            vec![json!(address), json!(port), json!(tried)],
-        ));
+        self.calls.push(("addpeeraddress", vec![json!(address), json!(port), json!(tried)]));
         self
     }
 
@@ -251,8 +244,7 @@ impl BatchBuilder {
 
     /// Queue a `bumpfee` RPC call
     pub fn bumpfee(mut self, txid: Value, options: Value) -> Self {
-        self.calls
-            .push(("bumpfee", vec![json!(txid), json!(options)]));
+        self.calls.push(("bumpfee", vec![json!(txid), json!(options)]));
         self
     }
 
@@ -290,10 +282,8 @@ impl BatchBuilder {
 
     /// Queue a `createmultisig` RPC call
     pub fn createmultisig(mut self, nrequired: Value, keys: Value, address_type: Value) -> Self {
-        self.calls.push((
-            "createmultisig",
-            vec![json!(nrequired), json!(keys), json!(address_type)],
-        ));
+        self.calls
+            .push(("createmultisig", vec![json!(nrequired), json!(keys), json!(address_type)]));
         self
     }
 
@@ -371,10 +361,7 @@ impl BatchBuilder {
 
     /// Queue a `createwalletdescriptor` RPC call
     pub fn createwalletdescriptor(mut self, r#type: Value, options: Value) -> Self {
-        self.calls.push((
-            "createwalletdescriptor",
-            vec![json!(r#type), json!(options)],
-        ));
+        self.calls.push(("createwalletdescriptor", vec![json!(r#type), json!(options)]));
         self
     }
 
@@ -386,10 +373,7 @@ impl BatchBuilder {
 
     /// Queue a `decoderawtransaction` RPC call
     pub fn decoderawtransaction(mut self, hexstring: Value, iswitness: Value) -> Self {
-        self.calls.push((
-            "decoderawtransaction",
-            vec![json!(hexstring), json!(iswitness)],
-        ));
+        self.calls.push(("decoderawtransaction", vec![json!(hexstring), json!(iswitness)]));
         self
     }
 
@@ -401,8 +385,7 @@ impl BatchBuilder {
 
     /// Queue a `deriveaddresses` RPC call
     pub fn deriveaddresses(mut self, descriptor: Value, range: Value) -> Self {
-        self.calls
-            .push(("deriveaddresses", vec![json!(descriptor), json!(range)]));
+        self.calls.push(("deriveaddresses", vec![json!(descriptor), json!(range)]));
         self
     }
 
@@ -430,17 +413,13 @@ impl BatchBuilder {
 
     /// Queue a `disconnectnode` RPC call
     pub fn disconnectnode(mut self, address: Value, nodeid: Value) -> Self {
-        self.calls
-            .push(("disconnectnode", vec![json!(address), json!(nodeid)]));
+        self.calls.push(("disconnectnode", vec![json!(address), json!(nodeid)]));
         self
     }
 
     /// Queue a `dumptxoutset` RPC call
     pub fn dumptxoutset(mut self, path: Value, r#type: Value, options: Value) -> Self {
-        self.calls.push((
-            "dumptxoutset",
-            vec![json!(path), json!(r#type), json!(options)],
-        ));
+        self.calls.push(("dumptxoutset", vec![json!(path), json!(r#type), json!(options)]));
         self
     }
 
@@ -528,24 +507,19 @@ impl BatchBuilder {
 
     /// Queue a `estimaterawfee` RPC call
     pub fn estimaterawfee(mut self, conf_target: Value, threshold: Value) -> Self {
-        self.calls
-            .push(("estimaterawfee", vec![json!(conf_target), json!(threshold)]));
+        self.calls.push(("estimaterawfee", vec![json!(conf_target), json!(threshold)]));
         self
     }
 
     /// Queue a `estimatesmartfee` RPC call
     pub fn estimatesmartfee(mut self, conf_target: Value, estimate_mode: Value) -> Self {
-        self.calls.push((
-            "estimatesmartfee",
-            vec![json!(conf_target), json!(estimate_mode)],
-        ));
+        self.calls.push(("estimatesmartfee", vec![json!(conf_target), json!(estimate_mode)]));
         self
     }
 
     /// Queue a `finalizepsbt` RPC call
     pub fn finalizepsbt(mut self, psbt: Value, extract: Value) -> Self {
-        self.calls
-            .push(("finalizepsbt", vec![json!(psbt), json!(extract)]));
+        self.calls.push(("finalizepsbt", vec![json!(psbt), json!(extract)]));
         self
     }
 
@@ -556,10 +530,8 @@ impl BatchBuilder {
         options: Value,
         iswitness: Value,
     ) -> Self {
-        self.calls.push((
-            "fundrawtransaction",
-            vec![json!(hexstring), json!(options), json!(iswitness)],
-        ));
+        self.calls
+            .push(("fundrawtransaction", vec![json!(hexstring), json!(options), json!(iswitness)]));
         self
     }
 
@@ -571,19 +543,14 @@ impl BatchBuilder {
 
     /// Queue a `generateblock` RPC call
     pub fn generateblock(mut self, output: Value, transactions: Value, submit: Value) -> Self {
-        self.calls.push((
-            "generateblock",
-            vec![json!(output), json!(transactions), json!(submit)],
-        ));
+        self.calls.push(("generateblock", vec![json!(output), json!(transactions), json!(submit)]));
         self
     }
 
     /// Queue a `generatetoaddress` RPC call
     pub fn generatetoaddress(mut self, nblocks: Value, address: Value, maxtries: Value) -> Self {
-        self.calls.push((
-            "generatetoaddress",
-            vec![json!(nblocks), json!(address), json!(maxtries)],
-        ));
+        self.calls
+            .push(("generatetoaddress", vec![json!(nblocks), json!(address), json!(maxtries)]));
         self
     }
 
@@ -635,12 +602,7 @@ impl BatchBuilder {
     ) -> Self {
         self.calls.push((
             "getbalance",
-            vec![
-                json!(dummy),
-                json!(minconf),
-                json!(include_watchonly),
-                json!(avoid_reuse),
-            ],
+            vec![json!(dummy), json!(minconf), json!(include_watchonly), json!(avoid_reuse)],
         ));
         self
     }
@@ -659,8 +621,7 @@ impl BatchBuilder {
 
     /// Queue a `getblock` RPC call
     pub fn getblock(mut self, blockhash: Value, verbosity: Value) -> Self {
-        self.calls
-            .push(("getblock", vec![json!(blockhash), json!(verbosity)]));
+        self.calls.push(("getblock", vec![json!(blockhash), json!(verbosity)]));
         self
     }
 
@@ -678,15 +639,13 @@ impl BatchBuilder {
 
     /// Queue a `getblockfilter` RPC call
     pub fn getblockfilter(mut self, blockhash: Value, filtertype: Value) -> Self {
-        self.calls
-            .push(("getblockfilter", vec![json!(blockhash), json!(filtertype)]));
+        self.calls.push(("getblockfilter", vec![json!(blockhash), json!(filtertype)]));
         self
     }
 
     /// Queue a `getblockfrompeer` RPC call
     pub fn getblockfrompeer(mut self, blockhash: Value, peer_id: Value) -> Self {
-        self.calls
-            .push(("getblockfrompeer", vec![json!(blockhash), json!(peer_id)]));
+        self.calls.push(("getblockfrompeer", vec![json!(blockhash), json!(peer_id)]));
         self
     }
 
@@ -698,22 +657,19 @@ impl BatchBuilder {
 
     /// Queue a `getblockheader` RPC call
     pub fn getblockheader(mut self, blockhash: Value, verbose: Value) -> Self {
-        self.calls
-            .push(("getblockheader", vec![json!(blockhash), json!(verbose)]));
+        self.calls.push(("getblockheader", vec![json!(blockhash), json!(verbose)]));
         self
     }
 
     /// Queue a `getblockstats` RPC call
     pub fn getblockstats(mut self, hash_or_height: Value, stats: Value) -> Self {
-        self.calls
-            .push(("getblockstats", vec![json!(hash_or_height), json!(stats)]));
+        self.calls.push(("getblockstats", vec![json!(hash_or_height), json!(stats)]));
         self
     }
 
     /// Queue a `getblocktemplate` RPC call
     pub fn getblocktemplate(mut self, template_request: Value) -> Self {
-        self.calls
-            .push(("getblocktemplate", vec![json!(template_request)]));
+        self.calls.push(("getblocktemplate", vec![json!(template_request)]));
         self
     }
 
@@ -731,8 +687,7 @@ impl BatchBuilder {
 
     /// Queue a `getchaintxstats` RPC call
     pub fn getchaintxstats(mut self, nblocks: Value, blockhash: Value) -> Self {
-        self.calls
-            .push(("getchaintxstats", vec![json!(nblocks), json!(blockhash)]));
+        self.calls.push(("getchaintxstats", vec![json!(nblocks), json!(blockhash)]));
         self
     }
 
@@ -744,8 +699,7 @@ impl BatchBuilder {
 
     /// Queue a `getdeploymentinfo` RPC call
     pub fn getdeploymentinfo(mut self, blockhash: Value) -> Self {
-        self.calls
-            .push(("getdeploymentinfo", vec![json!(blockhash)]));
+        self.calls.push(("getdeploymentinfo", vec![json!(blockhash)]));
         self
     }
 
@@ -758,19 +712,14 @@ impl BatchBuilder {
     ) -> Self {
         self.calls.push((
             "getdescriptoractivity",
-            vec![
-                json!(blockhashes),
-                json!(scanobjects),
-                json!(include_mempool),
-            ],
+            vec![json!(blockhashes), json!(scanobjects), json!(include_mempool)],
         ));
         self
     }
 
     /// Queue a `getdescriptorinfo` RPC call
     pub fn getdescriptorinfo(mut self, descriptor: Value) -> Self {
-        self.calls
-            .push(("getdescriptorinfo", vec![json!(descriptor)]));
+        self.calls.push(("getdescriptorinfo", vec![json!(descriptor)]));
         self
     }
 
@@ -800,15 +749,13 @@ impl BatchBuilder {
 
     /// Queue a `getmempoolancestors` RPC call
     pub fn getmempoolancestors(mut self, txid: Value, verbose: Value) -> Self {
-        self.calls
-            .push(("getmempoolancestors", vec![json!(txid), json!(verbose)]));
+        self.calls.push(("getmempoolancestors", vec![json!(txid), json!(verbose)]));
         self
     }
 
     /// Queue a `getmempooldescendants` RPC call
     pub fn getmempooldescendants(mut self, txid: Value, verbose: Value) -> Self {
-        self.calls
-            .push(("getmempooldescendants", vec![json!(txid), json!(verbose)]));
+        self.calls.push(("getmempooldescendants", vec![json!(txid), json!(verbose)]));
         self
     }
 
@@ -838,8 +785,7 @@ impl BatchBuilder {
 
     /// Queue a `getnetworkhashps` RPC call
     pub fn getnetworkhashps(mut self, nblocks: Value, height: Value) -> Self {
-        self.calls
-            .push(("getnetworkhashps", vec![json!(nblocks), json!(height)]));
+        self.calls.push(("getnetworkhashps", vec![json!(nblocks), json!(height)]));
         self
     }
 
@@ -851,15 +797,13 @@ impl BatchBuilder {
 
     /// Queue a `getnewaddress` RPC call
     pub fn getnewaddress(mut self, label: Value, address_type: Value) -> Self {
-        self.calls
-            .push(("getnewaddress", vec![json!(label), json!(address_type)]));
+        self.calls.push(("getnewaddress", vec![json!(label), json!(address_type)]));
         self
     }
 
     /// Queue a `getnodeaddresses` RPC call
     pub fn getnodeaddresses(mut self, count: Value, network: Value) -> Self {
-        self.calls
-            .push(("getnodeaddresses", vec![json!(count), json!(network)]));
+        self.calls.push(("getnodeaddresses", vec![json!(count), json!(network)]));
         self
     }
 
@@ -889,26 +833,20 @@ impl BatchBuilder {
 
     /// Queue a `getrawchangeaddress` RPC call
     pub fn getrawchangeaddress(mut self, address_type: Value) -> Self {
-        self.calls
-            .push(("getrawchangeaddress", vec![json!(address_type)]));
+        self.calls.push(("getrawchangeaddress", vec![json!(address_type)]));
         self
     }
 
     /// Queue a `getrawmempool` RPC call
     pub fn getrawmempool(mut self, verbose: Value, mempool_sequence: Value) -> Self {
-        self.calls.push((
-            "getrawmempool",
-            vec![json!(verbose), json!(mempool_sequence)],
-        ));
+        self.calls.push(("getrawmempool", vec![json!(verbose), json!(mempool_sequence)]));
         self
     }
 
     /// Queue a `getrawtransaction` RPC call
     pub fn getrawtransaction(mut self, txid: Value, verbosity: Value, blockhash: Value) -> Self {
-        self.calls.push((
-            "getrawtransaction",
-            vec![json!(txid), json!(verbosity), json!(blockhash)],
-        ));
+        self.calls
+            .push(("getrawtransaction", vec![json!(txid), json!(verbosity), json!(blockhash)]));
         self
     }
 
@@ -921,11 +859,7 @@ impl BatchBuilder {
     ) -> Self {
         self.calls.push((
             "getreceivedbyaddress",
-            vec![
-                json!(address),
-                json!(minconf),
-                json!(include_immature_coinbase),
-            ],
+            vec![json!(address), json!(minconf), json!(include_immature_coinbase)],
         ));
         self
     }
@@ -939,11 +873,7 @@ impl BatchBuilder {
     ) -> Self {
         self.calls.push((
             "getreceivedbylabel",
-            vec![
-                json!(label),
-                json!(minconf),
-                json!(include_immature_coinbase),
-            ],
+            vec![json!(label), json!(minconf), json!(include_immature_coinbase)],
         ));
         self
     }
@@ -956,26 +886,20 @@ impl BatchBuilder {
 
     /// Queue a `gettransaction` RPC call
     pub fn gettransaction(mut self, txid: Value, include_watchonly: Value, verbose: Value) -> Self {
-        self.calls.push((
-            "gettransaction",
-            vec![json!(txid), json!(include_watchonly), json!(verbose)],
-        ));
+        self.calls
+            .push(("gettransaction", vec![json!(txid), json!(include_watchonly), json!(verbose)]));
         self
     }
 
     /// Queue a `gettxout` RPC call
     pub fn gettxout(mut self, txid: Value, n: Value, include_mempool: Value) -> Self {
-        self.calls.push((
-            "gettxout",
-            vec![json!(txid), json!(n), json!(include_mempool)],
-        ));
+        self.calls.push(("gettxout", vec![json!(txid), json!(n), json!(include_mempool)]));
         self
     }
 
     /// Queue a `gettxoutproof` RPC call
     pub fn gettxoutproof(mut self, txids: Value, blockhash: Value) -> Self {
-        self.calls
-            .push(("gettxoutproof", vec![json!(txids), json!(blockhash)]));
+        self.calls.push(("gettxoutproof", vec![json!(txids), json!(blockhash)]));
         self
     }
 
@@ -995,8 +919,7 @@ impl BatchBuilder {
 
     /// Queue a `gettxspendingprevout` RPC call
     pub fn gettxspendingprevout(mut self, outputs: Value) -> Self {
-        self.calls
-            .push(("gettxspendingprevout", vec![json!(outputs)]));
+        self.calls.push(("gettxspendingprevout", vec![json!(outputs)]));
         self
     }
 
@@ -1020,24 +943,19 @@ impl BatchBuilder {
 
     /// Queue a `importdescriptors` RPC call
     pub fn importdescriptors(mut self, requests: Value) -> Self {
-        self.calls
-            .push(("importdescriptors", vec![json!(requests)]));
+        self.calls.push(("importdescriptors", vec![json!(requests)]));
         self
     }
 
     /// Queue a `importmempool` RPC call
     pub fn importmempool(mut self, filepath: Value, options: Value) -> Self {
-        self.calls
-            .push(("importmempool", vec![json!(filepath), json!(options)]));
+        self.calls.push(("importmempool", vec![json!(filepath), json!(options)]));
         self
     }
 
     /// Queue a `importprunedfunds` RPC call
     pub fn importprunedfunds(mut self, rawtransaction: Value, txoutproof: Value) -> Self {
-        self.calls.push((
-            "importprunedfunds",
-            vec![json!(rawtransaction), json!(txoutproof)],
-        ));
+        self.calls.push(("importprunedfunds", vec![json!(rawtransaction), json!(txoutproof)]));
         self
     }
 
@@ -1165,12 +1083,7 @@ impl BatchBuilder {
     ) -> Self {
         self.calls.push((
             "listtransactions",
-            vec![
-                json!(label),
-                json!(count),
-                json!(skip),
-                json!(include_watchonly),
-            ],
+            vec![json!(label), json!(count), json!(skip), json!(include_watchonly)],
         ));
         self
     }
@@ -1217,31 +1130,26 @@ impl BatchBuilder {
 
     /// Queue a `loadwallet` RPC call
     pub fn loadwallet(mut self, filename: Value, load_on_startup: Value) -> Self {
-        self.calls
-            .push(("loadwallet", vec![json!(filename), json!(load_on_startup)]));
+        self.calls.push(("loadwallet", vec![json!(filename), json!(load_on_startup)]));
         self
     }
 
     /// Queue a `lockunspent` RPC call
     pub fn lockunspent(mut self, unlock: Value, transactions: Value, persistent: Value) -> Self {
-        self.calls.push((
-            "lockunspent",
-            vec![json!(unlock), json!(transactions), json!(persistent)],
-        ));
+        self.calls
+            .push(("lockunspent", vec![json!(unlock), json!(transactions), json!(persistent)]));
         self
     }
 
     /// Queue a `logging` RPC call
     pub fn logging(mut self, include: Value, exclude: Value) -> Self {
-        self.calls
-            .push(("logging", vec![json!(include), json!(exclude)]));
+        self.calls.push(("logging", vec![json!(include), json!(exclude)]));
         self
     }
 
     /// Queue a `migratewallet` RPC call
     pub fn migratewallet(mut self, wallet_name: Value, passphrase: Value) -> Self {
-        self.calls
-            .push(("migratewallet", vec![json!(wallet_name), json!(passphrase)]));
+        self.calls.push(("migratewallet", vec![json!(wallet_name), json!(passphrase)]));
         self
     }
 
@@ -1265,10 +1173,8 @@ impl BatchBuilder {
 
     /// Queue a `prioritisetransaction` RPC call
     pub fn prioritisetransaction(mut self, txid: Value, dummy: Value, fee_delta: Value) -> Self {
-        self.calls.push((
-            "prioritisetransaction",
-            vec![json!(txid), json!(dummy), json!(fee_delta)],
-        ));
+        self.calls
+            .push(("prioritisetransaction", vec![json!(txid), json!(dummy), json!(fee_delta)]));
         self
     }
 
@@ -1280,8 +1186,7 @@ impl BatchBuilder {
 
     /// Queue a `psbtbumpfee` RPC call
     pub fn psbtbumpfee(mut self, txid: Value, options: Value) -> Self {
-        self.calls
-            .push(("psbtbumpfee", vec![json!(txid), json!(options)]));
+        self.calls.push(("psbtbumpfee", vec![json!(txid), json!(options)]));
         self
     }
 
@@ -1299,10 +1204,7 @@ impl BatchBuilder {
 
     /// Queue a `rescanblockchain` RPC call
     pub fn rescanblockchain(mut self, start_height: Value, stop_height: Value) -> Self {
-        self.calls.push((
-            "rescanblockchain",
-            vec![json!(start_height), json!(stop_height)],
-        ));
+        self.calls.push(("rescanblockchain", vec![json!(start_height), json!(stop_height)]));
         self
     }
 
@@ -1315,11 +1217,7 @@ impl BatchBuilder {
     ) -> Self {
         self.calls.push((
             "restorewallet",
-            vec![
-                json!(wallet_name),
-                json!(backup_file),
-                json!(load_on_startup),
-            ],
+            vec![json!(wallet_name), json!(backup_file), json!(load_on_startup)],
         ));
         self
     }
@@ -1356,8 +1254,7 @@ impl BatchBuilder {
 
     /// Queue a `scantxoutset` RPC call
     pub fn scantxoutset(mut self, action: Value, scanobjects: Value) -> Self {
-        self.calls
-            .push(("scantxoutset", vec![json!(action), json!(scanobjects)]));
+        self.calls.push(("scantxoutset", vec![json!(action), json!(scanobjects)]));
         self
     }
 
@@ -1447,10 +1344,7 @@ impl BatchBuilder {
 
     /// Queue a `sendmsgtopeer` RPC call
     pub fn sendmsgtopeer(mut self, peer_id: Value, msg_type: Value, msg: Value) -> Self {
-        self.calls.push((
-            "sendmsgtopeer",
-            vec![json!(peer_id), json!(msg_type), json!(msg)],
-        ));
+        self.calls.push(("sendmsgtopeer", vec![json!(peer_id), json!(msg_type), json!(msg)]));
         self
     }
 
@@ -1510,22 +1404,14 @@ impl BatchBuilder {
         bantime: Value,
         absolute: Value,
     ) -> Self {
-        self.calls.push((
-            "setban",
-            vec![
-                json!(subnet),
-                json!(command),
-                json!(bantime),
-                json!(absolute),
-            ],
-        ));
+        self.calls
+            .push(("setban", vec![json!(subnet), json!(command), json!(bantime), json!(absolute)]));
         self
     }
 
     /// Queue a `setlabel` RPC call
     pub fn setlabel(mut self, address: Value, label: Value) -> Self {
-        self.calls
-            .push(("setlabel", vec![json!(address), json!(label)]));
+        self.calls.push(("setlabel", vec![json!(address), json!(label)]));
         self
     }
 
@@ -1549,24 +1435,19 @@ impl BatchBuilder {
 
     /// Queue a `setwalletflag` RPC call
     pub fn setwalletflag(mut self, flag: Value, value: Value) -> Self {
-        self.calls
-            .push(("setwalletflag", vec![json!(flag), json!(value)]));
+        self.calls.push(("setwalletflag", vec![json!(flag), json!(value)]));
         self
     }
 
     /// Queue a `signmessage` RPC call
     pub fn signmessage(mut self, address: Value, message: Value) -> Self {
-        self.calls
-            .push(("signmessage", vec![json!(address), json!(message)]));
+        self.calls.push(("signmessage", vec![json!(address), json!(message)]));
         self
     }
 
     /// Queue a `signmessagewithprivkey` RPC call
     pub fn signmessagewithprivkey(mut self, privkey: Value, message: Value) -> Self {
-        self.calls.push((
-            "signmessagewithprivkey",
-            vec![json!(privkey), json!(message)],
-        ));
+        self.calls.push(("signmessagewithprivkey", vec![json!(privkey), json!(message)]));
         self
     }
 
@@ -1580,12 +1461,7 @@ impl BatchBuilder {
     ) -> Self {
         self.calls.push((
             "signrawtransactionwithkey",
-            vec![
-                json!(hexstring),
-                json!(privkeys),
-                json!(prevtxs),
-                json!(sighashtype),
-            ],
+            vec![json!(hexstring), json!(privkeys), json!(prevtxs), json!(sighashtype)],
         ));
         self
     }
@@ -1606,10 +1482,7 @@ impl BatchBuilder {
 
     /// Queue a `simulaterawtransaction` RPC call
     pub fn simulaterawtransaction(mut self, rawtxs: Value, options: Value) -> Self {
-        self.calls.push((
-            "simulaterawtransaction",
-            vec![json!(rawtxs), json!(options)],
-        ));
+        self.calls.push(("simulaterawtransaction", vec![json!(rawtxs), json!(options)]));
         self
     }
 
@@ -1621,8 +1494,7 @@ impl BatchBuilder {
 
     /// Queue a `submitblock` RPC call
     pub fn submitblock(mut self, hexdata: Value, dummy: Value) -> Self {
-        self.calls
-            .push(("submitblock", vec![json!(hexdata), json!(dummy)]));
+        self.calls.push(("submitblock", vec![json!(hexdata), json!(dummy)]));
         self
     }
 
@@ -1639,33 +1511,26 @@ impl BatchBuilder {
         maxfeerate: Value,
         maxburnamount: Value,
     ) -> Self {
-        self.calls.push((
-            "submitpackage",
-            vec![json!(package), json!(maxfeerate), json!(maxburnamount)],
-        ));
+        self.calls
+            .push(("submitpackage", vec![json!(package), json!(maxfeerate), json!(maxburnamount)]));
         self
     }
 
     /// Queue a `syncwithvalidationinterfacequeue` RPC call
     pub fn syncwithvalidationinterfacequeue(mut self) -> Self {
-        self.calls
-            .push(("syncwithvalidationinterfacequeue", Vec::new()));
+        self.calls.push(("syncwithvalidationinterfacequeue", Vec::new()));
         self
     }
 
     /// Queue a `testmempoolaccept` RPC call
     pub fn testmempoolaccept(mut self, rawtxs: Value, maxfeerate: Value) -> Self {
-        self.calls
-            .push(("testmempoolaccept", vec![json!(rawtxs), json!(maxfeerate)]));
+        self.calls.push(("testmempoolaccept", vec![json!(rawtxs), json!(maxfeerate)]));
         self
     }
 
     /// Queue a `unloadwallet` RPC call
     pub fn unloadwallet(mut self, wallet_name: Value, load_on_startup: Value) -> Self {
-        self.calls.push((
-            "unloadwallet",
-            vec![json!(wallet_name), json!(load_on_startup)],
-        ));
+        self.calls.push(("unloadwallet", vec![json!(wallet_name), json!(load_on_startup)]));
         self
     }
 
@@ -1677,8 +1542,7 @@ impl BatchBuilder {
 
     /// Queue a `utxoupdatepsbt` RPC call
     pub fn utxoupdatepsbt(mut self, psbt: Value, descriptors: Value) -> Self {
-        self.calls
-            .push(("utxoupdatepsbt", vec![json!(psbt), json!(descriptors)]));
+        self.calls.push(("utxoupdatepsbt", vec![json!(psbt), json!(descriptors)]));
         self
     }
 
@@ -1690,17 +1554,13 @@ impl BatchBuilder {
 
     /// Queue a `verifychain` RPC call
     pub fn verifychain(mut self, checklevel: Value, nblocks: Value) -> Self {
-        self.calls
-            .push(("verifychain", vec![json!(checklevel), json!(nblocks)]));
+        self.calls.push(("verifychain", vec![json!(checklevel), json!(nblocks)]));
         self
     }
 
     /// Queue a `verifymessage` RPC call
     pub fn verifymessage(mut self, address: Value, signature: Value, message: Value) -> Self {
-        self.calls.push((
-            "verifymessage",
-            vec![json!(address), json!(signature), json!(message)],
-        ));
+        self.calls.push(("verifymessage", vec![json!(address), json!(signature), json!(message)]));
         self
     }
 
@@ -1712,22 +1572,19 @@ impl BatchBuilder {
 
     /// Queue a `waitforblock` RPC call
     pub fn waitforblock(mut self, blockhash: Value, timeout: Value) -> Self {
-        self.calls
-            .push(("waitforblock", vec![json!(blockhash), json!(timeout)]));
+        self.calls.push(("waitforblock", vec![json!(blockhash), json!(timeout)]));
         self
     }
 
     /// Queue a `waitforblockheight` RPC call
     pub fn waitforblockheight(mut self, height: Value, timeout: Value) -> Self {
-        self.calls
-            .push(("waitforblockheight", vec![json!(height), json!(timeout)]));
+        self.calls.push(("waitforblockheight", vec![json!(height), json!(timeout)]));
         self
     }
 
     /// Queue a `waitfornewblock` RPC call
     pub fn waitfornewblock(mut self, timeout: Value, current_tip: Value) -> Self {
-        self.calls
-            .push(("waitfornewblock", vec![json!(timeout), json!(current_tip)]));
+        self.calls.push(("waitfornewblock", vec![json!(timeout), json!(current_tip)]));
         self
     }
 
@@ -1757,8 +1614,7 @@ impl BatchBuilder {
 
     /// Queue a `walletdisplayaddress` RPC call
     pub fn walletdisplayaddress(mut self, address: Value) -> Self {
-        self.calls
-            .push(("walletdisplayaddress", vec![json!(address)]));
+        self.calls.push(("walletdisplayaddress", vec![json!(address)]));
         self
     }
 
@@ -1770,17 +1626,14 @@ impl BatchBuilder {
 
     /// Queue a `walletpassphrase` RPC call
     pub fn walletpassphrase(mut self, passphrase: Value, timeout: Value) -> Self {
-        self.calls
-            .push(("walletpassphrase", vec![json!(passphrase), json!(timeout)]));
+        self.calls.push(("walletpassphrase", vec![json!(passphrase), json!(timeout)]));
         self
     }
 
     /// Queue a `walletpassphrasechange` RPC call
     pub fn walletpassphrasechange(mut self, oldpassphrase: Value, newpassphrase: Value) -> Self {
-        self.calls.push((
-            "walletpassphrasechange",
-            vec![json!(oldpassphrase), json!(newpassphrase)],
-        ));
+        self.calls
+            .push(("walletpassphrasechange", vec![json!(oldpassphrase), json!(newpassphrase)]));
         self
     }
 
@@ -1795,13 +1648,7 @@ impl BatchBuilder {
     ) -> Self {
         self.calls.push((
             "walletprocesspsbt",
-            vec![
-                json!(psbt),
-                json!(sign),
-                json!(sighashtype),
-                json!(bip32derivs),
-                json!(finalize),
-            ],
+            vec![json!(psbt), json!(sign), json!(sighashtype), json!(bip32derivs), json!(finalize)],
         ));
         self
     }
@@ -1813,10 +1660,7 @@ impl BatchBuilder {
         for (method, params) in &calls {
             std::mem::drop(tx.send_request(method, params));
         }
-        let raw_results = tx
-            .end_batch()
-            .await
-            .map_err(|e| TransportError::Rpc(e.to_string()))?;
+        let raw_results = tx.end_batch().await.map_err(|e| TransportError::Rpc(e.to_string()))?;
 
         // Parse the raw results into our typed struct
         let mut results = BatchResults {
@@ -1994,789 +1838,599 @@ impl BatchBuilder {
         for (i, (method_name, _)) in calls.iter().enumerate() {
             match *method_name {
                 "abandontransaction" => results.abandontransaction = (),
-                "abortrescan" => {
-                    results.abortrescan = Some(serde_json::from_value::<AbortrescanResponse>(
-                        raw_results[i].clone(),
-                    )?)
-                }
-                "addconnection" => {
+                "abortrescan" =>
+                    results.abortrescan =
+                        Some(serde_json::from_value::<AbortrescanResponse>(raw_results[i].clone())?),
+                "addconnection" =>
                     results.addconnection = Some(serde_json::from_value::<AddconnectionResponse>(
                         raw_results[i].clone(),
-                    )?)
-                }
+                    )?),
                 "addnode" => results.addnode = (),
-                "addpeeraddress" => {
+                "addpeeraddress" =>
                     results.addpeeraddress = Some(serde_json::from_value::<AddpeeraddressResponse>(
                         raw_results[i].clone(),
-                    )?)
-                }
-                "analyzepsbt" => {
-                    results.analyzepsbt = Some(serde_json::from_value::<AnalyzepsbtResponse>(
-                        raw_results[i].clone(),
-                    )?)
-                }
+                    )?),
+                "analyzepsbt" =>
+                    results.analyzepsbt =
+                        Some(serde_json::from_value::<AnalyzepsbtResponse>(raw_results[i].clone())?),
                 "backupwallet" => results.backupwallet = (),
-                "bumpfee" => {
-                    results.bumpfee = Some(serde_json::from_value::<BumpfeeResponse>(
-                        raw_results[i].clone(),
-                    )?)
-                }
+                "bumpfee" =>
+                    results.bumpfee =
+                        Some(serde_json::from_value::<BumpfeeResponse>(raw_results[i].clone())?),
                 "clearbanned" => results.clearbanned = (),
-                "combinepsbt" => {
-                    results.combinepsbt = Some(serde_json::from_value::<CombinepsbtResponse>(
-                        raw_results[i].clone(),
-                    )?)
-                }
-                "combinerawtransaction" => {
+                "combinepsbt" =>
+                    results.combinepsbt =
+                        Some(serde_json::from_value::<CombinepsbtResponse>(raw_results[i].clone())?),
+                "combinerawtransaction" =>
                     results.combinerawtransaction =
                         Some(serde_json::from_value::<CombinerawtransactionResponse>(
                             raw_results[i].clone(),
-                        )?)
-                }
-                "converttopsbt" => {
+                        )?),
+                "converttopsbt" =>
                     results.converttopsbt = Some(serde_json::from_value::<ConverttopsbtResponse>(
                         raw_results[i].clone(),
-                    )?)
-                }
-                "createmultisig" => {
+                    )?),
+                "createmultisig" =>
                     results.createmultisig = Some(serde_json::from_value::<CreatemultisigResponse>(
                         raw_results[i].clone(),
-                    )?)
-                }
-                "createpsbt" => {
-                    results.createpsbt = Some(serde_json::from_value::<CreatepsbtResponse>(
-                        raw_results[i].clone(),
-                    )?)
-                }
-                "createrawtransaction" => {
+                    )?),
+                "createpsbt" =>
+                    results.createpsbt =
+                        Some(serde_json::from_value::<CreatepsbtResponse>(raw_results[i].clone())?),
+                "createrawtransaction" =>
                     results.createrawtransaction =
                         Some(serde_json::from_value::<CreaterawtransactionResponse>(
                             raw_results[i].clone(),
-                        )?)
-                }
-                "createwallet" => {
+                        )?),
+                "createwallet" =>
                     results.createwallet = Some(serde_json::from_value::<CreatewalletResponse>(
                         raw_results[i].clone(),
-                    )?)
-                }
-                "createwalletdescriptor" => {
+                    )?),
+                "createwalletdescriptor" =>
                     results.createwalletdescriptor =
                         Some(serde_json::from_value::<CreatewalletdescriptorResponse>(
                             raw_results[i].clone(),
-                        )?)
-                }
-                "decodepsbt" => {
-                    results.decodepsbt = Some(serde_json::from_value::<DecodepsbtResponse>(
-                        raw_results[i].clone(),
-                    )?)
-                }
-                "decoderawtransaction" => {
+                        )?),
+                "decodepsbt" =>
+                    results.decodepsbt =
+                        Some(serde_json::from_value::<DecodepsbtResponse>(raw_results[i].clone())?),
+                "decoderawtransaction" =>
                     results.decoderawtransaction =
                         Some(serde_json::from_value::<DecoderawtransactionResponse>(
                             raw_results[i].clone(),
-                        )?)
-                }
-                "decodescript" => {
+                        )?),
+                "decodescript" =>
                     results.decodescript = Some(serde_json::from_value::<DecodescriptResponse>(
                         raw_results[i].clone(),
-                    )?)
-                }
-                "deriveaddresses" => {
+                    )?),
+                "deriveaddresses" =>
                     results.deriveaddresses = Some(
                         serde_json::from_value::<DeriveaddressesResponse>(raw_results[i].clone())?,
-                    )
-                }
-                "descriptorprocesspsbt" => {
+                    ),
+                "descriptorprocesspsbt" =>
                     results.descriptorprocesspsbt =
                         Some(serde_json::from_value::<DescriptorprocesspsbtResponse>(
                             raw_results[i].clone(),
-                        )?)
-                }
+                        )?),
                 "disconnectnode" => results.disconnectnode = (),
-                "dumptxoutset" => {
+                "dumptxoutset" =>
                     results.dumptxoutset = Some(serde_json::from_value::<DumptxoutsetResponse>(
                         raw_results[i].clone(),
-                    )?)
-                }
-                "echo" => {
-                    results.echo = Some(serde_json::from_value::<EchoResponse>(
-                        raw_results[i].clone(),
-                    )?)
-                }
-                "echoipc" => {
-                    results.echoipc = Some(serde_json::from_value::<EchoipcResponse>(
-                        raw_results[i].clone(),
-                    )?)
-                }
-                "echojson" => {
-                    results.echojson = Some(serde_json::from_value::<EchojsonResponse>(
-                        raw_results[i].clone(),
-                    )?)
-                }
-                "encryptwallet" => {
+                    )?),
+                "echo" =>
+                    results.echo =
+                        Some(serde_json::from_value::<EchoResponse>(raw_results[i].clone())?),
+                "echoipc" =>
+                    results.echoipc =
+                        Some(serde_json::from_value::<EchoipcResponse>(raw_results[i].clone())?),
+                "echojson" =>
+                    results.echojson =
+                        Some(serde_json::from_value::<EchojsonResponse>(raw_results[i].clone())?),
+                "encryptwallet" =>
                     results.encryptwallet = Some(serde_json::from_value::<EncryptwalletResponse>(
                         raw_results[i].clone(),
-                    )?)
-                }
-                "enumeratesigners" => {
+                    )?),
+                "enumeratesigners" =>
                     results.enumeratesigners = Some(serde_json::from_value::<
                         EnumeratesignersResponse,
-                    >(raw_results[i].clone())?)
-                }
-                "estimaterawfee" => {
+                    >(raw_results[i].clone())?),
+                "estimaterawfee" =>
                     results.estimaterawfee = Some(serde_json::from_value::<EstimaterawfeeResponse>(
                         raw_results[i].clone(),
-                    )?)
-                }
-                "estimatesmartfee" => {
+                    )?),
+                "estimatesmartfee" =>
                     results.estimatesmartfee = Some(serde_json::from_value::<
                         EstimatesmartfeeResponse,
-                    >(raw_results[i].clone())?)
-                }
-                "finalizepsbt" => {
+                    >(raw_results[i].clone())?),
+                "finalizepsbt" =>
                     results.finalizepsbt = Some(serde_json::from_value::<FinalizepsbtResponse>(
                         raw_results[i].clone(),
-                    )?)
-                }
-                "fundrawtransaction" => {
+                    )?),
+                "fundrawtransaction" =>
                     results.fundrawtransaction = Some(serde_json::from_value::<
                         FundrawtransactionResponse,
-                    >(raw_results[i].clone())?)
-                }
+                    >(raw_results[i].clone())?),
                 "generate" => results.generate = (),
-                "generateblock" => {
+                "generateblock" =>
                     results.generateblock = Some(serde_json::from_value::<GenerateblockResponse>(
                         raw_results[i].clone(),
-                    )?)
-                }
-                "generatetoaddress" => {
+                    )?),
+                "generatetoaddress" =>
                     results.generatetoaddress = Some(serde_json::from_value::<
                         GeneratetoaddressResponse,
-                    >(raw_results[i].clone())?)
-                }
-                "generatetodescriptor" => {
+                    >(raw_results[i].clone())?),
+                "generatetodescriptor" =>
                     results.generatetodescriptor =
                         Some(serde_json::from_value::<GeneratetodescriptorResponse>(
                             raw_results[i].clone(),
-                        )?)
-                }
-                "getaddednodeinfo" => {
+                        )?),
+                "getaddednodeinfo" =>
                     results.getaddednodeinfo = Some(serde_json::from_value::<
                         GetaddednodeinfoResponse,
-                    >(raw_results[i].clone())?)
-                }
-                "getaddressesbylabel" => {
+                    >(raw_results[i].clone())?),
+                "getaddressesbylabel" =>
                     results.getaddressesbylabel =
                         Some(serde_json::from_value::<GetaddressesbylabelResponse>(
                             raw_results[i].clone(),
-                        )?)
-                }
-                "getaddressinfo" => {
+                        )?),
+                "getaddressinfo" =>
                     results.getaddressinfo = Some(serde_json::from_value::<GetaddressinfoResponse>(
                         raw_results[i].clone(),
-                    )?)
-                }
-                "getaddrmaninfo" => {
+                    )?),
+                "getaddrmaninfo" =>
                     results.getaddrmaninfo = Some(serde_json::from_value::<GetaddrmaninfoResponse>(
                         raw_results[i].clone(),
-                    )?)
-                }
-                "getbalance" => {
-                    results.getbalance = Some(serde_json::from_value::<GetbalanceResponse>(
-                        raw_results[i].clone(),
-                    )?)
-                }
-                "getbalances" => {
-                    results.getbalances = Some(serde_json::from_value::<GetbalancesResponse>(
-                        raw_results[i].clone(),
-                    )?)
-                }
-                "getbestblockhash" => {
+                    )?),
+                "getbalance" =>
+                    results.getbalance =
+                        Some(serde_json::from_value::<GetbalanceResponse>(raw_results[i].clone())?),
+                "getbalances" =>
+                    results.getbalances =
+                        Some(serde_json::from_value::<GetbalancesResponse>(raw_results[i].clone())?),
+                "getbestblockhash" =>
                     results.getbestblockhash = Some(serde_json::from_value::<
                         GetbestblockhashResponse,
-                    >(raw_results[i].clone())?)
-                }
-                "getblock" => {
-                    results.getblock = Some(serde_json::from_value::<GetblockResponse>(
-                        raw_results[i].clone(),
-                    )?)
-                }
-                "getblockchaininfo" => {
+                    >(raw_results[i].clone())?),
+                "getblock" =>
+                    results.getblock =
+                        Some(serde_json::from_value::<GetblockResponse>(raw_results[i].clone())?),
+                "getblockchaininfo" =>
                     results.getblockchaininfo = Some(serde_json::from_value::<
                         GetblockchaininfoResponse,
-                    >(raw_results[i].clone())?)
-                }
-                "getblockcount" => {
+                    >(raw_results[i].clone())?),
+                "getblockcount" =>
                     results.getblockcount = Some(serde_json::from_value::<GetblockcountResponse>(
                         raw_results[i].clone(),
-                    )?)
-                }
-                "getblockfilter" => {
+                    )?),
+                "getblockfilter" =>
                     results.getblockfilter = Some(serde_json::from_value::<GetblockfilterResponse>(
                         raw_results[i].clone(),
-                    )?)
-                }
-                "getblockfrompeer" => {
+                    )?),
+                "getblockfrompeer" =>
                     results.getblockfrompeer = Some(serde_json::from_value::<
                         GetblockfrompeerResponse,
-                    >(raw_results[i].clone())?)
-                }
-                "getblockhash" => {
+                    >(raw_results[i].clone())?),
+                "getblockhash" =>
                     results.getblockhash = Some(serde_json::from_value::<GetblockhashResponse>(
                         raw_results[i].clone(),
-                    )?)
-                }
-                "getblockheader" => {
+                    )?),
+                "getblockheader" =>
                     results.getblockheader = Some(serde_json::from_value::<GetblockheaderResponse>(
                         raw_results[i].clone(),
-                    )?)
-                }
-                "getblockstats" => {
+                    )?),
+                "getblockstats" =>
                     results.getblockstats = Some(serde_json::from_value::<GetblockstatsResponse>(
                         raw_results[i].clone(),
-                    )?)
-                }
-                "getblocktemplate" => {
+                    )?),
+                "getblocktemplate" =>
                     results.getblocktemplate = Some(serde_json::from_value::<
                         GetblocktemplateResponse,
-                    >(raw_results[i].clone())?)
-                }
-                "getchainstates" => {
+                    >(raw_results[i].clone())?),
+                "getchainstates" =>
                     results.getchainstates = Some(serde_json::from_value::<GetchainstatesResponse>(
                         raw_results[i].clone(),
-                    )?)
-                }
-                "getchaintips" => {
+                    )?),
+                "getchaintips" =>
                     results.getchaintips = Some(serde_json::from_value::<GetchaintipsResponse>(
                         raw_results[i].clone(),
-                    )?)
-                }
-                "getchaintxstats" => {
+                    )?),
+                "getchaintxstats" =>
                     results.getchaintxstats = Some(
                         serde_json::from_value::<GetchaintxstatsResponse>(raw_results[i].clone())?,
-                    )
-                }
-                "getconnectioncount" => {
+                    ),
+                "getconnectioncount" =>
                     results.getconnectioncount = Some(serde_json::from_value::<
                         GetconnectioncountResponse,
-                    >(raw_results[i].clone())?)
-                }
-                "getdeploymentinfo" => {
+                    >(raw_results[i].clone())?),
+                "getdeploymentinfo" =>
                     results.getdeploymentinfo = Some(serde_json::from_value::<
                         GetdeploymentinfoResponse,
-                    >(raw_results[i].clone())?)
-                }
-                "getdescriptoractivity" => {
+                    >(raw_results[i].clone())?),
+                "getdescriptoractivity" =>
                     results.getdescriptoractivity =
                         Some(serde_json::from_value::<GetdescriptoractivityResponse>(
                             raw_results[i].clone(),
-                        )?)
-                }
-                "getdescriptorinfo" => {
+                        )?),
+                "getdescriptorinfo" =>
                     results.getdescriptorinfo = Some(serde_json::from_value::<
                         GetdescriptorinfoResponse,
-                    >(raw_results[i].clone())?)
-                }
-                "getdifficulty" => {
+                    >(raw_results[i].clone())?),
+                "getdifficulty" =>
                     results.getdifficulty = Some(serde_json::from_value::<GetdifficultyResponse>(
                         raw_results[i].clone(),
-                    )?)
-                }
-                "gethdkeys" => {
-                    results.gethdkeys = Some(serde_json::from_value::<GethdkeysResponse>(
-                        raw_results[i].clone(),
-                    )?)
-                }
-                "getindexinfo" => {
+                    )?),
+                "gethdkeys" =>
+                    results.gethdkeys =
+                        Some(serde_json::from_value::<GethdkeysResponse>(raw_results[i].clone())?),
+                "getindexinfo" =>
                     results.getindexinfo = Some(serde_json::from_value::<GetindexinfoResponse>(
                         raw_results[i].clone(),
-                    )?)
-                }
-                "getmemoryinfo" => {
+                    )?),
+                "getmemoryinfo" =>
                     results.getmemoryinfo = Some(serde_json::from_value::<GetmemoryinfoResponse>(
                         raw_results[i].clone(),
-                    )?)
-                }
-                "getmempoolancestors" => {
+                    )?),
+                "getmempoolancestors" =>
                     results.getmempoolancestors =
                         Some(serde_json::from_value::<GetmempoolancestorsResponse>(
                             raw_results[i].clone(),
-                        )?)
-                }
-                "getmempooldescendants" => {
+                        )?),
+                "getmempooldescendants" =>
                     results.getmempooldescendants =
                         Some(serde_json::from_value::<GetmempooldescendantsResponse>(
                             raw_results[i].clone(),
-                        )?)
-                }
-                "getmempoolentry" => {
+                        )?),
+                "getmempoolentry" =>
                     results.getmempoolentry = Some(
                         serde_json::from_value::<GetmempoolentryResponse>(raw_results[i].clone())?,
-                    )
-                }
-                "getmempoolinfo" => {
+                    ),
+                "getmempoolinfo" =>
                     results.getmempoolinfo = Some(serde_json::from_value::<GetmempoolinfoResponse>(
                         raw_results[i].clone(),
-                    )?)
-                }
-                "getmininginfo" => {
+                    )?),
+                "getmininginfo" =>
                     results.getmininginfo = Some(serde_json::from_value::<GetmininginfoResponse>(
                         raw_results[i].clone(),
-                    )?)
-                }
-                "getnettotals" => {
+                    )?),
+                "getnettotals" =>
                     results.getnettotals = Some(serde_json::from_value::<GetnettotalsResponse>(
                         raw_results[i].clone(),
-                    )?)
-                }
-                "getnetworkhashps" => {
+                    )?),
+                "getnetworkhashps" =>
                     results.getnetworkhashps = Some(serde_json::from_value::<
                         GetnetworkhashpsResponse,
-                    >(raw_results[i].clone())?)
-                }
-                "getnetworkinfo" => {
+                    >(raw_results[i].clone())?),
+                "getnetworkinfo" =>
                     results.getnetworkinfo = Some(serde_json::from_value::<GetnetworkinfoResponse>(
                         raw_results[i].clone(),
-                    )?)
-                }
-                "getnewaddress" => {
+                    )?),
+                "getnewaddress" =>
                     results.getnewaddress = Some(serde_json::from_value::<GetnewaddressResponse>(
                         raw_results[i].clone(),
-                    )?)
-                }
-                "getnodeaddresses" => {
+                    )?),
+                "getnodeaddresses" =>
                     results.getnodeaddresses = Some(serde_json::from_value::<
                         GetnodeaddressesResponse,
-                    >(raw_results[i].clone())?)
-                }
-                "getorphantxs" => {
+                    >(raw_results[i].clone())?),
+                "getorphantxs" =>
                     results.getorphantxs = Some(serde_json::from_value::<GetorphantxsResponse>(
                         raw_results[i].clone(),
-                    )?)
-                }
-                "getpeerinfo" => {
-                    results.getpeerinfo = Some(serde_json::from_value::<GetpeerinfoResponse>(
-                        raw_results[i].clone(),
-                    )?)
-                }
-                "getprioritisedtransactions" => {
-                    results.getprioritisedtransactions = Some(serde_json::from_value::<
-                        GetprioritisedtransactionsResponse,
-                    >(
-                        raw_results[i].clone()
-                    )?)
-                }
-                "getrawaddrman" => {
+                    )?),
+                "getpeerinfo" =>
+                    results.getpeerinfo =
+                        Some(serde_json::from_value::<GetpeerinfoResponse>(raw_results[i].clone())?),
+                "getprioritisedtransactions" =>
+                    results.getprioritisedtransactions =
+                        Some(serde_json::from_value::<GetprioritisedtransactionsResponse>(
+                            raw_results[i].clone(),
+                        )?),
+                "getrawaddrman" =>
                     results.getrawaddrman = Some(serde_json::from_value::<GetrawaddrmanResponse>(
                         raw_results[i].clone(),
-                    )?)
-                }
-                "getrawchangeaddress" => {
+                    )?),
+                "getrawchangeaddress" =>
                     results.getrawchangeaddress =
                         Some(serde_json::from_value::<GetrawchangeaddressResponse>(
                             raw_results[i].clone(),
-                        )?)
-                }
-                "getrawmempool" => {
+                        )?),
+                "getrawmempool" =>
                     results.getrawmempool = Some(serde_json::from_value::<GetrawmempoolResponse>(
                         raw_results[i].clone(),
-                    )?)
-                }
-                "getrawtransaction" => {
+                    )?),
+                "getrawtransaction" =>
                     results.getrawtransaction = Some(serde_json::from_value::<
                         GetrawtransactionResponse,
-                    >(raw_results[i].clone())?)
-                }
-                "getreceivedbyaddress" => {
+                    >(raw_results[i].clone())?),
+                "getreceivedbyaddress" =>
                     results.getreceivedbyaddress =
                         Some(serde_json::from_value::<GetreceivedbyaddressResponse>(
                             raw_results[i].clone(),
-                        )?)
-                }
-                "getreceivedbylabel" => {
+                        )?),
+                "getreceivedbylabel" =>
                     results.getreceivedbylabel = Some(serde_json::from_value::<
                         GetreceivedbylabelResponse,
-                    >(raw_results[i].clone())?)
-                }
-                "getrpcinfo" => {
-                    results.getrpcinfo = Some(serde_json::from_value::<GetrpcinfoResponse>(
-                        raw_results[i].clone(),
-                    )?)
-                }
-                "gettransaction" => {
+                    >(raw_results[i].clone())?),
+                "getrpcinfo" =>
+                    results.getrpcinfo =
+                        Some(serde_json::from_value::<GetrpcinfoResponse>(raw_results[i].clone())?),
+                "gettransaction" =>
                     results.gettransaction = Some(serde_json::from_value::<GettransactionResponse>(
                         raw_results[i].clone(),
-                    )?)
-                }
-                "gettxout" => {
-                    results.gettxout = Some(serde_json::from_value::<GettxoutResponse>(
-                        raw_results[i].clone(),
-                    )?)
-                }
-                "gettxoutproof" => {
+                    )?),
+                "gettxout" =>
+                    results.gettxout =
+                        Some(serde_json::from_value::<GettxoutResponse>(raw_results[i].clone())?),
+                "gettxoutproof" =>
                     results.gettxoutproof = Some(serde_json::from_value::<GettxoutproofResponse>(
                         raw_results[i].clone(),
-                    )?)
-                }
-                "gettxoutsetinfo" => {
+                    )?),
+                "gettxoutsetinfo" =>
                     results.gettxoutsetinfo = Some(
                         serde_json::from_value::<GettxoutsetinfoResponse>(raw_results[i].clone())?,
-                    )
-                }
-                "gettxspendingprevout" => {
+                    ),
+                "gettxspendingprevout" =>
                     results.gettxspendingprevout =
                         Some(serde_json::from_value::<GettxspendingprevoutResponse>(
                             raw_results[i].clone(),
-                        )?)
-                }
-                "getwalletinfo" => {
+                        )?),
+                "getwalletinfo" =>
                     results.getwalletinfo = Some(serde_json::from_value::<GetwalletinfoResponse>(
                         raw_results[i].clone(),
-                    )?)
-                }
-                "getzmqnotifications" => {
+                    )?),
+                "getzmqnotifications" =>
                     results.getzmqnotifications =
                         Some(serde_json::from_value::<GetzmqnotificationsResponse>(
                             raw_results[i].clone(),
-                        )?)
-                }
-                "help" => {
-                    results.help = Some(serde_json::from_value::<HelpResponse>(
-                        raw_results[i].clone(),
-                    )?)
-                }
-                "importdescriptors" => {
+                        )?),
+                "help" =>
+                    results.help =
+                        Some(serde_json::from_value::<HelpResponse>(raw_results[i].clone())?),
+                "importdescriptors" =>
                     results.importdescriptors = Some(serde_json::from_value::<
                         ImportdescriptorsResponse,
-                    >(raw_results[i].clone())?)
-                }
-                "importmempool" => {
+                    >(raw_results[i].clone())?),
+                "importmempool" =>
                     results.importmempool = Some(serde_json::from_value::<ImportmempoolResponse>(
                         raw_results[i].clone(),
-                    )?)
-                }
+                    )?),
                 "importprunedfunds" => results.importprunedfunds = (),
                 "invalidateblock" => results.invalidateblock = (),
-                "joinpsbts" => {
-                    results.joinpsbts = Some(serde_json::from_value::<JoinpsbtsResponse>(
-                        raw_results[i].clone(),
-                    )?)
-                }
+                "joinpsbts" =>
+                    results.joinpsbts =
+                        Some(serde_json::from_value::<JoinpsbtsResponse>(raw_results[i].clone())?),
                 "keypoolrefill" => results.keypoolrefill = (),
-                "listaddressgroupings" => {
+                "listaddressgroupings" =>
                     results.listaddressgroupings =
                         Some(serde_json::from_value::<ListaddressgroupingsResponse>(
                             raw_results[i].clone(),
-                        )?)
-                }
-                "listbanned" => {
-                    results.listbanned = Some(serde_json::from_value::<ListbannedResponse>(
-                        raw_results[i].clone(),
-                    )?)
-                }
-                "listdescriptors" => {
+                        )?),
+                "listbanned" =>
+                    results.listbanned =
+                        Some(serde_json::from_value::<ListbannedResponse>(raw_results[i].clone())?),
+                "listdescriptors" =>
                     results.listdescriptors = Some(
                         serde_json::from_value::<ListdescriptorsResponse>(raw_results[i].clone())?,
-                    )
-                }
-                "listlabels" => {
-                    results.listlabels = Some(serde_json::from_value::<ListlabelsResponse>(
-                        raw_results[i].clone(),
-                    )?)
-                }
-                "listlockunspent" => {
+                    ),
+                "listlabels" =>
+                    results.listlabels =
+                        Some(serde_json::from_value::<ListlabelsResponse>(raw_results[i].clone())?),
+                "listlockunspent" =>
                     results.listlockunspent = Some(
                         serde_json::from_value::<ListlockunspentResponse>(raw_results[i].clone())?,
-                    )
-                }
-                "listreceivedbyaddress" => {
+                    ),
+                "listreceivedbyaddress" =>
                     results.listreceivedbyaddress =
                         Some(serde_json::from_value::<ListreceivedbyaddressResponse>(
                             raw_results[i].clone(),
-                        )?)
-                }
-                "listreceivedbylabel" => {
+                        )?),
+                "listreceivedbylabel" =>
                     results.listreceivedbylabel =
                         Some(serde_json::from_value::<ListreceivedbylabelResponse>(
                             raw_results[i].clone(),
-                        )?)
-                }
-                "listsinceblock" => {
+                        )?),
+                "listsinceblock" =>
                     results.listsinceblock = Some(serde_json::from_value::<ListsinceblockResponse>(
                         raw_results[i].clone(),
-                    )?)
-                }
-                "listtransactions" => {
+                    )?),
+                "listtransactions" =>
                     results.listtransactions = Some(serde_json::from_value::<
                         ListtransactionsResponse,
-                    >(raw_results[i].clone())?)
-                }
-                "listunspent" => {
-                    results.listunspent = Some(serde_json::from_value::<ListunspentResponse>(
-                        raw_results[i].clone(),
-                    )?)
-                }
-                "listwalletdir" => {
+                    >(raw_results[i].clone())?),
+                "listunspent" =>
+                    results.listunspent =
+                        Some(serde_json::from_value::<ListunspentResponse>(raw_results[i].clone())?),
+                "listwalletdir" =>
                     results.listwalletdir = Some(serde_json::from_value::<ListwalletdirResponse>(
                         raw_results[i].clone(),
-                    )?)
-                }
-                "listwallets" => {
-                    results.listwallets = Some(serde_json::from_value::<ListwalletsResponse>(
-                        raw_results[i].clone(),
-                    )?)
-                }
-                "loadtxoutset" => {
+                    )?),
+                "listwallets" =>
+                    results.listwallets =
+                        Some(serde_json::from_value::<ListwalletsResponse>(raw_results[i].clone())?),
+                "loadtxoutset" =>
                     results.loadtxoutset = Some(serde_json::from_value::<LoadtxoutsetResponse>(
                         raw_results[i].clone(),
-                    )?)
-                }
-                "loadwallet" => {
-                    results.loadwallet = Some(serde_json::from_value::<LoadwalletResponse>(
-                        raw_results[i].clone(),
-                    )?)
-                }
-                "lockunspent" => {
-                    results.lockunspent = Some(serde_json::from_value::<LockunspentResponse>(
-                        raw_results[i].clone(),
-                    )?)
-                }
-                "logging" => {
-                    results.logging = Some(serde_json::from_value::<LoggingResponse>(
-                        raw_results[i].clone(),
-                    )?)
-                }
-                "migratewallet" => {
+                    )?),
+                "loadwallet" =>
+                    results.loadwallet =
+                        Some(serde_json::from_value::<LoadwalletResponse>(raw_results[i].clone())?),
+                "lockunspent" =>
+                    results.lockunspent =
+                        Some(serde_json::from_value::<LockunspentResponse>(raw_results[i].clone())?),
+                "logging" =>
+                    results.logging =
+                        Some(serde_json::from_value::<LoggingResponse>(raw_results[i].clone())?),
+                "migratewallet" =>
                     results.migratewallet = Some(serde_json::from_value::<MigratewalletResponse>(
                         raw_results[i].clone(),
-                    )?)
-                }
+                    )?),
                 "mockscheduler" => results.mockscheduler = (),
                 "ping" => results.ping = (),
                 "preciousblock" => results.preciousblock = (),
-                "prioritisetransaction" => {
+                "prioritisetransaction" =>
                     results.prioritisetransaction =
                         Some(serde_json::from_value::<PrioritisetransactionResponse>(
                             raw_results[i].clone(),
-                        )?)
-                }
-                "pruneblockchain" => {
+                        )?),
+                "pruneblockchain" =>
                     results.pruneblockchain = Some(
                         serde_json::from_value::<PruneblockchainResponse>(raw_results[i].clone())?,
-                    )
-                }
-                "psbtbumpfee" => {
-                    results.psbtbumpfee = Some(serde_json::from_value::<PsbtbumpfeeResponse>(
-                        raw_results[i].clone(),
-                    )?)
-                }
+                    ),
+                "psbtbumpfee" =>
+                    results.psbtbumpfee =
+                        Some(serde_json::from_value::<PsbtbumpfeeResponse>(raw_results[i].clone())?),
                 "reconsiderblock" => results.reconsiderblock = (),
                 "removeprunedfunds" => results.removeprunedfunds = (),
-                "rescanblockchain" => {
+                "rescanblockchain" =>
                     results.rescanblockchain = Some(serde_json::from_value::<
                         RescanblockchainResponse,
-                    >(raw_results[i].clone())?)
-                }
-                "restorewallet" => {
+                    >(raw_results[i].clone())?),
+                "restorewallet" =>
                     results.restorewallet = Some(serde_json::from_value::<RestorewalletResponse>(
                         raw_results[i].clone(),
-                    )?)
-                }
-                "savemempool" => {
-                    results.savemempool = Some(serde_json::from_value::<SavemempoolResponse>(
-                        raw_results[i].clone(),
-                    )?)
-                }
-                "scanblocks" => {
-                    results.scanblocks = Some(serde_json::from_value::<ScanblocksResponse>(
-                        raw_results[i].clone(),
-                    )?)
-                }
-                "scantxoutset" => {
+                    )?),
+                "savemempool" =>
+                    results.savemempool =
+                        Some(serde_json::from_value::<SavemempoolResponse>(raw_results[i].clone())?),
+                "scanblocks" =>
+                    results.scanblocks =
+                        Some(serde_json::from_value::<ScanblocksResponse>(raw_results[i].clone())?),
+                "scantxoutset" =>
                     results.scantxoutset = Some(serde_json::from_value::<ScantxoutsetResponse>(
                         raw_results[i].clone(),
-                    )?)
-                }
-                "schema" => {
-                    results.schema = Some(serde_json::from_value::<SchemaResponse>(
-                        raw_results[i].clone(),
-                    )?)
-                }
-                "send" => {
-                    results.send = Some(serde_json::from_value::<SendResponse>(
-                        raw_results[i].clone(),
-                    )?)
-                }
-                "sendall" => {
-                    results.sendall = Some(serde_json::from_value::<SendallResponse>(
-                        raw_results[i].clone(),
-                    )?)
-                }
-                "sendmany" => {
-                    results.sendmany = Some(serde_json::from_value::<SendmanyResponse>(
-                        raw_results[i].clone(),
-                    )?)
-                }
-                "sendmsgtopeer" => {
+                    )?),
+                "schema" =>
+                    results.schema =
+                        Some(serde_json::from_value::<SchemaResponse>(raw_results[i].clone())?),
+                "send" =>
+                    results.send =
+                        Some(serde_json::from_value::<SendResponse>(raw_results[i].clone())?),
+                "sendall" =>
+                    results.sendall =
+                        Some(serde_json::from_value::<SendallResponse>(raw_results[i].clone())?),
+                "sendmany" =>
+                    results.sendmany =
+                        Some(serde_json::from_value::<SendmanyResponse>(raw_results[i].clone())?),
+                "sendmsgtopeer" =>
                     results.sendmsgtopeer = Some(serde_json::from_value::<SendmsgtopeerResponse>(
                         raw_results[i].clone(),
-                    )?)
-                }
-                "sendrawtransaction" => {
+                    )?),
+                "sendrawtransaction" =>
                     results.sendrawtransaction = Some(serde_json::from_value::<
                         SendrawtransactionResponse,
-                    >(raw_results[i].clone())?)
-                }
-                "sendtoaddress" => {
+                    >(raw_results[i].clone())?),
+                "sendtoaddress" =>
                     results.sendtoaddress = Some(serde_json::from_value::<SendtoaddressResponse>(
                         raw_results[i].clone(),
-                    )?)
-                }
+                    )?),
                 "setban" => results.setban = (),
                 "setlabel" => results.setlabel = (),
                 "setmocktime" => results.setmocktime = (),
-                "setnetworkactive" => {
+                "setnetworkactive" =>
                     results.setnetworkactive = Some(serde_json::from_value::<
                         SetnetworkactiveResponse,
-                    >(raw_results[i].clone())?)
-                }
-                "settxfee" => {
-                    results.settxfee = Some(serde_json::from_value::<SettxfeeResponse>(
-                        raw_results[i].clone(),
-                    )?)
-                }
-                "setwalletflag" => {
+                    >(raw_results[i].clone())?),
+                "settxfee" =>
+                    results.settxfee =
+                        Some(serde_json::from_value::<SettxfeeResponse>(raw_results[i].clone())?),
+                "setwalletflag" =>
                     results.setwalletflag = Some(serde_json::from_value::<SetwalletflagResponse>(
                         raw_results[i].clone(),
-                    )?)
-                }
-                "signmessage" => {
-                    results.signmessage = Some(serde_json::from_value::<SignmessageResponse>(
-                        raw_results[i].clone(),
-                    )?)
-                }
-                "signmessagewithprivkey" => {
+                    )?),
+                "signmessage" =>
+                    results.signmessage =
+                        Some(serde_json::from_value::<SignmessageResponse>(raw_results[i].clone())?),
+                "signmessagewithprivkey" =>
                     results.signmessagewithprivkey =
                         Some(serde_json::from_value::<SignmessagewithprivkeyResponse>(
                             raw_results[i].clone(),
-                        )?)
-                }
-                "signrawtransactionwithkey" => {
+                        )?),
+                "signrawtransactionwithkey" =>
                     results.signrawtransactionwithkey =
                         Some(serde_json::from_value::<SignrawtransactionwithkeyResponse>(
                             raw_results[i].clone(),
-                        )?)
-                }
-                "signrawtransactionwithwallet" => {
+                        )?),
+                "signrawtransactionwithwallet" =>
                     results.signrawtransactionwithwallet =
-                        Some(serde_json::from_value::<
-                            SignrawtransactionwithwalletResponse,
-                        >(raw_results[i].clone())?)
-                }
-                "simulaterawtransaction" => {
+                        Some(serde_json::from_value::<SignrawtransactionwithwalletResponse>(
+                            raw_results[i].clone(),
+                        )?),
+                "simulaterawtransaction" =>
                     results.simulaterawtransaction =
                         Some(serde_json::from_value::<SimulaterawtransactionResponse>(
                             raw_results[i].clone(),
-                        )?)
-                }
-                "stop" => {
-                    results.stop = Some(serde_json::from_value::<StopResponse>(
-                        raw_results[i].clone(),
-                    )?)
-                }
-                "submitblock" => {
-                    results.submitblock = Some(serde_json::from_value::<SubmitblockResponse>(
-                        raw_results[i].clone(),
-                    )?)
-                }
+                        )?),
+                "stop" =>
+                    results.stop =
+                        Some(serde_json::from_value::<StopResponse>(raw_results[i].clone())?),
+                "submitblock" =>
+                    results.submitblock =
+                        Some(serde_json::from_value::<SubmitblockResponse>(raw_results[i].clone())?),
                 "submitheader" => results.submitheader = (),
-                "submitpackage" => {
+                "submitpackage" =>
                     results.submitpackage = Some(serde_json::from_value::<SubmitpackageResponse>(
                         raw_results[i].clone(),
-                    )?)
-                }
+                    )?),
                 "syncwithvalidationinterfacequeue" => results.syncwithvalidationinterfacequeue = (),
-                "testmempoolaccept" => {
+                "testmempoolaccept" =>
                     results.testmempoolaccept = Some(serde_json::from_value::<
                         TestmempoolacceptResponse,
-                    >(raw_results[i].clone())?)
-                }
-                "unloadwallet" => {
+                    >(raw_results[i].clone())?),
+                "unloadwallet" =>
                     results.unloadwallet = Some(serde_json::from_value::<UnloadwalletResponse>(
                         raw_results[i].clone(),
-                    )?)
-                }
-                "uptime" => {
-                    results.uptime = Some(serde_json::from_value::<UptimeResponse>(
-                        raw_results[i].clone(),
-                    )?)
-                }
-                "utxoupdatepsbt" => {
+                    )?),
+                "uptime" =>
+                    results.uptime =
+                        Some(serde_json::from_value::<UptimeResponse>(raw_results[i].clone())?),
+                "utxoupdatepsbt" =>
                     results.utxoupdatepsbt = Some(serde_json::from_value::<UtxoupdatepsbtResponse>(
                         raw_results[i].clone(),
-                    )?)
-                }
-                "validateaddress" => {
+                    )?),
+                "validateaddress" =>
                     results.validateaddress = Some(
                         serde_json::from_value::<ValidateaddressResponse>(raw_results[i].clone())?,
-                    )
-                }
-                "verifychain" => {
-                    results.verifychain = Some(serde_json::from_value::<VerifychainResponse>(
-                        raw_results[i].clone(),
-                    )?)
-                }
-                "verifymessage" => {
+                    ),
+                "verifychain" =>
+                    results.verifychain =
+                        Some(serde_json::from_value::<VerifychainResponse>(raw_results[i].clone())?),
+                "verifymessage" =>
                     results.verifymessage = Some(serde_json::from_value::<VerifymessageResponse>(
                         raw_results[i].clone(),
-                    )?)
-                }
-                "verifytxoutproof" => {
+                    )?),
+                "verifytxoutproof" =>
                     results.verifytxoutproof = Some(serde_json::from_value::<
                         VerifytxoutproofResponse,
-                    >(raw_results[i].clone())?)
-                }
-                "waitforblock" => {
+                    >(raw_results[i].clone())?),
+                "waitforblock" =>
                     results.waitforblock = Some(serde_json::from_value::<WaitforblockResponse>(
                         raw_results[i].clone(),
-                    )?)
-                }
-                "waitforblockheight" => {
+                    )?),
+                "waitforblockheight" =>
                     results.waitforblockheight = Some(serde_json::from_value::<
                         WaitforblockheightResponse,
-                    >(raw_results[i].clone())?)
-                }
-                "waitfornewblock" => {
+                    >(raw_results[i].clone())?),
+                "waitfornewblock" =>
                     results.waitfornewblock = Some(
                         serde_json::from_value::<WaitfornewblockResponse>(raw_results[i].clone())?,
-                    )
-                }
-                "walletcreatefundedpsbt" => {
+                    ),
+                "walletcreatefundedpsbt" =>
                     results.walletcreatefundedpsbt =
                         Some(serde_json::from_value::<WalletcreatefundedpsbtResponse>(
                             raw_results[i].clone(),
-                        )?)
-                }
-                "walletdisplayaddress" => {
+                        )?),
+                "walletdisplayaddress" =>
                     results.walletdisplayaddress =
                         Some(serde_json::from_value::<WalletdisplayaddressResponse>(
                             raw_results[i].clone(),
-                        )?)
-                }
+                        )?),
                 "walletlock" => results.walletlock = (),
                 "walletpassphrase" => results.walletpassphrase = (),
                 "walletpassphrasechange" => results.walletpassphrasechange = (),
-                "walletprocesspsbt" => {
+                "walletprocesspsbt" =>
                     results.walletprocesspsbt = Some(serde_json::from_value::<
                         WalletprocesspsbtResponse,
-                    >(raw_results[i].clone())?)
-                }
-                _ => {
-                    return Err(TransportError::Rpc(format!(
-                        "Unknown method: {}",
-                        method_name
-                    )))
-                }
+                    >(raw_results[i].clone())?),
+                _ => return Err(TransportError::Rpc(format!("Unknown method: {}", method_name))),
             }
         }
 

@@ -1,23 +1,48 @@
 //! This file is auto-generated. Do not edit manually.
 //! Generated from Bitcoin Core v29.1
 
+use serde::{Deserialize, Serialize};
+use serde_json::json;
 /// If txid is in the mempool, returns all in-mempool ancestors.
 
-/// # Example
+/// # Example: High-Level Client Usage (Recommended)
 /// ```rust
-/// use bitcoin_rpc_codegen::client::v29_1::getmempoolancestors;
+/// use bitcoin_rpc_midas::*;
 ///
-/// let client = Client::new("http://127.0.0.1:18443", auth);
+/// async fn example() -> Result<(), Box<dyn std::error::Error>> {
+/// let client = BitcoinTestClient::new().await?;
 /// let result = client.getmempoolancestors(/* params */).await?;
+/// # Ok(())
+/// # }
 /// ```
-use serde::{Deserialize, Serialize};
-use serde_json::{json, Value};
-use transport::{TransportError, TransportTrait};
+
+/// # Example: Advanced - Direct Transport Function Usage
+/// This approach is for advanced users who need direct control over the transport layer.
+/// Most users should prefer the high-level client approach above.
+/// ```rust
+/// use bitcoin_rpc_midas::transport::getmempoolancestors;
+/// use bitcoin_rpc_midas::transport::{TransportTrait, DefaultTransport};
+///
+/// async fn example() -> Result<(), Box<dyn std::error::Error>> {
+/// let transport = DefaultTransport::new(
+///     "http://127.0.0.1:18443".to_string(),
+///     Some(("rpcuser".to_string(), "rpcpassword".to_string()))
+/// );
+/// let result = getmempoolancestors(&transport, /* params */).await?;
+/// # Ok(())
+/// # }
+/// ```
+
+#[allow(unused_imports)]
+use serde_json::Value;
+
+use crate::transport::{TransportError, TransportTrait};
 /// If txid is in the mempool, returns all in-mempool ancestors.
 #[derive(Debug, Deserialize, Serialize)]
-pub struct GetmempoolancestorsResponse {
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub transactionid: Option<serde_json::Value>,
+#[serde(untagged)]
+pub enum GetmempoolancestorsResponse {
+    Raw(Vec<String>),
+    Verbose(serde_json::Value),
 }
 
 /// Calls the `getmempoolancestors` RPC method.
@@ -29,8 +54,6 @@ pub async fn getmempoolancestors(
     verbose: serde_json::Value,
 ) -> Result<GetmempoolancestorsResponse, TransportError> {
     let params = vec![json!(txid), json!(verbose)];
-    let raw = transport
-        .send_request("getmempoolancestors", &params)
-        .await?;
+    let raw = transport.send_request("getmempoolancestors", &params).await?;
     Ok(serde_json::from_value::<GetmempoolancestorsResponse>(raw)?)
 }

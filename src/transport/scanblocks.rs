@@ -1,35 +1,59 @@
 //! This file is auto-generated. Do not edit manually.
 //! Generated from Bitcoin Core v29.1
 
+use serde::{Deserialize, Serialize};
+use serde_json::json;
 /// Return relevant blockhashes for given descriptors (requires blockfilterindex).
 /// This call may take several minutes. Make sure to use no RPC timeout (bitcoin-cli -rpcclienttimeout=0)
 
-/// # Example
+/// # Example: High-Level Client Usage (Recommended)
 /// ```rust
-/// use bitcoin_rpc_codegen::client::v29_1::scanblocks;
+/// use bitcoin_rpc_midas::*;
 ///
-/// let client = Client::new("http://127.0.0.1:18443", auth);
+/// async fn example() -> Result<(), Box<dyn std::error::Error>> {
+/// let client = BitcoinTestClient::new().await?;
 /// let result = client.scanblocks(/* params */).await?;
+/// # Ok(())
+/// # }
 /// ```
-use serde::{Deserialize, Serialize};
-use serde_json::{json, Value};
-use transport::{TransportError, TransportTrait};
+
+/// # Example: Advanced - Direct Transport Function Usage
+/// This approach is for advanced users who need direct control over the transport layer.
+/// Most users should prefer the high-level client approach above.
+/// ```rust
+/// use bitcoin_rpc_midas::transport::scanblocks;
+/// use bitcoin_rpc_midas::transport::{TransportTrait, DefaultTransport};
+///
+/// async fn example() -> Result<(), Box<dyn std::error::Error>> {
+/// let transport = DefaultTransport::new(
+///     "http://127.0.0.1:18443".to_string(),
+///     Some(("rpcuser".to_string(), "rpcpassword".to_string()))
+/// );
+/// let result = scanblocks(&transport, /* params */).await?;
+/// # Ok(())
+/// # }
+/// ```
+
+#[allow(unused_imports)]
+use serde_json::Value;
+
+use crate::transport::{TransportError, TransportTrait};
 /// Return relevant blockhashes for given descriptors (requires blockfilterindex).
 /// This call may take several minutes. Make sure to use no RPC timeout (bitcoin-cli -rpcclienttimeout=0)
 #[derive(Debug, Deserialize, Serialize)]
-pub struct ScanblocksResponse {
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub from_height: Option<u64>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub to_height: Option<u64>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub relevant_blocks: Option<Vec<serde_json::Value>>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub completed: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub progress: Option<u64>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub current_height: Option<u64>,
+#[serde(untagged)]
+pub enum ScanblocksResponse {
+    Started {
+        from_height: u64,
+        to_height: u64,
+        relevant_blocks: Vec<serde_json::Value>,
+        completed: bool,
+    },
+    Status {
+        progress: u64,
+        current_height: u64,
+    },
+    Aborted(bool),
 }
 
 /// Calls the `scanblocks` RPC method.

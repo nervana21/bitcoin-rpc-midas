@@ -1,6 +1,8 @@
 //! This file is auto-generated. Do not edit manually.
 //! Generated from Bitcoin Core v29.1
 
+use serde::{Deserialize, Serialize};
+use serde_json::json;
 /// If the request parameters include a 'mode' key, that is used to explicitly select between the default 'template' request or a 'proposal'.
 /// It returns data needed to construct a block to work on.
 /// For full specification, see BIPs 22, 23, 9, and 145:
@@ -9,16 +11,38 @@
 /// https://github.com/bitcoin/bips/blob/master/bip-0009.mediawiki#getblocktemplate_changes
 /// https://github.com/bitcoin/bips/blob/master/bip-0145.mediawiki
 
-/// # Example
+/// # Example: High-Level Client Usage (Recommended)
 /// ```rust
-/// use bitcoin_rpc_codegen::client::v29_1::getblocktemplate;
+/// use bitcoin_rpc_midas::*;
 ///
-/// let client = Client::new("http://127.0.0.1:18443", auth);
+/// async fn example() -> Result<(), Box<dyn std::error::Error>> {
+/// let client = BitcoinTestClient::new().await?;
 /// let result = client.getblocktemplate(/* params */).await?;
+/// # Ok(())
+/// # }
 /// ```
-use serde::{Deserialize, Serialize};
-use serde_json::{json, Value};
-use transport::{TransportError, TransportTrait};
+
+/// # Example: Advanced - Direct Transport Function Usage
+/// This approach is for advanced users who need direct control over the transport layer.
+/// Most users should prefer the high-level client approach above.
+/// ```rust
+/// use bitcoin_rpc_midas::transport::getblocktemplate;
+/// use bitcoin_rpc_midas::transport::{TransportTrait, DefaultTransport};
+///
+/// async fn example() -> Result<(), Box<dyn std::error::Error>> {
+/// let transport = DefaultTransport::new(
+///     "http://127.0.0.1:18443".to_string(),
+///     Some(("rpcuser".to_string(), "rpcpassword".to_string()))
+/// );
+/// let result = getblocktemplate(&transport, /* params */).await?;
+/// # Ok(())
+/// # }
+/// ```
+
+#[allow(unused_imports)]
+use serde_json::Value;
+
+use crate::transport::{TransportError, TransportTrait};
 /// If the request parameters include a 'mode' key, that is used to explicitly select between the default 'template' request or a 'proposal'.
 /// It returns data needed to construct a block to work on.
 /// For full specification, see BIPs 22, 23, 9, and 145:
@@ -27,51 +51,36 @@ use transport::{TransportError, TransportTrait};
 /// https://github.com/bitcoin/bips/blob/master/bip-0009.mediawiki#getblocktemplate_changes
 /// https://github.com/bitcoin/bips/blob/master/bip-0145.mediawiki
 #[derive(Debug, Deserialize, Serialize)]
-pub struct GetblocktemplateResponse {
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub version: Option<u32>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub rules: Option<Vec<serde_json::Value>>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub vbavailable: Option<serde_json::Value>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub capabilities: Option<Vec<serde_json::Value>>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub vbrequired: Option<u64>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub previousblockhash: Option<bitcoin::BlockHash>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub transactions: Option<Vec<serde_json::Value>>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub coinbaseaux: Option<serde_json::Value>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub coinbasevalue: Option<u64>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub longpollid: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub target: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub mintime: Option<serde_json::Value>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub mutable: Option<Vec<serde_json::Value>>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub noncerange: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub sigoplimit: Option<u64>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub sizelimit: Option<u64>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub weightlimit: Option<u64>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub curtime: Option<serde_json::Value>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub bits: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub height: Option<u64>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub signet_challenge: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub default_witness_commitment: Option<String>,
+#[serde(untagged)]
+pub enum GetblocktemplateResponse {
+    Accepted(String),
+    Variant3 {
+        version: u32,
+        rules: Vec<serde_json::Value>,
+        vbavailable: serde_json::Value,
+        capabilities: Vec<serde_json::Value>,
+        vbrequired: u64,
+        previousblockhash: bitcoin::BlockHash,
+        transactions: Vec<serde_json::Value>,
+        coinbaseaux: serde_json::Value,
+        coinbasevalue: u64,
+        longpollid: String,
+        target: String,
+        mintime: serde_json::Value,
+        mutable: Vec<serde_json::Value>,
+        noncerange: String,
+        sigoplimit: u64,
+        sizelimit: u64,
+        #[serde(skip_serializing_if = "Option::is_none")]
+        weightlimit: Option<u64>,
+        curtime: serde_json::Value,
+        bits: String,
+        height: u64,
+        #[serde(skip_serializing_if = "Option::is_none")]
+        signet_challenge: Option<String>,
+        #[serde(skip_serializing_if = "Option::is_none")]
+        default_witness_commitment: Option<String>,
+    },
 }
 
 /// Calls the `getblocktemplate` RPC method.

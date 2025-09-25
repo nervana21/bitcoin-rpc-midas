@@ -1,18 +1,42 @@
 //! This file is auto-generated. Do not edit manually.
 //! Generated from Bitcoin Core v29.1
 
+use serde::{Deserialize, Serialize};
+use serde_json::json;
 /// Return a JSON object representing the serialized, hex-encoded transaction.
 
-/// # Example
+/// # Example: High-Level Client Usage (Recommended)
 /// ```rust
-/// use bitcoin_rpc_codegen::client::v29_1::decoderawtransaction;
+/// use bitcoin_rpc_midas::*;
 ///
-/// let client = Client::new("http://127.0.0.1:18443", auth);
+/// async fn example() -> Result<(), Box<dyn std::error::Error>> {
+/// let client = BitcoinTestClient::new().await?;
 /// let result = client.decoderawtransaction(/* params */).await?;
+/// # Ok(())
+/// # }
 /// ```
-use serde::{Deserialize, Serialize};
-use serde_json::{json, Value};
-use transport::{TransportError, TransportTrait};
+
+/// # Example: Advanced - Direct Transport Function Usage
+/// This approach is for advanced users who need direct control over the transport layer.
+/// Most users should prefer the high-level client approach above.
+/// ```rust
+/// use bitcoin_rpc_midas::transport::decoderawtransaction;
+/// use bitcoin_rpc_midas::transport::{TransportTrait, DefaultTransport};
+///
+/// async fn example() -> Result<(), Box<dyn std::error::Error>> {
+/// let transport = DefaultTransport::new(
+///     "http://127.0.0.1:18443".to_string(),
+///     Some(("rpcuser".to_string(), "rpcpassword".to_string()))
+/// );
+/// let result = decoderawtransaction(&transport, /* params */).await?;
+/// # Ok(())
+/// # }
+/// ```
+
+#[allow(unused_imports)]
+use serde_json::Value;
+
+use crate::transport::{TransportError, TransportTrait};
 /// Return a JSON object representing the serialized, hex-encoded transaction.
 #[derive(Debug, Deserialize, Serialize)]
 pub struct DecoderawtransactionResponse {
@@ -36,8 +60,6 @@ pub async fn decoderawtransaction(
     iswitness: serde_json::Value,
 ) -> Result<DecoderawtransactionResponse, TransportError> {
     let params = vec![json!(hexstring), json!(iswitness)];
-    let raw = transport
-        .send_request("decoderawtransaction", &params)
-        .await?;
+    let raw = transport.send_request("decoderawtransaction", &params).await?;
     Ok(serde_json::from_value::<DecoderawtransactionResponse>(raw)?)
 }

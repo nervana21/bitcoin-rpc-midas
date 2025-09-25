@@ -1,22 +1,46 @@
 //! This file is auto-generated. Do not edit manually.
 //! Generated from Bitcoin Core v29.1
 
+use serde::{Deserialize, Serialize};
+use serde_json::json;
 /// Create a transaction spending the given inputs and creating new outputs.
 /// Outputs can be addresses or data.
 /// Returns hex-encoded raw transaction.
 /// Note that the transaction's inputs are not signed, and
 /// it is not stored in the wallet or transmitted to the network.
 
-/// # Example
+/// # Example: High-Level Client Usage (Recommended)
 /// ```rust
-/// use bitcoin_rpc_codegen::client::v29_1::createrawtransaction;
+/// use bitcoin_rpc_midas::*;
 ///
-/// let client = Client::new("http://127.0.0.1:18443", auth);
+/// async fn example() -> Result<(), Box<dyn std::error::Error>> {
+/// let client = BitcoinTestClient::new().await?;
 /// let result = client.createrawtransaction(/* params */).await?;
+/// # Ok(())
+/// # }
 /// ```
-use serde::{Deserialize, Serialize};
-use serde_json::{json, Value};
-use transport::{TransportError, TransportTrait};
+
+/// # Example: Advanced - Direct Transport Function Usage
+/// This approach is for advanced users who need direct control over the transport layer.
+/// Most users should prefer the high-level client approach above.
+/// ```rust
+/// use bitcoin_rpc_midas::transport::createrawtransaction;
+/// use bitcoin_rpc_midas::transport::{TransportTrait, DefaultTransport};
+///
+/// async fn example() -> Result<(), Box<dyn std::error::Error>> {
+/// let transport = DefaultTransport::new(
+///     "http://127.0.0.1:18443".to_string(),
+///     Some(("rpcuser".to_string(), "rpcpassword".to_string()))
+/// );
+/// let result = createrawtransaction(&transport, /* params */).await?;
+/// # Ok(())
+/// # }
+/// ```
+
+#[allow(unused_imports)]
+use serde_json::Value;
+
+use crate::transport::{TransportError, TransportTrait};
 /// Create a transaction spending the given inputs and creating new outputs.
 /// Outputs can be addresses or data.
 /// Returns hex-encoded raw transaction.
@@ -37,15 +61,8 @@ pub async fn createrawtransaction(
     replaceable: serde_json::Value,
     version: serde_json::Value,
 ) -> Result<CreaterawtransactionResponse, TransportError> {
-    let params = vec![
-        json!(inputs),
-        json!(outputs),
-        json!(locktime),
-        json!(replaceable),
-        json!(version),
-    ];
-    let raw = transport
-        .send_request("createrawtransaction", &params)
-        .await?;
+    let params =
+        vec![json!(inputs), json!(outputs), json!(locktime), json!(replaceable), json!(version)];
+    let raw = transport.send_request("createrawtransaction", &params).await?;
     Ok(serde_json::from_value::<CreaterawtransactionResponse>(raw)?)
 }

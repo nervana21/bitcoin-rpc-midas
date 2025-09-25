@@ -1,7 +1,6 @@
-use reqwest;
-use serde;
 use serde_json::Value;
 use thiserror::Error;
+use {reqwest, serde};
 
 #[derive(Debug, Error, serde::Serialize, serde::Deserialize)]
 pub enum TransportError {
@@ -14,21 +13,15 @@ pub enum TransportError {
 }
 
 impl From<reqwest::Error> for TransportError {
-    fn from(err: reqwest::Error) -> Self {
-        TransportError::Http(err.to_string())
-    }
+    fn from(err: reqwest::Error) -> Self { TransportError::Http(err.to_string()) }
 }
 
 impl From<serde_json::Error> for TransportError {
-    fn from(err: serde_json::Error) -> Self {
-        TransportError::Json(err.to_string())
-    }
+    fn from(err: serde_json::Error) -> Self { TransportError::Json(err.to_string()) }
 }
 
 impl From<anyhow::Error> for TransportError {
-    fn from(err: anyhow::Error) -> Self {
-        TransportError::Rpc(err.to_string())
-    }
+    fn from(err: anyhow::Error) -> Self { TransportError::Rpc(err.to_string()) }
 }
 
 pub trait TransportTrait: Send + Sync {
@@ -85,12 +78,7 @@ pub struct DefaultTransport {
 
 impl DefaultTransport {
     pub fn new(url: impl Into<String>, auth: Option<(String, String)>) -> Self {
-        Self {
-            client: reqwest::Client::new(),
-            url: url.into(),
-            auth,
-            wallet_name: None,
-        }
+        Self { client: reqwest::Client::new(), url: url.into(), auth, wallet_name: None }
     }
 
     pub fn with_wallet(mut self, wallet_name: impl Into<String>) -> Self {
@@ -134,10 +122,8 @@ impl TransportTrait for DefaultTransport {
                     Err(e) => return Err(TransportError::Http(e.to_string())),
                 };
 
-                let text = response
-                    .text()
-                    .await
-                    .map_err(|e| TransportError::Http(e.to_string()))?;
+                let text =
+                    response.text().await.map_err(|e| TransportError::Http(e.to_string()))?;
                 eprintln!("[debug] Response body: {}", text);
                 let json: Value =
                     serde_json::from_str(&text).map_err(|e| TransportError::Json(e.to_string()))?;
@@ -193,10 +179,7 @@ impl TransportTrait for DefaultTransport {
                 }
                 Err(e) => return Err(TransportError::Http(e.to_string())),
             };
-            let text = response
-                .text()
-                .await
-                .map_err(|e| TransportError::Http(e.to_string()))?;
+            let text = response.text().await.map_err(|e| TransportError::Http(e.to_string()))?;
             eprintln!("[debug] Response body: {}", text);
             let json: Value =
                 serde_json::from_str(&text).map_err(|e| TransportError::Json(e.to_string()))?;
@@ -231,10 +214,7 @@ impl TransportTrait for DefaultTransport {
                 }
                 Err(e) => return Err(TransportError::Http(e.to_string())),
             };
-            let text = response
-                .text()
-                .await
-                .map_err(|e| TransportError::Http(e.to_string()))?;
+            let text = response.text().await.map_err(|e| TransportError::Http(e.to_string()))?;
             eprintln!("[debug] Batch response body: {}", text);
             let v: Vec<Value> =
                 serde_json::from_str(&text).map_err(|e| TransportError::Json(e.to_string()))?;
@@ -242,7 +222,5 @@ impl TransportTrait for DefaultTransport {
         })
     }
 
-    fn url(&self) -> &str {
-        &self.url
-    }
+    fn url(&self) -> &str { &self.url }
 }
