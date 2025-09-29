@@ -5,7 +5,6 @@ use serde::{Deserialize, Serialize};
 use serde_json::json;
 /// Attempts to submit new block to network.
 /// See https://en.bitcoin.it/wiki/BIP_0022 for full specification.
-
 /// # Example: High-Level Client Usage (Recommended)
 /// ```rust
 /// use bitcoin_rpc_midas::*;
@@ -16,7 +15,6 @@ use serde_json::json;
 /// # Ok(())
 /// # }
 /// ```
-
 /// # Example: Advanced - Direct Transport Function Usage
 /// This approach is for advanced users who need direct control over the transport layer.
 /// Most users should prefer the high-level client approach above.
@@ -33,7 +31,6 @@ use serde_json::json;
 /// # Ok(())
 /// # }
 /// ```
-
 #[allow(unused_imports)]
 use serde_json::Value;
 
@@ -42,6 +39,7 @@ use crate::transport::{TransportError, TransportTrait};
 /// See https://en.bitcoin.it/wiki/BIP_0022 for full specification.
 #[derive(Debug, Deserialize, Serialize)]
 #[serde(untagged)]
+#[allow(clippy::large_enum_variant)]
 pub enum SubmitblockResponse {
     Variant2(String),
 }

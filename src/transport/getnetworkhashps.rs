@@ -6,7 +6,6 @@ use serde_json::json;
 /// Returns the estimated network hashes per second based on the last n blocks.
 /// Pass in [blocks] to override # of blocks, -1 specifies since last difficulty change.
 /// Pass in [height] to estimate the network speed at the time when a certain block was found.
-
 /// # Example: High-Level Client Usage (Recommended)
 /// ```rust
 /// use bitcoin_rpc_midas::*;
@@ -17,7 +16,6 @@ use serde_json::json;
 /// # Ok(())
 /// # }
 /// ```
-
 /// # Example: Advanced - Direct Transport Function Usage
 /// This approach is for advanced users who need direct control over the transport layer.
 /// Most users should prefer the high-level client approach above.
@@ -34,7 +32,6 @@ use serde_json::json;
 /// # Ok(())
 /// # }
 /// ```
-
 #[allow(unused_imports)]
 use serde_json::Value;
 

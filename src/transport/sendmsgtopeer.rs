@@ -6,7 +6,6 @@ use serde_json::json;
 /// Send a p2p message to a peer specified by id.
 /// The message type and body must be provided, the message header will be generated.
 /// This RPC is for testing only.
-
 /// # Example: High-Level Client Usage (Recommended)
 /// ```rust
 /// use bitcoin_rpc_midas::*;
@@ -17,7 +16,6 @@ use serde_json::json;
 /// # Ok(())
 /// # }
 /// ```
-
 /// # Example: Advanced - Direct Transport Function Usage
 /// This approach is for advanced users who need direct control over the transport layer.
 /// Most users should prefer the high-level client approach above.
@@ -34,7 +32,6 @@ use serde_json::json;
 /// # Ok(())
 /// # }
 /// ```
-
 #[allow(unused_imports)]
 use serde_json::Value;
 

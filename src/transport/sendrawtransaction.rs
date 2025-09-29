@@ -9,7 +9,6 @@ use serde_json::json;
 /// nodes will normally not rebroadcast non-wallet transactions already in their mempool.
 /// A specific exception, RPC_TRANSACTION_ALREADY_IN_UTXO_SET, may throw if the transaction cannot be added to the mempool.
 /// Related RPCs: createrawtransaction, signrawtransactionwithkey
-
 /// # Example: High-Level Client Usage (Recommended)
 /// ```rust
 /// use bitcoin_rpc_midas::*;
@@ -20,7 +19,6 @@ use serde_json::json;
 /// # Ok(())
 /// # }
 /// ```
-
 /// # Example: Advanced - Direct Transport Function Usage
 /// This approach is for advanced users who need direct control over the transport layer.
 /// Most users should prefer the high-level client approach above.
@@ -37,7 +35,6 @@ use serde_json::json;
 /// # Ok(())
 /// # }
 /// ```
-
 #[allow(unused_imports)]
 use serde_json::Value;
 

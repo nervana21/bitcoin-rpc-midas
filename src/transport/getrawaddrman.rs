@@ -4,7 +4,6 @@
 use serde::{Deserialize, Serialize};
 /// EXPERIMENTAL warning: this call may be changed in future releases.
 /// Returns information on all address manager entries for the new and tried tables.
-
 /// # Example: High-Level Client Usage (Recommended)
 /// ```rust
 /// use bitcoin_rpc_midas::*;
@@ -15,7 +14,6 @@ use serde::{Deserialize, Serialize};
 /// # Ok(())
 /// # }
 /// ```
-
 /// # Example: Advanced - Direct Transport Function Usage
 /// This approach is for advanced users who need direct control over the transport layer.
 /// Most users should prefer the high-level client approach above.
@@ -32,7 +30,6 @@ use serde::{Deserialize, Serialize};
 /// # Ok(())
 /// # }
 /// ```
-
 #[allow(unused_imports)]
 use serde_json::Value;
 

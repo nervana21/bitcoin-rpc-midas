@@ -4,7 +4,6 @@
 /// Requests that a ping be sent to all other nodes, to measure ping time.
 /// Results are provided in getpeerinfo.
 /// Ping command is handled in queue with all other commands, so it measures processing backlog, not just network ping.
-
 /// # Example: High-Level Client Usage (Recommended)
 /// ```rust
 /// use bitcoin_rpc_midas::*;
@@ -15,7 +14,6 @@
 /// # Ok(())
 /// # }
 /// ```
-
 /// # Example: Advanced - Direct Transport Function Usage
 /// This approach is for advanced users who need direct control over the transport layer.
 /// Most users should prefer the high-level client approach above.
@@ -32,7 +30,6 @@
 /// # Ok(())
 /// # }
 /// ```
-
 #[allow(unused_imports)]
 use serde_json::Value;
 

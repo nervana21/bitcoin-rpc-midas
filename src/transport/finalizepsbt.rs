@@ -7,7 +7,6 @@ use serde_json::json;
 /// network serialized transaction which can be broadcast with sendrawtransaction. Otherwise a PSBT will be
 /// created which has the final_scriptSig and final_scriptWitness fields filled for inputs that are complete.
 /// Implements the Finalizer and Extractor roles.
-
 /// # Example: High-Level Client Usage (Recommended)
 /// ```rust
 /// use bitcoin_rpc_midas::*;
@@ -18,7 +17,6 @@ use serde_json::json;
 /// # Ok(())
 /// # }
 /// ```
-
 /// # Example: Advanced - Direct Transport Function Usage
 /// This approach is for advanced users who need direct control over the transport layer.
 /// Most users should prefer the high-level client approach above.
@@ -35,7 +33,6 @@ use serde_json::json;
 /// # Ok(())
 /// # }
 /// ```
-
 #[allow(unused_imports)]
 use serde_json::Value;
 

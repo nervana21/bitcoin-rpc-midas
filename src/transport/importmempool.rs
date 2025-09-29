@@ -5,7 +5,6 @@ use serde::{Deserialize, Serialize};
 use serde_json::json;
 /// Import a mempool.dat file and attempt to add its contents to the mempool.
 /// Warning: Importing untrusted files is dangerous, especially if metadata from the file is taken over.
-
 /// # Example: High-Level Client Usage (Recommended)
 /// ```rust
 /// use bitcoin_rpc_midas::*;
@@ -16,7 +15,6 @@ use serde_json::json;
 /// # Ok(())
 /// # }
 /// ```
-
 /// # Example: Advanced - Direct Transport Function Usage
 /// This approach is for advanced users who need direct control over the transport layer.
 /// Most users should prefer the high-level client approach above.
@@ -33,7 +31,6 @@ use serde_json::json;
 /// # Ok(())
 /// # }
 /// ```
-
 #[allow(unused_imports)]
 use serde_json::Value;
 

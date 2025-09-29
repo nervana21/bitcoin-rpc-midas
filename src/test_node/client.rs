@@ -2,6 +2,7 @@ use std::sync::Arc;
 
 use anyhow::Result;
 use bitcoin::{Amount, Network};
+use bitcoin_rpc_types::HashOrHeight;
 use serde_json::Value;
 
 use crate::node::{BitcoinNodeManager, NodeManager as NodeManagerTrait};
@@ -488,6 +489,7 @@ impl BitcoinTestClient {
     }
 
     /// Creates and loads a new wallet.
+    #[allow(clippy::too_many_arguments)]
     pub async fn createwallet(
         &self,
         wallet_name: String,
@@ -629,6 +631,7 @@ impl BitcoinTestClient {
     /// It will return an internal bug report when arg9="trigger_internal_bug" is passed.
     ///
     /// The difference between echo and echojson is that echojson has argument conversion enabled in the client-side table in bitcoin-cli and the GUI. There is no server-side difference.
+    #[allow(clippy::too_many_arguments)]
     pub async fn echo(
         &self,
         arg0: String,
@@ -669,6 +672,7 @@ impl BitcoinTestClient {
     /// It will return an internal bug report when arg9="trigger_internal_bug" is passed.
     ///
     /// The difference between echo and echojson is that echojson has argument conversion enabled in the client-side table in bitcoin-cli and the GUI. There is no server-side difference.
+    #[allow(clippy::too_many_arguments)]
     pub async fn echojson(
         &self,
         arg0: String,
@@ -991,8 +995,8 @@ impl BitcoinTestClient {
     /// It won"t work for some heights with pruning.
     pub async fn getblockstats(
         &self,
-        hash_or_height: serde_json::Value,
-        stats: Vec<serde_json::Value>,
+        hash_or_height: HashOrHeight,
+        stats: Vec<String>,
     ) -> Result<GetblockstatsResponse, TransportError> {
         let mut params = Vec::new();
         params.push(serde_json::to_value(hash_or_height)?);
@@ -1372,7 +1376,7 @@ impl BitcoinTestClient {
     pub async fn gettxoutsetinfo(
         &self,
         hash_type: String,
-        hash_or_height: serde_json::Value,
+        hash_or_height: HashOrHeight,
         use_index: bool,
     ) -> Result<GettxoutsetinfoResponse, TransportError> {
         let mut params = Vec::new();
@@ -1938,6 +1942,7 @@ impl BitcoinTestClient {
 
     /// Send multiple times. Amounts are double-precision floating point numbers.
     /// Requires wallet passphrase to be set with walletpassphrase call if wallet is encrypted.
+    #[allow(clippy::too_many_arguments)]
     pub async fn sendmany(
         &self,
         dummy: Option<String>,
@@ -2005,6 +2010,7 @@ impl BitcoinTestClient {
 
     /// Send an amount to a given address.
     /// Requires wallet passphrase to be set with walletpassphrase call if wallet is encrypted.
+    #[allow(clippy::too_many_arguments)]
     pub async fn sendtoaddress(
         &self,
         address: String,

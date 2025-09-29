@@ -8,7 +8,6 @@ use serde_json::json;
 /// Note: This call can take over an hour to complete if using an early timestamp; during that time, other rpc calls
 /// may report that the imported keys, addresses or scripts exist but related transactions are still missing.
 /// The rescan is significantly faster if block filters are available (using startup option "-blockfilterindex=1").
-
 /// # Example: High-Level Client Usage (Recommended)
 /// ```rust
 /// use bitcoin_rpc_midas::*;
@@ -19,7 +18,6 @@ use serde_json::json;
 /// # Ok(())
 /// # }
 /// ```
-
 /// # Example: Advanced - Direct Transport Function Usage
 /// This approach is for advanced users who need direct control over the transport layer.
 /// Most users should prefer the high-level client approach above.
@@ -36,7 +34,6 @@ use serde_json::json;
 /// # Ok(())
 /// # }
 /// ```
-
 #[allow(unused_imports)]
 use serde_json::Value;
 

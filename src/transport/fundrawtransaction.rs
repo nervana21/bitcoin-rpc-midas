@@ -17,7 +17,6 @@ use serde_json::json;
 /// Note that if specifying an exact fee rate, the resulting transaction may have a higher fee rate
 /// if the transaction has unconfirmed inputs. This is because the wallet will attempt to make the
 /// entire package have the given fee rate, not the resulting transaction.
-
 /// # Example: High-Level Client Usage (Recommended)
 /// ```rust
 /// use bitcoin_rpc_midas::*;
@@ -28,7 +27,6 @@ use serde_json::json;
 /// # Ok(())
 /// # }
 /// ```
-
 /// # Example: Advanced - Direct Transport Function Usage
 /// This approach is for advanced users who need direct control over the transport layer.
 /// Most users should prefer the high-level client approach above.
@@ -45,7 +43,6 @@ use serde_json::json;
 /// # Ok(())
 /// # }
 /// ```
-
 #[allow(unused_imports)]
 use serde_json::Value;
 

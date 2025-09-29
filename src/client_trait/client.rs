@@ -3,6 +3,7 @@
 use std::future::Future;
 
 use async_trait::async_trait;
+use bitcoin_rpc_types::HashOrHeight;
 use serde::de::DeserializeOwned;
 use serde::ser::SerializeSeq;
 use serde::Deserialize;
@@ -294,6 +295,7 @@ pub trait BitcoinClientV29_1: Send + Sync + TransportTrait + TransportExt + RpcD
     }
 
     /// Creates and loads a new wallet.
+    #[allow(clippy::too_many_arguments)]
     async fn createwallet(
         &self,
         _wallet_name: String,
@@ -430,6 +432,7 @@ pub trait BitcoinClientV29_1: Send + Sync + TransportTrait + TransportExt + RpcD
     /// It will return an internal bug report when arg9='trigger_internal_bug' is passed.
     ///
     /// The difference between echo and echojson is that echojson has argument conversion enabled in the client-side table in bitcoin-cli and the GUI. There is no server-side difference.
+    #[allow(clippy::too_many_arguments)]
     async fn echo(
         &self,
         _arg0: Option<String>,
@@ -470,6 +473,7 @@ pub trait BitcoinClientV29_1: Send + Sync + TransportTrait + TransportExt + RpcD
     /// It will return an internal bug report when arg9='trigger_internal_bug' is passed.
     ///
     /// The difference between echo and echojson is that echojson has argument conversion enabled in the client-side table in bitcoin-cli and the GUI. There is no server-side difference.
+    #[allow(clippy::too_many_arguments)]
     async fn echojson(
         &self,
         _arg0: Option<String>,
@@ -786,8 +790,8 @@ pub trait BitcoinClientV29_1: Send + Sync + TransportTrait + TransportExt + RpcD
     /// It won't work for some heights with pruning.
     async fn getblockstats(
         &self,
-        _hash_or_height: serde_json::Value,
-        _stats: Option<Vec<serde_json::Value>>,
+        _hash_or_height: HashOrHeight,
+        _stats: Option<Vec<String>>,
     ) -> Result<GetblockstatsResponse, TransportError> {
         let params = vec![serde_json::json!(_hash_or_height), serde_json::json!(_stats)];
         self.dispatch_json::<GetblockstatsResponse>("getblockstats", &params).await
@@ -1162,7 +1166,7 @@ pub trait BitcoinClientV29_1: Send + Sync + TransportTrait + TransportExt + RpcD
     async fn gettxoutsetinfo(
         &self,
         _hash_type: Option<String>,
-        _hash_or_height: Option<serde_json::Value>,
+        _hash_or_height: Option<HashOrHeight>,
         _use_index: Option<bool>,
     ) -> Result<GettxoutsetinfoResponse, TransportError> {
         let params = vec![
@@ -1709,6 +1713,7 @@ pub trait BitcoinClientV29_1: Send + Sync + TransportTrait + TransportExt + RpcD
 
     /// Send multiple times. Amounts are double-precision floating point numbers.
     /// Requires wallet passphrase to be set with walletpassphrase call if wallet is encrypted.
+    #[allow(clippy::too_many_arguments)]
     async fn sendmany(&self, params: SendmanyParams) -> Result<SendmanyResponse, TransportError> {
         let params = vec![serde_json::json!(params)];
         self.dispatch_json::<SendmanyResponse>("sendmany", &params).await
@@ -1756,6 +1761,7 @@ pub trait BitcoinClientV29_1: Send + Sync + TransportTrait + TransportExt + RpcD
 
     /// Send an amount to a given address.
     /// Requires wallet passphrase to be set with walletpassphrase call if wallet is encrypted.
+    #[allow(clippy::too_many_arguments)]
     async fn sendtoaddress(
         &self,
         _address: String,
@@ -2416,6 +2422,7 @@ impl<T: TransportTrait + TransportExt + Send + Sync> BitcoinClientV29_1 for T {
     }
 
     /// Creates and loads a new wallet.
+    #[allow(clippy::too_many_arguments)]
     async fn createwallet(
         &self,
         _wallet_name: String,
@@ -2552,6 +2559,7 @@ impl<T: TransportTrait + TransportExt + Send + Sync> BitcoinClientV29_1 for T {
     /// It will return an internal bug report when arg9='trigger_internal_bug' is passed.
     ///
     /// The difference between echo and echojson is that echojson has argument conversion enabled in the client-side table in bitcoin-cli and the GUI. There is no server-side difference.
+    #[allow(clippy::too_many_arguments)]
     async fn echo(
         &self,
         _arg0: Option<String>,
@@ -2592,6 +2600,7 @@ impl<T: TransportTrait + TransportExt + Send + Sync> BitcoinClientV29_1 for T {
     /// It will return an internal bug report when arg9='trigger_internal_bug' is passed.
     ///
     /// The difference between echo and echojson is that echojson has argument conversion enabled in the client-side table in bitcoin-cli and the GUI. There is no server-side difference.
+    #[allow(clippy::too_many_arguments)]
     async fn echojson(
         &self,
         _arg0: Option<String>,
@@ -2908,8 +2917,8 @@ impl<T: TransportTrait + TransportExt + Send + Sync> BitcoinClientV29_1 for T {
     /// It won't work for some heights with pruning.
     async fn getblockstats(
         &self,
-        _hash_or_height: serde_json::Value,
-        _stats: Option<Vec<serde_json::Value>>,
+        _hash_or_height: HashOrHeight,
+        _stats: Option<Vec<String>>,
     ) -> Result<GetblockstatsResponse, TransportError> {
         let params = vec![serde_json::json!(_hash_or_height), serde_json::json!(_stats)];
         self.dispatch_json::<GetblockstatsResponse>("getblockstats", &params).await
@@ -3284,7 +3293,7 @@ impl<T: TransportTrait + TransportExt + Send + Sync> BitcoinClientV29_1 for T {
     async fn gettxoutsetinfo(
         &self,
         _hash_type: Option<String>,
-        _hash_or_height: Option<serde_json::Value>,
+        _hash_or_height: Option<HashOrHeight>,
         _use_index: Option<bool>,
     ) -> Result<GettxoutsetinfoResponse, TransportError> {
         let params = vec![
@@ -3831,6 +3840,7 @@ impl<T: TransportTrait + TransportExt + Send + Sync> BitcoinClientV29_1 for T {
 
     /// Send multiple times. Amounts are double-precision floating point numbers.
     /// Requires wallet passphrase to be set with walletpassphrase call if wallet is encrypted.
+    #[allow(clippy::too_many_arguments)]
     async fn sendmany(&self, params: SendmanyParams) -> Result<SendmanyResponse, TransportError> {
         let params = vec![serde_json::json!(params)];
         self.dispatch_json::<SendmanyResponse>("sendmany", &params).await
@@ -3878,6 +3888,7 @@ impl<T: TransportTrait + TransportExt + Send + Sync> BitcoinClientV29_1 for T {
 
     /// Send an amount to a given address.
     /// Requires wallet passphrase to be set with walletpassphrase call if wallet is encrypted.
+    #[allow(clippy::too_many_arguments)]
     async fn sendtoaddress(
         &self,
         _address: String,

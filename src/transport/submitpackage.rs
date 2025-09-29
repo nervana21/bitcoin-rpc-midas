@@ -7,7 +7,6 @@ use serde_json::json;
 /// The package will be validated according to consensus and mempool policy rules. If any transaction passes, it will be accepted to mempool.
 /// This RPC is experimental and the interface may be unstable. Refer to doc/policy/packages.md for documentation on package policies.
 /// Warning: successful submission does not mean the transactions will propagate throughout the network.
-
 /// # Example: High-Level Client Usage (Recommended)
 /// ```rust
 /// use bitcoin_rpc_midas::*;
@@ -18,7 +17,6 @@ use serde_json::json;
 /// # Ok(())
 /// # }
 /// ```
-
 /// # Example: Advanced - Direct Transport Function Usage
 /// This approach is for advanced users who need direct control over the transport layer.
 /// Most users should prefer the high-level client approach above.
@@ -35,7 +33,6 @@ use serde_json::json;
 /// # Ok(())
 /// # }
 /// ```
-
 #[allow(unused_imports)]
 use serde_json::Value;
 

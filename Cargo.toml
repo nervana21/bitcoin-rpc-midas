@@ -2,14 +2,14 @@
 publish = true
 
 name = "bitcoin-rpc-midas"
-version = "29.1.1"
+version = "29.1.2"
 edition = "2021"
 authors = ["Bitcoin RPC Codegen Core Developers"]
 license = "MIT OR Apache-2.0"
 description = "Generated client for Bitcoin Core v29.1."
 readme = "README.md"
 keywords = ["bitcoin", "rpc", "codegen", "integration-testing"]
-categories = ["cryptography::cryptocurrencies", "development-tools::testing"]
+categories = ["cryptography", "data-structures", "api-bindings"]
 repository = "https://github.com/nervana21/bitcoin-rpc-midas"
 homepage = "https://github.com/nervana21/bitcoin-rpc-midas"
 documentation = "https://docs.rs/bitcoin-rpc-midas"
@@ -18,7 +18,7 @@ documentation = "https://docs.rs/bitcoin-rpc-midas"
 anyhow = "1.0"
 async-trait = "0.1"
 bitcoin = { version = "0.32.6", features = ["rand", "serde"] }
-bitcoin-rpc-types = "0.1.0"
+bitcoin-rpc-types = "0.1.2"
 reqwest = { version = "0.12.15", default-features = false, features = [
     "json",
     "rustls-tls",

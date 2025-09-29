@@ -10,7 +10,6 @@ use serde_json::json;
 /// https://github.com/bitcoin/bips/blob/master/bip-0023.mediawiki
 /// https://github.com/bitcoin/bips/blob/master/bip-0009.mediawiki#getblocktemplate_changes
 /// https://github.com/bitcoin/bips/blob/master/bip-0145.mediawiki
-
 /// # Example: High-Level Client Usage (Recommended)
 /// ```rust
 /// use bitcoin_rpc_midas::*;
@@ -21,7 +20,6 @@ use serde_json::json;
 /// # Ok(())
 /// # }
 /// ```
-
 /// # Example: Advanced - Direct Transport Function Usage
 /// This approach is for advanced users who need direct control over the transport layer.
 /// Most users should prefer the high-level client approach above.
@@ -38,7 +36,6 @@ use serde_json::json;
 /// # Ok(())
 /// # }
 /// ```
-
 #[allow(unused_imports)]
 use serde_json::Value;
 
@@ -52,6 +49,7 @@ use crate::transport::{TransportError, TransportTrait};
 /// https://github.com/bitcoin/bips/blob/master/bip-0145.mediawiki
 #[derive(Debug, Deserialize, Serialize)]
 #[serde(untagged)]
+#[allow(clippy::large_enum_variant)]
 pub enum GetblocktemplateResponse {
     Accepted(String),
     Variant3 {

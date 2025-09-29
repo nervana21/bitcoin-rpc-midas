@@ -7,7 +7,6 @@ use serde_json::json;
 /// Nodes added using addnode (or -connect) are protected from DoS disconnection and are not required to be
 /// full nodes/support SegWit as other outbound peers are (though such peers will not be synced from).
 /// Addnode connections are limited to 8 at a time and are counted separately from the -maxconnections limit.
-
 /// # Example: High-Level Client Usage (Recommended)
 /// ```rust
 /// use bitcoin_rpc_midas::*;
@@ -18,7 +17,6 @@ use serde_json::json;
 /// # Ok(())
 /// # }
 /// ```
-
 /// # Example: Advanced - Direct Transport Function Usage
 /// This approach is for advanced users who need direct control over the transport layer.
 /// Most users should prefer the high-level client approach above.
@@ -35,7 +33,6 @@ use serde_json::json;
 /// # Ok(())
 /// # }
 /// ```
-
 #[allow(unused_imports)]
 use serde_json::Value;
 

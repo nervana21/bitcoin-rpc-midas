@@ -5,7 +5,6 @@ use serde::{Deserialize, Serialize};
 /// Lists groups of addresses which have had their common ownership
 /// made public by common use as inputs or as the resulting change
 /// in past transactions
-
 /// # Example: High-Level Client Usage (Recommended)
 /// ```rust
 /// use bitcoin_rpc_midas::*;
@@ -16,7 +15,6 @@ use serde::{Deserialize, Serialize};
 /// # Ok(())
 /// # }
 /// ```
-
 /// # Example: Advanced - Direct Transport Function Usage
 /// This approach is for advanced users who need direct control over the transport layer.
 /// Most users should prefer the high-level client approach above.
@@ -33,7 +31,6 @@ use serde::{Deserialize, Serialize};
 /// # Ok(())
 /// # }
 /// ```
-
 #[allow(unused_imports)]
 use serde_json::Value;
 

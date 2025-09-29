@@ -6,7 +6,6 @@ use serde_json::json;
 /// Simply echo back the input arguments. This command is for testing.
 /// It will return an internal bug report when arg9='trigger_internal_bug' is passed.
 /// The difference between echo and echojson is that echojson has argument conversion enabled in the client-side table in bitcoin-cli and the GUI. There is no server-side difference.
-
 /// # Example: High-Level Client Usage (Recommended)
 /// ```rust
 /// use bitcoin_rpc_midas::*;
@@ -17,7 +16,6 @@ use serde_json::json;
 /// # Ok(())
 /// # }
 /// ```
-
 /// # Example: Advanced - Direct Transport Function Usage
 /// This approach is for advanced users who need direct control over the transport layer.
 /// Most users should prefer the high-level client approach above.
@@ -34,7 +32,6 @@ use serde_json::json;
 /// # Ok(())
 /// # }
 /// ```
-
 #[allow(unused_imports)]
 use serde_json::Value;
 
@@ -51,6 +48,7 @@ pub struct EchojsonResponse(pub serde_json::Value);
 /// Calls the `echojson` RPC method.
 ///
 /// Generated transport wrapper for JSON-RPC.
+#[allow(clippy::too_many_arguments)]
 pub async fn echojson(
     transport: &dyn TransportTrait,
     arg0: serde_json::Value,

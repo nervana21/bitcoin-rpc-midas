@@ -3,7 +3,6 @@
 
 use serde::{Deserialize, Serialize};
 /// Dumps the mempool to disk. It will fail until the previous dump is fully loaded.
-
 /// # Example: High-Level Client Usage (Recommended)
 /// ```rust
 /// use bitcoin_rpc_midas::*;
@@ -14,7 +13,6 @@ use serde::{Deserialize, Serialize};
 /// # Ok(())
 /// # }
 /// ```
-
 /// # Example: Advanced - Direct Transport Function Usage
 /// This approach is for advanced users who need direct control over the transport layer.
 /// Most users should prefer the high-level client approach above.
@@ -31,7 +29,6 @@ use serde::{Deserialize, Serialize};
 /// # Ok(())
 /// # }
 /// ```
-
 #[allow(unused_imports)]
 use serde_json::Value;
 

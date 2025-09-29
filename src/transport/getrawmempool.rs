@@ -5,7 +5,6 @@ use serde::{Deserialize, Serialize};
 use serde_json::json;
 /// Returns all transaction ids in memory pool as a json array of string transaction ids.
 /// Hint: use getmempoolentry to fetch a specific transaction from the mempool.
-
 /// # Example: High-Level Client Usage (Recommended)
 /// ```rust
 /// use bitcoin_rpc_midas::*;
@@ -16,7 +15,6 @@ use serde_json::json;
 /// # Ok(())
 /// # }
 /// ```
-
 /// # Example: Advanced - Direct Transport Function Usage
 /// This approach is for advanced users who need direct control over the transport layer.
 /// Most users should prefer the high-level client approach above.
@@ -33,7 +31,6 @@ use serde_json::json;
 /// # Ok(())
 /// # }
 /// ```
-
 #[allow(unused_imports)]
 use serde_json::Value;
 
@@ -43,6 +40,7 @@ use crate::transport::{TransportError, TransportTrait};
 /// Hint: use getmempoolentry to fetch a specific transaction from the mempool.
 #[derive(Debug, Deserialize, Serialize)]
 #[serde(untagged)]
+#[allow(clippy::large_enum_variant)]
 pub enum GetrawmempoolResponse {
     Raw(Vec<String>),
     Verbose(serde_json::Value),

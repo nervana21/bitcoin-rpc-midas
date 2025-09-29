@@ -4,7 +4,6 @@
 use serde::{Deserialize, Serialize};
 /// Stops current wallet rescan triggered by an RPC call, e.g. by a rescanblockchain call.
 /// Note: Use "getwalletinfo" to query the scanning progress.
-
 /// # Example: High-Level Client Usage (Recommended)
 /// ```rust
 /// use bitcoin_rpc_midas::*;
@@ -15,7 +14,6 @@ use serde::{Deserialize, Serialize};
 /// # Ok(())
 /// # }
 /// ```
-
 /// # Example: Advanced - Direct Transport Function Usage
 /// This approach is for advanced users who need direct control over the transport layer.
 /// Most users should prefer the high-level client approach above.
@@ -32,7 +30,6 @@ use serde::{Deserialize, Serialize};
 /// # Ok(())
 /// # }
 /// ```
-
 #[allow(unused_imports)]
 use serde_json::Value;
 

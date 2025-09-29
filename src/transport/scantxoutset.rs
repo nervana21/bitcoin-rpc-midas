@@ -19,7 +19,6 @@ use serde_json::json;
 /// unhardened or hardened child keys.
 /// In the latter case, a range needs to be specified by below if different from 1000.
 /// For more information on output descriptors, see the documentation in the doc/descriptors.md file.
-
 /// # Example: High-Level Client Usage (Recommended)
 /// ```rust
 /// use bitcoin_rpc_midas::*;
@@ -30,7 +29,6 @@ use serde_json::json;
 /// # Ok(())
 /// # }
 /// ```
-
 /// # Example: Advanced - Direct Transport Function Usage
 /// This approach is for advanced users who need direct control over the transport layer.
 /// Most users should prefer the high-level client approach above.
@@ -47,7 +45,6 @@ use serde_json::json;
 /// # Ok(())
 /// # }
 /// ```
-
 #[allow(unused_imports)]
 use serde_json::Value;
 
@@ -71,6 +68,7 @@ use crate::transport::{TransportError, TransportTrait};
 /// For more information on output descriptors, see the documentation in the doc/descriptors.md file.
 #[derive(Debug, Deserialize, Serialize)]
 #[serde(untagged)]
+#[allow(clippy::large_enum_variant)]
 pub enum ScantxoutsetResponse {
     Started {
         success: bool,

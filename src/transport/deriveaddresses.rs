@@ -13,7 +13,6 @@ use serde_json::json;
 /// In the above, <pubkey> either refers to a fixed public key in hexadecimal notation, or to an xpub/xprv optionally followed by one
 /// or more path elements separated by "/", where "h" represents a hardened child key.
 /// For more information on output descriptors, see the documentation in the doc/descriptors.md file.
-
 /// # Example: High-Level Client Usage (Recommended)
 /// ```rust
 /// use bitcoin_rpc_midas::*;
@@ -24,7 +23,6 @@ use serde_json::json;
 /// # Ok(())
 /// # }
 /// ```
-
 /// # Example: Advanced - Direct Transport Function Usage
 /// This approach is for advanced users who need direct control over the transport layer.
 /// Most users should prefer the high-level client approach above.
@@ -41,7 +39,6 @@ use serde_json::json;
 /// # Ok(())
 /// # }
 /// ```
-
 #[allow(unused_imports)]
 use serde_json::Value;
 
@@ -59,6 +56,7 @@ use crate::transport::{TransportError, TransportTrait};
 /// For more information on output descriptors, see the documentation in the doc/descriptors.md file.
 #[derive(Debug, Deserialize, Serialize)]
 #[serde(untagged)]
+#[allow(clippy::large_enum_variant)]
 pub enum DeriveaddressesResponse {
     Variant1(Vec<String>),
     Variant2(Vec<Vec<String>>),

@@ -1,4 +1,4 @@
-# Bitcoin-RPC-Midas
+# bitcoin-rpc-midas
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![Docs.rs](https://img.shields.io/docsrs/bitcoin-rpc-midas)](https://docs.rs/bitcoin-rpc-midas)
@@ -33,7 +33,7 @@ optional features, so your `Cargo.toml` could look like this:
 
 ```toml
 [dependencies]
-bitcoin-rpc-midas = "29.1.1"
+bitcoin-rpc-midas = "29.1.2"
 tokio = { version = "1.0", features = ["full"] }  
 ```
 

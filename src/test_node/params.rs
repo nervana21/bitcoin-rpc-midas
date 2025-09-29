@@ -1,4 +1,5 @@
 //! Parameter structs for RPC method calls
+use bitcoin_rpc_types::HashOrHeight;
 use serde::Serialize;
 
 /// Mark in-wallet transaction <txid> as abandoned
@@ -441,8 +442,8 @@ pub struct GetblockheaderParams {
 /// It won"t work for some heights with pruning.
 #[derive(Debug, Serialize)]
 pub struct GetblockstatsParams {
-    pub hash_or_height: serde_json::Value,
-    pub stats: Vec<serde_json::Value>,
+    pub hash_or_height: HashOrHeight,
+    pub stats: Vec<String>,
 }
 
 /// If the request parameters include a "mode" key, that is used to explicitly select between the default "template" request or a "proposal".
@@ -640,7 +641,7 @@ pub struct GettxoutproofParams {
 #[derive(Debug, Serialize)]
 pub struct GettxoutsetinfoParams {
     pub hash_type: String,
-    pub hash_or_height: serde_json::Value,
+    pub hash_or_height: HashOrHeight,
     pub use_index: bool,
 }
 

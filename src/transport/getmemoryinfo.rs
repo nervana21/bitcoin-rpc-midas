@@ -4,7 +4,6 @@
 use serde::{Deserialize, Serialize};
 use serde_json::json;
 /// Returns an object containing information about memory usage.
-
 /// # Example: High-Level Client Usage (Recommended)
 /// ```rust
 /// use bitcoin_rpc_midas::*;
@@ -15,7 +14,6 @@ use serde_json::json;
 /// # Ok(())
 /// # }
 /// ```
-
 /// # Example: Advanced - Direct Transport Function Usage
 /// This approach is for advanced users who need direct control over the transport layer.
 /// Most users should prefer the high-level client approach above.
@@ -32,7 +30,6 @@ use serde_json::json;
 /// # Ok(())
 /// # }
 /// ```
-
 #[allow(unused_imports)]
 use serde_json::Value;
 
@@ -40,6 +37,7 @@ use crate::transport::{TransportError, TransportTrait};
 /// Returns an object containing information about memory usage.
 #[derive(Debug, Deserialize, Serialize)]
 #[serde(untagged)]
+#[allow(clippy::large_enum_variant)]
 pub enum GetmemoryinfoResponse {
     Variant1(serde_json::Value),
     Variant2(String),

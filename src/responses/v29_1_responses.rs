@@ -177,6 +177,7 @@ pub struct DecodescriptResponse {
 /// For more information on output descriptors, see the documentation in the doc/descriptors.md file.
 #[derive(Debug, Deserialize, Serialize)]
 #[serde(untagged)]
+#[allow(clippy::large_enum_variant)]
 pub enum DeriveaddressesResponse {
     Variant1(Vec<String>),
     Variant2(Vec<Vec<String>>),
@@ -424,6 +425,7 @@ pub struct GetbestblockhashResponse(pub bitcoin::BlockHash);
 /// If verbosity is 3, returns an Object with information about block <hash> and information about each transaction, including prevout information for inputs (only for unpruned blocks in the current best chain).
 #[derive(Debug, Deserialize, Serialize)]
 #[serde(untagged)]
+#[allow(clippy::large_enum_variant)]
 pub enum GetblockResponse {
     Raw(String),
     Verbose {
@@ -526,6 +528,7 @@ pub struct GetblockhashResponse(pub bitcoin::BlockHash);
 /// If verbose is true, returns an Object with information about blockheader <hash>.
 #[derive(Debug, Deserialize, Serialize)]
 #[serde(untagged)]
+#[allow(clippy::large_enum_variant)]
 pub enum GetblockheaderResponse {
     Verbose {
         hash: String,
@@ -629,6 +632,7 @@ pub struct GetblockstatsResponse {
 /// https://github.com/bitcoin/bips/blob/master/bip-0145.mediawiki
 #[derive(Debug, Deserialize, Serialize)]
 #[serde(untagged)]
+#[allow(clippy::large_enum_variant)]
 pub enum GetblocktemplateResponse {
     Accepted(String),
     Variant3 {
@@ -740,6 +744,7 @@ pub struct GetindexinfoResponse {
 /// Returns an object containing information about memory usage.
 #[derive(Debug, Deserialize, Serialize)]
 #[serde(untagged)]
+#[allow(clippy::large_enum_variant)]
 pub enum GetmemoryinfoResponse {
     Variant1(serde_json::Value),
     Variant2(String),
@@ -748,6 +753,7 @@ pub enum GetmemoryinfoResponse {
 /// If txid is in the mempool, returns all in-mempool ancestors.
 #[derive(Debug, Deserialize, Serialize)]
 #[serde(untagged)]
+#[allow(clippy::large_enum_variant)]
 pub enum GetmempoolancestorsResponse {
     Raw(Vec<String>),
     Verbose(serde_json::Value),
@@ -756,6 +762,7 @@ pub enum GetmempoolancestorsResponse {
 /// If txid is in the mempool, returns all in-mempool descendants.
 #[derive(Debug, Deserialize, Serialize)]
 #[serde(untagged)]
+#[allow(clippy::large_enum_variant)]
 pub enum GetmempooldescendantsResponse {
     Raw(Vec<String>),
     Verbose(serde_json::Value),
@@ -876,6 +883,7 @@ pub struct GetnodeaddressesResponse(pub Vec<serde_json::Value>);
 /// EXPERIMENTAL warning: this call may be changed in future releases.
 #[derive(Debug, Deserialize, Serialize)]
 #[serde(untagged)]
+#[allow(clippy::large_enum_variant)]
 pub enum GetorphantxsResponse {
     Variant1(Vec<bitcoin::Txid>),
     Variant2(Vec<serde_json::Value>),
@@ -912,6 +920,7 @@ pub struct GetrawchangeaddressResponse(pub String);
 /// Hint: use getmempoolentry to fetch a specific transaction from the mempool.
 #[derive(Debug, Deserialize, Serialize)]
 #[serde(untagged)]
+#[allow(clippy::large_enum_variant)]
 pub enum GetrawmempoolResponse {
     Raw(Vec<String>),
     Verbose(serde_json::Value),
@@ -930,6 +939,7 @@ pub enum GetrawmempoolResponse {
 /// If verbosity is 2, returns a JSON Object with information about the transaction, including fee and prevout information.
 #[derive(Debug, Deserialize, Serialize)]
 #[serde(untagged)]
+#[allow(clippy::large_enum_variant)]
 pub enum GetrawtransactionResponse {
     Raw(String),
     Verbose {
@@ -1025,6 +1035,7 @@ pub struct GettransactionResponse {
 /// Returns details about an unspent transaction output.
 #[derive(Debug, Deserialize, Serialize)]
 #[serde(untagged)]
+#[allow(clippy::large_enum_variant)]
 pub enum GettxoutResponse {
     Variant2 {
         bestblock: String,
@@ -1339,6 +1350,7 @@ pub struct SavemempoolResponse {
 /// This call may take several minutes. Make sure to use no RPC timeout (bitcoin-cli -rpcclienttimeout=0)
 #[derive(Debug, Deserialize, Serialize)]
 #[serde(untagged)]
+#[allow(clippy::large_enum_variant)]
 pub enum ScanblocksResponse {
     Started {
         from_height: u64,
@@ -1372,6 +1384,7 @@ pub enum ScanblocksResponse {
 /// For more information on output descriptors, see the documentation in the doc/descriptors.md file.
 #[derive(Debug, Deserialize, Serialize)]
 #[serde(untagged)]
+#[allow(clippy::large_enum_variant)]
 pub enum ScantxoutsetResponse {
     Started {
         success: bool,
@@ -1424,6 +1437,7 @@ pub struct SendallResponse {
 /// Requires wallet passphrase to be set with walletpassphrase call if wallet is encrypted.
 #[derive(Debug, Deserialize, Serialize)]
 #[serde(untagged)]
+#[allow(clippy::large_enum_variant)]
 pub enum SendmanyResponse {
     Variant1(bitcoin::Txid),
     Variant2 { txid: bitcoin::Txid, fee_reason: String },
@@ -1453,6 +1467,7 @@ pub struct SendrawtransactionResponse(pub String);
 /// Requires wallet passphrase to be set with walletpassphrase call if wallet is encrypted.
 #[derive(Debug, Deserialize, Serialize)]
 #[serde(untagged)]
+#[allow(clippy::large_enum_variant)]
 pub enum SendtoaddressResponse {
     Variant1(bitcoin::Txid),
     Variant2 { txid: bitcoin::Txid, fee_reason: String },
@@ -1529,6 +1544,7 @@ pub struct StopResponse(pub String);
 /// See https://en.bitcoin.it/wiki/BIP_0022 for full specification.
 #[derive(Debug, Deserialize, Serialize)]
 #[serde(untagged)]
+#[allow(clippy::large_enum_variant)]
 pub enum SubmitblockResponse {
     Variant2(String),
 }

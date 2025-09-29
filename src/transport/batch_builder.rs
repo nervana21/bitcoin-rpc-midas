@@ -331,6 +331,7 @@ impl BatchBuilder {
         self
     }
 
+    #[allow(clippy::too_many_arguments)]
     /// Queue a `createwallet` RPC call
     pub fn createwallet(
         mut self,
@@ -423,6 +424,7 @@ impl BatchBuilder {
         self
     }
 
+    #[allow(clippy::too_many_arguments)]
     /// Queue a `echo` RPC call
     pub fn echo(
         mut self,
@@ -461,6 +463,7 @@ impl BatchBuilder {
         self
     }
 
+    #[allow(clippy::too_many_arguments)]
     /// Queue a `echojson` RPC call
     pub fn echojson(
         mut self,
@@ -1310,6 +1313,7 @@ impl BatchBuilder {
         self
     }
 
+    #[allow(clippy::too_many_arguments)]
     /// Queue a `sendmany` RPC call
     pub fn sendmany(
         mut self,
@@ -1362,6 +1366,7 @@ impl BatchBuilder {
         self
     }
 
+    #[allow(clippy::too_many_arguments)]
     /// Queue a `sendtoaddress` RPC call
     pub fn sendtoaddress(
         mut self,

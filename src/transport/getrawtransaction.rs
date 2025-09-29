@@ -11,7 +11,6 @@ use serde_json::json;
 /// If verbosity is 0 or omitted, returns the serialized transaction as a hex-encoded string.
 /// If verbosity is 1, returns a JSON Object with information about the transaction.
 /// If verbosity is 2, returns a JSON Object with information about the transaction, including fee and prevout information.
-
 /// # Example: High-Level Client Usage (Recommended)
 /// ```rust
 /// use bitcoin_rpc_midas::*;
@@ -22,7 +21,6 @@ use serde_json::json;
 /// # Ok(())
 /// # }
 /// ```
-
 /// # Example: Advanced - Direct Transport Function Usage
 /// This approach is for advanced users who need direct control over the transport layer.
 /// Most users should prefer the high-level client approach above.
@@ -39,7 +37,6 @@ use serde_json::json;
 /// # Ok(())
 /// # }
 /// ```
-
 #[allow(unused_imports)]
 use serde_json::Value;
 
@@ -56,6 +53,7 @@ use crate::transport::{TransportError, TransportTrait};
 /// If verbosity is 2, returns a JSON Object with information about the transaction, including fee and prevout information.
 #[derive(Debug, Deserialize, Serialize)]
 #[serde(untagged)]
+#[allow(clippy::large_enum_variant)]
 pub enum GetrawtransactionResponse {
     Raw(String),
     Verbose {

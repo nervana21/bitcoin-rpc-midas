@@ -10,7 +10,6 @@ use serde_json::json;
 /// for this wallet. In the event of an incorrect migration, the backup can be restored using restorewallet.
 /// Encrypted wallets must have the passphrase provided as an argument to this call.
 /// This RPC may take a long time to complete. Increasing the RPC client timeout is recommended.
-
 /// # Example: High-Level Client Usage (Recommended)
 /// ```rust
 /// use bitcoin_rpc_midas::*;
@@ -21,7 +20,6 @@ use serde_json::json;
 /// # Ok(())
 /// # }
 /// ```
-
 /// # Example: Advanced - Direct Transport Function Usage
 /// This approach is for advanced users who need direct control over the transport layer.
 /// Most users should prefer the high-level client approach above.
@@ -38,7 +36,6 @@ use serde_json::json;
 /// # Ok(())
 /// # }
 /// ```
-
 #[allow(unused_imports)]
 use serde_json::Value;
 
