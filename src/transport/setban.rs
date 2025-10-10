@@ -1,5 +1,5 @@
 //! This file is auto-generated. Do not edit manually.
-//! Generated from Bitcoin Core v29.1
+//! Generated from Bitcoin Core v30
 
 use serde_json::json;
 /// Attempts to add or remove an IP/Subnet from the banned list.

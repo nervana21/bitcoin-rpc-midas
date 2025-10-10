@@ -1,4 +1,4 @@
-// Generated client trait for Bitcoin Core v29.1
+// Generated client trait for Bitcoin Core v30
 
 use std::future::Future;
 
@@ -91,9 +91,9 @@ impl serde::Serialize for WalletcreatefundedpsbtParams {
     }
 }
 
-#[doc = r#"A versioned client trait for Bitcoin Core v29.1"#]
+#[doc = r#"A versioned client trait for Bitcoin Core v30"#]
 #[async_trait]
-pub trait BitcoinClientV29_1: Send + Sync + TransportTrait + TransportExt + RpcDispatchExt {
+pub trait BitcoinClientV30: Send + Sync + TransportTrait + TransportExt + RpcDispatchExt {
     /// Mark in-wallet transaction <txid> as abandoned
     /// This will mark this transaction and all its in-wallet descendants as abandoned which will allow
     /// for their inputs to be respent.  It can be used to replace "stuck" or evicted transactions.
@@ -558,7 +558,7 @@ pub trait BitcoinClientV29_1: Send + Sync + TransportTrait + TransportExt + RpcD
 
     /// Finalize the inputs of a PSBT. If the transaction is fully signed, it will produce a
     /// network serialized transaction which can be broadcast with sendrawtransaction. Otherwise a PSBT will be
-    /// created which has the final_scriptSig and final_scriptWitness fields filled for inputs that are complete.
+    /// created which has the final_scriptSig and final_scriptwitness fields filled for inputs that are complete.
     /// Implements the Finalizer and Extractor roles.
     async fn finalizepsbt(
         &self,
@@ -2220,7 +2220,7 @@ impl<T: TransportTrait + TransportExt + ?Sized> WalletTransportExt for T {}
 
 // Provide default implementation for any type that implements TransportTrait + TransportExt
 #[async_trait]
-impl<T: TransportTrait + TransportExt + Send + Sync> BitcoinClientV29_1 for T {
+impl<T: TransportTrait + TransportExt + Send + Sync> BitcoinClientV30 for T {
     /// Mark in-wallet transaction <txid> as abandoned
     /// This will mark this transaction and all its in-wallet descendants as abandoned which will allow
     /// for their inputs to be respent.  It can be used to replace "stuck" or evicted transactions.
@@ -2685,7 +2685,7 @@ impl<T: TransportTrait + TransportExt + Send + Sync> BitcoinClientV29_1 for T {
 
     /// Finalize the inputs of a PSBT. If the transaction is fully signed, it will produce a
     /// network serialized transaction which can be broadcast with sendrawtransaction. Otherwise a PSBT will be
-    /// created which has the final_scriptSig and final_scriptWitness fields filled for inputs that are complete.
+    /// created which has the final_scriptSig and final_scriptwitness fields filled for inputs that are complete.
     /// Implements the Finalizer and Extractor roles.
     async fn finalizepsbt(
         &self,

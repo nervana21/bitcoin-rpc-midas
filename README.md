@@ -4,7 +4,7 @@
 [![Docs.rs](https://img.shields.io/docsrs/bitcoin-rpc-midas)](https://docs.rs/bitcoin-rpc-midas)
 [![crates.io](https://img.shields.io/crates/v/bitcoin-rpc-midas)](https://crates.io/crates/bitcoin-rpc-midas)
 
-Type-safe Rust client for Bitcoin Core v29 RPCs, with test node support. Generated from a version-flexible toolchain.
+Type-safe Rust client for Bitcoin Core v30 RPCs, with test node support. Generated from a version-flexible toolchain.
 
 ## Why Use This?
 
@@ -33,7 +33,7 @@ optional features, so your `Cargo.toml` could look like this:
 
 ```toml
 [dependencies]
-bitcoin-rpc-midas = "29.1.2"
+bitcoin-rpc-midas = "30.0.0"
 tokio = { version = "1.0", features = ["full"] }  
 ```
 

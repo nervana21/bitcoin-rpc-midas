@@ -1,5 +1,5 @@
 //! This file is auto-generated. Do not edit manually.
-//! Generated from Bitcoin Core v29.1
+//! Generated from Bitcoin Core v30
 
 /// Removes the wallet encryption key from memory, locking the wallet.
 /// After calling this method, you will need to call walletpassphrase again

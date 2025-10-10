@@ -6,7 +6,7 @@ use bitcoin_rpc_types::HashOrHeight;
 use serde_json::Value;
 
 use crate::node::{BitcoinNodeManager, NodeManager as NodeManagerTrait};
-use crate::responses::v29_1_responses::*;
+use crate::responses::v30_responses::*;
 use crate::test_config::TestConfig;
 use crate::transport::core::{TransportError, TransportExt};
 use crate::transport::{BatchBuilder, DefaultTransport, RpcClient};
@@ -760,7 +760,7 @@ impl BitcoinTestClient {
 
     /// Finalize the inputs of a PSBT. If the transaction is fully signed, it will produce a
     /// network serialized transaction which can be broadcast with sendrawtransaction. Otherwise a PSBT will be
-    /// created which has the final_scriptSig and final_scriptWitness fields filled for inputs that are complete.
+    /// created which has the final_scriptSig and final_scriptwitness fields filled for inputs that are complete.
     /// Implements the Finalizer and Extractor roles.
     pub async fn finalizepsbt(
         &self,

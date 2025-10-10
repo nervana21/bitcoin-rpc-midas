@@ -1,5 +1,5 @@
 //! This file is auto-generated. Do not edit manually.
-//! Generated from Bitcoin Core v29.1
+//! Generated from Bitcoin Core v30
 
 use serde::{Deserialize, Serialize};
 /// Returns the hash of the best (tip) block in the most-work fully-validated chain.

@@ -1,5 +1,5 @@
 //! This file is auto-generated. Do not edit manually.
-//! Generated from Bitcoin Core v29.1
+//! Generated from Bitcoin Core v30
 
 /// Waits for the validation interface queue to catch up on everything that was there when we entered this function.
 /// # Example: High-Level Client Usage (Recommended)

@@ -1,5 +1,5 @@
 //! This file is auto-generated. Do not edit manually.
-//! Generated from Bitcoin Core v29.1
+//! Generated from Bitcoin Core v30
 
 use serde::{Deserialize, Serialize};
 /// Returns a map of all user-created (see prioritisetransaction) fee deltas by txid, and whether the tx is present in mempool.

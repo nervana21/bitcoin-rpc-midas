@@ -1,5 +1,5 @@
 //! This file is auto-generated. Do not edit manually.
-//! Generated from Bitcoin Core v29.1
+//! Generated from Bitcoin Core v30
 
 use serde_json::json;
 /// Refills each descriptor keypool in the wallet up to the specified number of new keys.

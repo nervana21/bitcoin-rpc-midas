@@ -1,11 +1,11 @@
 //! This file is auto-generated. Do not edit manually.
-//! Generated from Bitcoin Core v29.1
+//! Generated from Bitcoin Core v30
 
 use serde::{Deserialize, Serialize};
 use serde_json::json;
 /// Finalize the inputs of a PSBT. If the transaction is fully signed, it will produce a
 /// network serialized transaction which can be broadcast with sendrawtransaction. Otherwise a PSBT will be
-/// created which has the final_scriptSig and final_scriptWitness fields filled for inputs that are complete.
+/// created which has the final_scriptSig and final_scriptwitness fields filled for inputs that are complete.
 /// Implements the Finalizer and Extractor roles.
 /// # Example: High-Level Client Usage (Recommended)
 /// ```rust
@@ -39,7 +39,7 @@ use serde_json::Value;
 use crate::transport::{TransportError, TransportTrait};
 /// Finalize the inputs of a PSBT. If the transaction is fully signed, it will produce a
 /// network serialized transaction which can be broadcast with sendrawtransaction. Otherwise a PSBT will be
-/// created which has the final_scriptSig and final_scriptWitness fields filled for inputs that are complete.
+/// created which has the final_scriptSig and final_scriptwitness fields filled for inputs that are complete.
 /// Implements the Finalizer and Extractor roles.
 #[derive(Debug, Deserialize, Serialize)]
 pub struct FinalizepsbtResponse {

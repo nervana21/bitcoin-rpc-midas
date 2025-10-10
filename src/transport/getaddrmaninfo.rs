@@ -1,5 +1,5 @@
 //! This file is auto-generated. Do not edit manually.
-//! Generated from Bitcoin Core v29.1
+//! Generated from Bitcoin Core v30
 
 use serde::{Deserialize, Serialize};
 /// Provides information about the node's address manager by returning the number of addresses in the `new` and `tried` tables and their sum for all networks.

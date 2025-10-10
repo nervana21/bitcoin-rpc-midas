@@ -14,9 +14,9 @@ pub mod responses;
 
 // Re-exports for ergonomic access
 pub use config::Config;
-pub use client_trait::client::BitcoinClientV29_1;
+pub use client_trait::client::BitcoinClientV30;
 pub use node::BitcoinNodeManager;
-pub use bitcoin::Network;
+pub use bitcoin::{Network, Txid};
 pub use test_config::TestConfig;
 pub use test_node::client::BitcoinTestClient;
 pub use responses::*;

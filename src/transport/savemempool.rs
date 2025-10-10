@@ -1,5 +1,5 @@
 //! This file is auto-generated. Do not edit manually.
-//! Generated from Bitcoin Core v29.1
+//! Generated from Bitcoin Core v30
 
 use serde::{Deserialize, Serialize};
 /// Dumps the mempool to disk. It will fail until the previous dump is fully loaded.
